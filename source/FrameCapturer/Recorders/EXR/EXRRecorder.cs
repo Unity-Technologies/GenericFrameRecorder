@@ -13,7 +13,7 @@ namespace UTJ.FrameCapturer.Recorders
 
         public static RecorderInfo GetRecorderInfo()
         {
-            return RecorderInfo.Instantiate<EXRRecorder, EXRRecorderSettings>("Video", "EXR Recorder");
+            return RecorderInfo.Instantiate<EXRRecorder, EXRRecorderSettings>("Video", "OpenEXR (FrameCapturer)");
         }
 
         public override bool BeginRecording(RecordingSession session)

@@ -14,7 +14,7 @@ namespace UTJ.FrameCapturer.Recorders
 
         public static RecorderInfo GetRecorderInfo()
         {
-            return RecorderInfo.Instantiate<GIFRecorder, GIFRecorderSettings>("Video", "GIF Recorder");
+            return RecorderInfo.Instantiate<GIFRecorder, GIFRecorderSettings>("Video", "GIF (FrameCapturer)");
         }
 
         public override bool BeginRecording(RecordingSession session)

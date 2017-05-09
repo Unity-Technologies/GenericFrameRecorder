@@ -13,7 +13,7 @@ namespace UTJ.FrameCapturer.Recorders
 
         public static RecorderInfo GetRecorderInfo()
         {
-            return RecorderInfo.Instantiate<MP4Recorder, MP4RecorderSettings>("Video", "MP4 Recorder");
+            return RecorderInfo.Instantiate<MP4Recorder, MP4RecorderSettings>("Video", "MPeg-4 (Framecapturer)");
         }
 
         public override bool BeginRecording(RecordingSession session)

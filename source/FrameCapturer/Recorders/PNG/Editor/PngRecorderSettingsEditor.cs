@@ -22,7 +22,7 @@ namespace UTJ.FrameCapturer.Recorders
 
         protected override void OnEncodingGroupGui()
         {
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("m_PngEncoderSettings"), true);
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("m_PngEncoderSettings"), new GUIContent("Encoding"), true);
         }
 
         protected override void OnOutputGui()

@@ -14,7 +14,7 @@ namespace UTJ.FrameCapturer.Recorders
 
         public static RecorderInfo GetRecorderInfo()
         {
-            return RecorderInfo.Instantiate<WEBMRecorder, WEBMRecorderSettings>("Video", "WEBM Recorder");
+            return RecorderInfo.Instantiate<WEBMRecorder, WEBMRecorderSettings>("Video", "WebM (Framecapturer)");
         }
 
         public override bool BeginRecording(RecordingSession session)

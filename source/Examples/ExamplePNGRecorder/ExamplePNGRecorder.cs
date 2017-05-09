@@ -11,7 +11,7 @@ namespace UnityEngine.Recorder.FrameRecorder
 
         public static RecorderInfo GetRecorderInfo()
         {
-            return RecorderInfo.Instantiate<ExamplePNGRecorder, ExamplePNGRecorderSettings>("Video", "Eample PNG Recorder");
+            return RecorderInfo.Instantiate<ExamplePNGRecorder, ExamplePNGRecorderSettings>("Video", "PNG (Example)");
         }
 
         public override void RecordFrame(RecordingSession ctx)

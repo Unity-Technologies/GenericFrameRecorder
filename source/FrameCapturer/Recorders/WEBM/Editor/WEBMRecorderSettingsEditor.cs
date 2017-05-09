@@ -22,7 +22,7 @@ namespace UTJ.FrameCapturer.Recorders
 
         protected override void OnEncodingGroupGui()
         {
-            if (EditorGUILayout.PropertyField(serializedObject.FindProperty("m_WebmEncoderSettings"), true))
+            if (EditorGUILayout.PropertyField(serializedObject.FindProperty("m_WebmEncoderSettings"), new GUIContent("Encoding"), true))
             {
                 m_LayoutHelper.indentLevel++;
                 base.OnEncodingGui();

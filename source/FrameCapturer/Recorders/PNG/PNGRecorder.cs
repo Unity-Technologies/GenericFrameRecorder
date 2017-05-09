@@ -12,7 +12,7 @@ namespace UTJ.FrameCapturer.Recorders
 
         public static RecorderInfo GetRecorderInfo()
         {
-            return RecorderInfo.Instantiate<PNGRecorder, PNGRecorderSettings>("Video", "PNG Recorder");
+            return RecorderInfo.Instantiate<PNGRecorder, PNGRecorderSettings>("Video", "PNG (FrameCapturer)");
         }
 
         public override bool BeginRecording(RecordingSession session)

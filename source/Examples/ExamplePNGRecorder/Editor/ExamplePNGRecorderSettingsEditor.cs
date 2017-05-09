@@ -20,6 +20,11 @@ namespace UnityEditor.Recorder.FrameRecorder.Example
             RecorderWindow.ShowAndPreselectCategory("Video");
         }
 
+        protected override void OnEncodingGroupGui()
+        {
+            // hide this group               
+        }
+
         protected override void OnOutputGui()
         {
             var settingsObj = serializedObject.targetObject as ExamplePNGRecorderSettings;
