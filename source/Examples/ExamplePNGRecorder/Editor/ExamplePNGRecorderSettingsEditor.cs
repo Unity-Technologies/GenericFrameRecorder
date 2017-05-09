@@ -22,7 +22,7 @@ namespace UnityEditor.Recorder.FrameRecorder.Example
 
         protected override void OnOutputGui()
         {
-            var settingsObj = serializedObject.targetObject as PNGRecorderSettings;
+            var settingsObj = serializedObject.targetObject as ExamplePNGRecorderSettings;
 
             GUILayout.BeginHorizontal();
             m_LayoutHelper.AddPropertyLabel("Directory");

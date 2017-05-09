@@ -6,12 +6,12 @@ using UnityEngine.Recorder.FrameRecorder.Utilities;
 namespace UnityEngine.Recorder.FrameRecorder
 {
     [FrameRecorderClass]
-    public class ExamplePNGRecorder : RenderTextureRecorder<PNGRecorderSettings>
+    public class ExamplePNGRecorder : RenderTextureRecorder<ExamplePNGRecorderSettings>
     {
 
         public static RecorderInfo GetRecorderInfo()
         {
-            return RecorderInfo.Instantiate<ExamplePNGRecorder, PNGRecorderSettings>("Video", "Eample PNG Recorder");
+            return RecorderInfo.Instantiate<ExamplePNGRecorder, ExamplePNGRecorderSettings>("Video", "Eample PNG Recorder");
         }
 
         public override void RecordFrame(RecordingSession ctx)
@@ -44,7 +44,7 @@ namespace UnityEngine.Recorder.FrameRecorder
             var outputPath = m_Settings.m_DestinationPath;
             if (outputPath.Length > 0 && !outputPath.EndsWith("/"))
                 outputPath += "/";
-            outputPath += m_OutputFile + (settings as PNGRecorderSettings).m_BaseFileName + recordedFramesCount + ".png";
+            outputPath += m_OutputFile + (settings as ExamplePNGRecorderSettings).m_BaseFileName + recordedFramesCount + ".png";
             return outputPath;
         }
     }
