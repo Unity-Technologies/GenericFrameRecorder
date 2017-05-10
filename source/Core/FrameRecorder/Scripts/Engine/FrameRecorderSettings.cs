@@ -27,10 +27,8 @@ namespace UnityEngine.Recorder.FrameRecorder
         TimeInterval
     }
 
-    public class FrameRecorderSettings : MonoBehaviour
+    public class FrameRecorderSettings : ScriptableObject
     {
-        public string m_UniqueID;
-        public string m_OwnerAssetID;
         public int m_CaptureEveryNthFrame = 1;
         public FrameRateMode m_FrameRateMode = FrameRateMode.Fixed;
         public double m_FrameRate = 24.0;
@@ -41,6 +39,20 @@ namespace UnityEngine.Recorder.FrameRecorder
         public DurationMode m_DurationMode;
         public bool m_Verbose = false;
 
+        [SerializeField]
+        string m_RecorderTypeName;
+
+        public Type recorderType
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(m_RecorderTypeName))
+                    return null;
+                return Type.GetType(m_RecorderTypeName); 
+            }
+            set { m_RecorderTypeName = value == null ? string.Empty : value.AssemblyQualifiedName; }
+        }
+
         public virtual bool isValid
         {
             get { return m_FrameRate > 0; }
@@ -49,9 +61,6 @@ namespace UnityEngine.Recorder.FrameRecorder
         public virtual void OnEnable()
         {
             GarbageCollect();
-
-            if (string.IsNullOrEmpty(m_UniqueID))
-                m_UniqueID = string.Format("{0}-{1}", GetType().Name, Guid.NewGuid());
         }
 
         public bool fixedDuration
@@ -61,6 +70,7 @@ namespace UnityEngine.Recorder.FrameRecorder
 
         void GarbageCollect()
         {
+            /*
 #if UNITY_EDITOR
             if (string.IsNullOrEmpty(m_OwnerAssetID))
                 return;
@@ -81,6 +91,7 @@ namespace UnityEngine.Recorder.FrameRecorder
                 UnityHelpers.Destroy(gameObject);
             }
 #endif
+*/
         }
     }
 }

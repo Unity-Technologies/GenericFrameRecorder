@@ -35,7 +35,7 @@ namespace UnityEngine.Recorder.FrameRecorder.Utilities
             {
                 if (string.Compare(category, m_RecordersCache[i].category, StringComparison.InvariantCultureIgnoreCase) == 0)
                     skipped++;
-                else if (m_RecordersCache[i].recorder == recorder)
+                else if (m_RecordersCache[i].recorderType == recorder)
                     return i - skipped;
                 else
                     any = true;
@@ -58,7 +58,7 @@ namespace UnityEngine.Recorder.FrameRecorder.Utilities
                     continue;
 
                 if (index == filteredIndex)
-                    return t.recorder;
+                    return t.recorderType;
                 filteredIndex++;
             }
 
@@ -82,7 +82,7 @@ namespace UnityEngine.Recorder.FrameRecorder.Utilities
                 count = 0;
                 foreach (var item in  m_RecordersCache)
                     if (string.Compare(category, item.category, StringComparison.InvariantCultureIgnoreCase) == 0)
-                        result[count++] = item.recorder.FullName;
+                        result[count++] = item.recorderType.FullName;
             }
 
             return result;

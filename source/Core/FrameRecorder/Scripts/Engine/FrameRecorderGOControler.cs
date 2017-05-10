@@ -8,33 +8,23 @@ namespace UnityEngine.Recorder.FrameRecorder
 
         public static GameObject GetGameObject()
         {
-            return GameObject.Find(k_HostGoName) ?? new GameObject(k_HostGoName);
-        }
-
-        public static GameObject GetSettingsRoot()
-        {
-            var root = GetGameObject();
-            var settingsTr = root.transform.Find("Settings");
-            GameObject settingsGO;
-            if (settingsTr == null)
+            var go = GameObject.Find(k_HostGoName);
+            if (go == null)
             {
-                settingsGO = new GameObject("Settings");
-                settingsGO.transform.parent = root.transform;
+                go = new GameObject(k_HostGoName);
+                go.hideFlags = HideFlags.HideInHierarchy;
             }
-            else
-                settingsGO = settingsTr.gameObject;
-
-            return settingsGO;
+            return go;
         }
 
-        public static GameObject GetRecordersRoot()
+        public static GameObject GetRecordingSessionsRoot()
         {
             var root = GetGameObject();
-            var settingsTr = root.transform.Find("Recording");
+            var settingsTr = root.transform.Find("RecordingSessions");
             GameObject settingsGO;
             if (settingsTr == null)
             {
-                settingsGO = new GameObject("Recording");
+                settingsGO = new GameObject("RecordingSessions");
                 settingsGO.transform.parent = root.transform;
             }
             else
@@ -45,9 +35,12 @@ namespace UnityEngine.Recorder.FrameRecorder
 
         public static GameObject HookupRecorder(FrameRecorderSettings settings)
         {
-            var ctrl = GetRecordersRoot();
+            var ctrl = GetRecordingSessionsRoot();
 
-            var recorderGO = new GameObject(settings.m_UniqueID);
+            var recorderGO = new GameObject();
+            var settingsHost = recorderGO.AddComponent<SettingsObjHost>();
+            settingsHost.m_Settings = settings;
+
             recorderGO.transform.parent = ctrl.transform;
 
             return recorderGO;
@@ -55,9 +48,17 @@ namespace UnityEngine.Recorder.FrameRecorder
 
         public static GameObject FindRecorder(FrameRecorderSettings settings)
         {
-            var ctrl = GetRecordersRoot();
-            var go = ctrl.transform.Find(settings.m_UniqueID);
-            return go == null ? null : go.gameObject;
+            var ctrl = GetRecordingSessionsRoot();
+
+            for (int i = 0; i < ctrl.transform.childCount; i++)
+            {
+                var child = ctrl.transform.GetChild(i);
+                var settingsHost = child.GetComponent<SettingsObjHost>();
+                if (settingsHost == settings)
+                    return settingsHost.gameObject;
+            }
+
+            return null;
         }
     }
 }

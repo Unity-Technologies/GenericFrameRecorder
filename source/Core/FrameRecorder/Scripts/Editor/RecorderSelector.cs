@@ -1,73 +1,119 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Recorder.FrameRecorder;
+using UnityEngineInternal;
 
 namespace Assets.Unity.FrameRecorder.Scripts.Editor
 {
-    interface IRecorderSelectorTarget
-    {
-        string recorderCategory { get; set; }
-        string selectedRecorder { get;  }
-        void SetRecorder(Type newRecorderType);
-    }
-
     class RecorderSelector
     {
-        IRecorderSelectorTarget m_target;
-        string[] categoryRecorders;
+        string m_Category;
+        string[] m_RecorderNames;
+        string[] m_Categories;
+        List<RecorderInfo> m_Recorders;
+        bool m_SettingsAreAssets;
+        bool m_CategoryIsReadonly = false;
 
-        public RecorderSelector(IRecorderSelectorTarget target)
+        public Type selectedRecorder { get; private set; }
+
+        Action m_SetRecorderCallback;
+
+        public RecorderSelector(Action setRecorderCallback, bool categoryIsReadonly)
         {
-            m_target = target;
+            m_CategoryIsReadonly = categoryIsReadonly;
+            m_Categories = RecordersInventory.availableCategories;
+            m_SetRecorderCallback = setRecorderCallback;
+        }
+
+        public void Init( FrameRecorderSettings settings, string startingCategory = "" )
+        {
+            // Pre existing settings obj?
+            if( settings != null )
+            {
+                var recInfo = RecordersInventory.GetRecorderInfo(settings.recorderType);
+
+                // category value overrides existing settings.
+                if (!string.IsNullOrEmpty(startingCategory))
+                {
+                    if (string.Compare(recInfo.category, startingCategory, StringComparison.InvariantCultureIgnoreCase) != 0)
+                    {
+                        // forced another category, flush existing settings obj.
+                        SelectRecorder(null);
+                    }
+                }
+
+                // Not invalidated by category, so set and we are done
+                if( settings != null )
+                {
+                    SetCategory(recInfo.category);
+                    SelectRecorder(settings.recorderType);
+                    return;
+                }
+            }
+
+            SetCategory(string.Empty);
         }
 
         int GetCategoryIndex()
         {
-            var categories = RecordersInventory.availableCategories;
-            for (int i = 0; i < categories.Length; i++)
-                if (categories[i] == m_target.recorderCategory)
+            for (int i = 0; i < m_Categories.Length; i++)
+                if (m_Categories[i] == m_Category)
                     return i;
 
-            if (categories.Length > 0)
+            if (m_Categories.Length > 0)
                 return 0;
             else
                 return -1;
         }
 
-        bool SetCategoryFromIndex(int index)
+        void SetCategory(string category)
         {
-            if (index >= 0)
+            m_Category = category;
+            if (string.IsNullOrEmpty(m_Category) && m_Categories.Length > 0)
+                m_Category = m_Categories[0];
+
+            if (string.IsNullOrEmpty(m_Category))
             {
-                m_target.recorderCategory = RecordersInventory.availableCategories[index];
-                categoryRecorders = RecordersInventory.recordersByCategory[m_target.recorderCategory]
-                    .Select(x => x.displayName)
-                    .ToArray();
+                m_Category = string.Empty;
+                m_RecorderNames = new string[0];                
             }
             else
             {
-                m_target.recorderCategory = string.Empty;
-                categoryRecorders = new string[0];
+                m_Recorders = RecordersInventory.recordersByCategory[m_Category];
+                m_RecorderNames = RecordersInventory.recordersByCategory[m_Category]
+                    .Select(x => x.displayName)
+                    .ToArray();
             }
+        }
 
-            return index >= 0;
+        void SetCategoryFromIndex(int index)
+        {
+            if (index >= 0)
+            {
+                var newCategory = RecordersInventory.availableCategories[index];
+                if (string.Compare(m_Category, newCategory, StringComparison.InvariantCultureIgnoreCase) == 0)
+                    return;
+                SetCategory(newCategory);
+            }
+            else
+            {
+                SetCategory(string.Empty);
+            }
         }
 
         int GetRecorderIndex()
         {
-            if (!RecordersInventory.recordersByCategory.ContainsKey(m_target.recorderCategory))
+            if (m_Recorders.Count == 0)
                 return -1;
-
-            var categoryRecorders = RecordersInventory.recordersByCategory[m_target.recorderCategory];
-            for (int i = 0; i < categoryRecorders.Count; i++)
-                if (categoryRecorders[i].recorder.AssemblyQualifiedName == m_target.selectedRecorder)
+            
+            for (int i = 0; i < m_Recorders.Count; i++)
+                if (m_Recorders[i].recorderType == selectedRecorder)
                     return i;
 
-
-            if (categoryRecorders.Count > 0)
+            if (m_Recorders.Count > 0)
                 return 0;
             else
                 return -1;
@@ -76,7 +122,7 @@ namespace Assets.Unity.FrameRecorder.Scripts.Editor
         Type GetRecorderFromIndex(int index)
         {
             if (index >= 0)
-                return RecordersInventory.recordersByCategory[m_target.recorderCategory][index].recorder;
+                return RecordersInventory.recordersByCategory[m_Category][index].recorderType;
 
             return null;
         }
@@ -84,15 +130,29 @@ namespace Assets.Unity.FrameRecorder.Scripts.Editor
         public void OnGui()
         {
             // Group selection
-            EditorGUILayout.BeginHorizontal();
-            SetCategoryFromIndex(EditorGUILayout.Popup("Record what:", GetCategoryIndex(), RecordersInventory.availableCategories));
-            EditorGUILayout.EndHorizontal();
+            if (!m_CategoryIsReadonly)
+            {
+                EditorGUILayout.BeginHorizontal();
+                SetCategoryFromIndex(EditorGUILayout.Popup("Record what:", GetCategoryIndex(), m_Categories));
+                EditorGUILayout.EndHorizontal();
+            }
 
             // Recorder in group selection
             EditorGUILayout.BeginHorizontal();
-            var newIndex = EditorGUILayout.Popup("Using Recorder:", GetRecorderIndex(), categoryRecorders);
-            m_target.SetRecorder(GetRecorderFromIndex(newIndex));
+            var oldIndex = GetRecorderIndex();
+            var newIndex = EditorGUILayout.Popup("Using Recorder:", oldIndex, m_RecorderNames);
+            SelectRecorder(GetRecorderFromIndex(newIndex));
+
             EditorGUILayout.EndHorizontal();
+        }
+
+        void SelectRecorder( Type newSelection )
+        {
+            if (selectedRecorder == newSelection)
+                return;
+
+            selectedRecorder = newSelection;
+            m_SetRecorderCallback();
         }
     }
 }

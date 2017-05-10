@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting.Messaging;
+using UnityEditor;
 using UnityEngine.Recorder.FrameRecorder.Utilities;
 
 namespace UnityEngine.Recorder.FrameRecorder
 {
     public class RecorderInfo
     {
-        public Type recorder;
+        public Type recorderType;
         public Type settings;
         public string category;
         public string displayName;
@@ -20,7 +20,7 @@ namespace UnityEngine.Recorder.FrameRecorder
         {
             return new RecorderInfo()
             {
-                recorder = typeof(TRecoder),
+                recorderType = typeof(TRecoder),
                 settings = typeof(TSettings),
                 category = category,
                 displayName = displayName
@@ -90,7 +90,7 @@ namespace UnityEngine.Recorder.FrameRecorder
                     {
                         if (recorders == null)
                             recorders = new SortedDictionary<string, RecorderInfo>();
-                        recorders.Add(recInfo.recorder.FullName, recInfo);
+                        recorders.Add(recInfo.recorderType.FullName, recInfo);
 
 #if UNITY_EDITOR
                         if (m_RecordersByCategory == null)
@@ -118,13 +118,12 @@ namespace UnityEngine.Recorder.FrameRecorder
             return false;
         }
 
-
-        public static RecorderInfo GetRecorder<TRecorder>() where TRecorder : class
+        public static RecorderInfo GetRecorderInfo<TRecorder>() where TRecorder : class
         {
-            return GetRecorder(typeof(TRecorder));
+            return GetRecorderInfo(typeof(TRecorder));
         }
 
-        static RecorderInfo GetRecorder(Type recorderType)
+        public static RecorderInfo GetRecorderInfo(Type recorderType)
         {
             Init();
             if (recorders.ContainsKey(recorderType.FullName))
@@ -150,10 +149,10 @@ namespace UnityEngine.Recorder.FrameRecorder
             }
         }
 
-        public static Recorder InstantiateRecorder(Type recorderType, FrameRecorderSettings settings)
+        public static Recorder GenerateNewRecorder(Type recorderType, FrameRecorderSettings settings)
         {
             Init();
-            var factory = GetRecorder(recorderType);
+            var factory = GetRecorderInfo(recorderType);
             if (factory != null)
             {
                 var recorder = ScriptableObject.CreateInstance(recorderType) as Recorder;
@@ -165,61 +164,25 @@ namespace UnityEngine.Recorder.FrameRecorder
                 throw new ArgumentException("No factory was registered for " + recorderType.Name);
         }
 
-        public static FrameRecorderSettings CreateRecorderSettings(Type recorderType, string ownerAssetId, string uniqueId)
+        public static FrameRecorderSettings GenerateNewSettingsAsset(UnityEngine.Object parentAsset, Type recorderType)
         {
             Init();
-            var recorderinfo = GetRecorder(recorderType);
+            var recorderinfo = GetRecorderInfo(recorderType);
             if (recorderinfo != null)
             {
-                var rootRecordingGO = FrameRecorderGOControler.GetSettingsRoot();
+                FrameRecorderSettings settings = null;
+                settings = ScriptableObject.CreateInstance(recorderinfo.settings) as FrameRecorderSettings;
+                settings.name = "Frame Recorder Settings";
+                settings.recorderType = recorderType;
+                settings.hideFlags = HideFlags.HideInHierarchy;
 
-                var transform = rootRecordingGO.transform.Find(uniqueId);
-                if (transform == null)
-                    return New(recorderinfo.settings, ownerAssetId, uniqueId);
-
-                var settings = (FrameRecorderSettings)transform.GetComponent(recorderinfo.settings);
-                if (settings == null || settings.GetType() != recorderinfo.settings)
-                {
-                    UnityHelpers.Destroy(transform.gameObject);
-                    return New(recorderinfo.settings, ownerAssetId, uniqueId);
-                }
-
+                AssetDatabase.AddObjectToAsset(settings, parentAsset);
+                AssetDatabase.SaveAssets();
                 return settings;
             }
             else
-                throw new ArgumentException("No factory was registered for " + recorderType.Name);
+                throw new ArgumentException("No factory was registered for " + recorderType.Name);            
         }
 
-        public static void DeleteSettings(string uniqueId)
-        {
-            var bank = FrameRecorderGOControler.GetSettingsRoot();
-
-            GameObject settingsGO = null;
-            var t = bank.transform.Find(uniqueId);
-            if (t != null)
-                settingsGO = t.gameObject;
-
-            if (settingsGO == null)
-                return;
-
-            UnityHelpers.Destroy(settingsGO);
-        }
-
-        static FrameRecorderSettings New(Type type, string ownerAssetId, string uniqueId)
-        {
-            if (!string.IsNullOrEmpty(uniqueId))
-                DeleteSettings(uniqueId);
-
-            var bank = FrameRecorderGOControler.GetSettingsRoot();
-
-            var settingsGO = new GameObject();
-            settingsGO.transform.parent = bank.transform;
-            var settings = (FrameRecorderSettings)settingsGO.AddComponent(type);
-            settings.m_UniqueID = uniqueId;
-            settings.m_OwnerAssetID = ownerAssetId;
-
-            settingsGO.name = settings.m_UniqueID;
-            return settings;
-        }
     }
 }

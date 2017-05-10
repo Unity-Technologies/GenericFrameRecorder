@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Assets.Unity.FrameRecorder.Scripts.Editor;
 using UnityEngine.Recorder.FrameRecorder.Utilities;
 using UnityEngine;
@@ -8,35 +6,60 @@ using UnityEngine.Recorder.FrameRecorder;
 
 namespace UnityEditor.Recorder.FrameRecorder
 {
-    public class RecorderWindow : EditorWindow, IRecorderSelectorTarget
+    public class RecorderWindow : EditorWindow
     {
-        [SerializeField]    string m_RecorderTypeName;
-        [SerializeField]    string m_RecorderCategory;
-        [SerializeField]    RecorderSettingsEditor m_SettingsEditor;
+        RecorderSettingsEditor m_SettingsEditor;
         bool m_PendingStartRecording;
         RecorderSelector m_recorderSelector;
+        string m_StartingCategory = string.Empty;
 
-        Type recorderType
-        {
-            get { return Type.GetType(m_RecorderTypeName); }
-            set { m_RecorderTypeName = value == null ? string.Empty : value.AssemblyQualifiedName; }
-        }
+        RecorderWindowSettings m_WindowSettingsAsset;
 
         public static void ShowAndPreselectCategory( string category )
         {
             var window = GetWindow(typeof(RecorderWindow), false, "Recorder") as RecorderWindow;
 
             if( RecordersInventory.recordersByCategory.ContainsKey(category) )
-                window.m_RecorderCategory = category;
+                window.m_StartingCategory = category;
         }
 
         public void OnEnable()
         {
-            m_recorderSelector = new RecorderSelector(this);
+            m_recorderSelector = null;
         }
 
         public void OnGUI()
         {
+            // Bug? work arround: on Stop play, Enable is not called.
+            if (m_SettingsEditor != null && m_SettingsEditor.target == null)
+            {
+                UnityHelpers.Destroy(m_SettingsEditor);
+                m_SettingsEditor = null;
+                m_recorderSelector = null;
+            }
+
+            if (m_recorderSelector == null)
+            {
+                if (m_WindowSettingsAsset == null)
+                {
+                    var candidates = AssetDatabase.FindAssets("t:RecorderWindowSettings");
+                    if (candidates.Length > 0)
+                    {
+                        var path = AssetDatabase.GUIDToAssetPath(candidates[0]);
+                        m_WindowSettingsAsset = AssetDatabase.LoadAssetAtPath<RecorderWindowSettings>(path);
+                    }
+                    else
+                    {
+                        m_WindowSettingsAsset = ScriptableObject.CreateInstance<RecorderWindowSettings>();
+                        AssetDatabase.CreateAsset(m_WindowSettingsAsset, "Assets/FrameRecordingSettings.asset");
+                        AssetDatabase.SaveAssets();
+                    }
+                }
+
+                m_recorderSelector = new RecorderSelector(OnRecorderSelected, true );
+                m_recorderSelector.Init( m_WindowSettingsAsset.m_Settings, m_StartingCategory);
+            }
+
             if (m_PendingStartRecording && EditorApplication.isPlaying)
                 DelayedStartRecording();
 
@@ -70,6 +93,7 @@ namespace UnityEditor.Recorder.FrameRecorder
         {
             StopRecording();
             UnityHelpers.Destroy(m_SettingsEditor);
+            m_SettingsEditor = null;
         }
 
         void RecordButton()
@@ -116,7 +140,7 @@ namespace UnityEditor.Recorder.FrameRecorder
             var go = FrameRecorderGOControler.HookupRecorder(settings);
             var session = new RecordingSession()
             {
-                m_Recorder = RecordersInventory.InstantiateRecorder(recorderType, settings),
+                m_Recorder = RecordersInventory.GenerateNewRecorder(m_recorderSelector.selectedRecorder, settings),
                 m_RecorderGO = go,
                 m_RecordingStartTS = Time.time / Time.timeScale,
                 m_FrameIndex = 0
@@ -145,52 +169,34 @@ namespace UnityEditor.Recorder.FrameRecorder
             }
         }
 
-        public void SetRecorder(Type newRecorderType)
+        public void OnRecorderSelected()
         {
-            if (newRecorderType == null || (m_SettingsEditor != null && recorderType == newRecorderType))
+            if (m_SettingsEditor != null)
+            {
+                UnityHelpers.Destroy(m_SettingsEditor);
+                m_SettingsEditor = null;
+            }
+
+            if (m_recorderSelector.selectedRecorder == null)
                 return;
 
-            recorderType = newRecorderType;
-
-            var editorType = RecorderSettingsEditor.FindEditorForRecorder(recorderType);
+            var editorType = RecorderSettingsEditor.FindEditorForRecorder(m_recorderSelector.selectedRecorder);
             if (editorType != null)
             {
-                if (m_SettingsEditor != null)
+                if (m_WindowSettingsAsset.m_Settings != null && RecordersInventory.GetRecorderInfo(m_recorderSelector.selectedRecorder).settings != m_WindowSettingsAsset.m_Settings.GetType())
                 {
-                    UnityHelpers.Destroy(m_SettingsEditor.target);
-                    UnityHelpers.Destroy(m_SettingsEditor);
-                    m_SettingsEditor = null;
+                    UnityHelpers.Destroy(m_WindowSettingsAsset.m_Settings, true);
+                    m_WindowSettingsAsset.m_Settings = null;
                 }
 
-                var settings = RecordersInventory.CreateRecorderSettings(recorderType, "N/A", "RecorderWindow");
-                m_SettingsEditor = UnityEditor.Editor.CreateEditor(settings, editorType) as RecorderSettingsEditor;
-                m_SettingsEditor.hideFlags = HideFlags.DontUnloadUnusedAsset; // <-- this means life time is manually managed by this class!!
+                if( m_WindowSettingsAsset.m_Settings == null )
+                    m_WindowSettingsAsset.m_Settings = RecordersInventory.GenerateNewSettingsAsset(m_WindowSettingsAsset, m_recorderSelector.selectedRecorder );
+                m_SettingsEditor = Editor.CreateEditor( m_WindowSettingsAsset.m_Settings, editorType ) as RecorderSettingsEditor;
+                AssetDatabase.SaveAssets();
             }
             else
-                Debug.LogError(string.Format("No editor class declared for recorder of type " + newRecorderType.FullName));
+                Debug.LogError(string.Format("No editor class declared for recorder of type " + m_recorderSelector.selectedRecorder.FullName));
         }
 
-        public string recorderCategory
-        {
-            get
-            {
-                return m_RecorderCategory;
-            }
-
-            set
-            {
-                if (m_RecorderCategory != value)
-                {
-                    m_RecorderCategory = value;
-                    m_SettingsEditor = null;
-                    recorderType = null;
-                }
-            }
-        }
-
-        public string selectedRecorder
-        {
-            get { return m_RecorderTypeName; }
-        }
     }
 }

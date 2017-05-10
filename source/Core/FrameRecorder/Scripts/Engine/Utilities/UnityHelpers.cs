@@ -4,7 +4,7 @@ namespace UnityEngine.Recorder.FrameRecorder.Utilities
 {
     public static class UnityHelpers
     {
-        public static void Destroy(Object obj)
+        public static void Destroy(Object obj, bool allowDestroyingAssets = false)
         {
             if (obj == null)
                 return;
@@ -12,7 +12,7 @@ namespace UnityEngine.Recorder.FrameRecorder.Utilities
             if (UnityEditor.EditorApplication.isPlaying)
                 Object.Destroy(obj);
             else
-                Object.DestroyImmediate(obj);
+                Object.DestroyImmediate(obj, allowDestroyingAssets);
 #else
             Object.Destroy(m_HostGO);
 #endif
