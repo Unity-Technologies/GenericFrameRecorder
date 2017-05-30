@@ -1,21 +1,18 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Recorder.FrameRecorder;
+using UnityEngine.Recorder.FrameRecorder.DataSource;
 
 namespace UTJ.FrameCapturer.Recorders
 {
     [ExecuteInEditMode]
-    public class PNGRecorderSettings : ImageRecorderSettings
+    public class PNGRecorderSettings : BaseFCRecorderSettings
     {
-        public string m_BaseFileName  = "pngFile";
-        public string m_DestinationPath = "Recorder";
         public fcAPI.fcPngConfig m_PngEncoderSettings = fcAPI.fcPngConfig.default_value;
 
-        public override bool isValid
+        public override List<RecorderInputSetting> GetDefaultSourcesSettings()
         {
-            get
-            {
-                return base.isValid && !string.IsNullOrEmpty(m_DestinationPath) && !string.IsNullOrEmpty(m_BaseFileName);
-            }
+            return new List<RecorderInputSetting>() { ScriptableObject.CreateInstance<CBRenderTextureInputSettings>() };
         }
     }
 }

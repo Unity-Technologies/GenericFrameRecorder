@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine.Recorder.FrameRecorder;
 using UnityEngine.Recorder.FrameRecorder.DataSource;
@@ -6,14 +7,19 @@ using UnityEngine.Recorder.FrameRecorder.DataSource;
 namespace UTJ.FrameCapturer.Recorders
 {
     [FrameRecorderClass]
-    public class EXRRecorder : RenderTextureRecorder<EXRRecorderSettings>
+    public class EXRRecorder : BaseImageRecorder<EXRRecorderSettings>
     {
         static readonly string[] s_channelNames = { "R", "G", "B", "A" };
         fcAPI.fcExrContext m_ctx;
 
         public static RecorderInfo GetRecorderInfo()
         {
-            return RecorderInfo.Instantiate<EXRRecorder, EXRRecorderSettings>("Video", "OpenEXR (FrameCapturer)");
+            return RecorderInfo.Instantiate<EXRRecorder, EXRRecorderSettings>("Video", "UTJ/OpenEXR");
+        }
+
+        public override List<RecorderInputSetting> DefaultSourceSettings()
+        {
+            throw new NotImplementedException();
         }
 
         public override bool BeginRecording(RecordingSession session)
@@ -35,12 +41,12 @@ namespace UTJ.FrameCapturer.Recorders
 
         public override void RecordFrame(RecordingSession session)
         {
-            if (m_BoxedSources.Count != 1)
+            if (m_Sources.Count != 1)
                 throw new Exception("Unsupported number of sources");
 
             var path = BuildOutputPath(session);
-            var source = (RenderTextureSource)m_BoxedSources[0].m_Source;
-            var frame = source.buffer;
+            var source = (RenderTextureInput)m_Sources[0];
+            var frame = source.outputRT;
 
             fcAPI.fcLock(frame, (data, fmt) =>
             {
@@ -59,7 +65,7 @@ namespace UTJ.FrameCapturer.Recorders
             var outputPath = m_Settings.m_DestinationPath;
             if (outputPath.Length > 0 && !outputPath.EndsWith("/"))
                 outputPath += "/";
-            outputPath += m_OutputFile + (settings as EXRRecorderSettings).m_BaseFileName + recordedFramesCount.ToString("0000") + ".exr";
+            outputPath += (settings as EXRRecorderSettings).m_BaseFileName + recordedFramesCount.ToString("0000") + ".exr";
             return outputPath;
         }
     }

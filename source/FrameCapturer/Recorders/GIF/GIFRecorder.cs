@@ -7,14 +7,14 @@ using UnityEngine.Recorder.FrameRecorder.DataSource;
 namespace UTJ.FrameCapturer.Recorders
 {
     [FrameRecorderClass]
-    public class GIFRecorder : RenderTextureRecorder<GIFRecorderSettings>
+    public class GIFRecorder : BaseImageRecorder<GIFRecorderSettings>
     {
         fcAPI.fcGifContext m_ctx;
         fcAPI.fcStream m_stream;
 
         public static RecorderInfo GetRecorderInfo()
         {
-            return RecorderInfo.Instantiate<GIFRecorder, GIFRecorderSettings>("Video", "GIF (FrameCapturer)");
+            return RecorderInfo.Instantiate<GIFRecorder, GIFRecorderSettings>("Video", "UTJ/GIF");
         }
 
         public override bool BeginRecording(RecordingSession session)
@@ -36,11 +36,11 @@ namespace UTJ.FrameCapturer.Recorders
 
         public override void RecordFrame(RecordingSession session)
         {
-            if (m_BoxedSources.Count != 1)
+            if (m_Sources.Count != 1)
                 throw new Exception("Unsupported number of sources");
 
-            var source = (RenderTextureSource)m_BoxedSources[0].m_Source;
-            var frame = source.buffer;
+            var source = (RenderTextureInput)m_Sources[0];
+            var frame = source.outputRT;
 
             if(!m_ctx)
             {
@@ -63,7 +63,7 @@ namespace UTJ.FrameCapturer.Recorders
             var outputPath = m_Settings.m_DestinationPath;
             if (outputPath.Length > 0 && !outputPath.EndsWith("/"))
                 outputPath += "/";
-            outputPath += m_OutputFile + (settings as GIFRecorderSettings).m_BaseFileName + ".gif";
+            outputPath += (settings as GIFRecorderSettings).m_BaseFileName + ".gif";
             return outputPath;
         }
     }

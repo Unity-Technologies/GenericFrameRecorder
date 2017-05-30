@@ -7,13 +7,13 @@ using UnityEngine.Recorder.FrameRecorder.DataSource;
 namespace UTJ.FrameCapturer.Recorders
 {
     [FrameRecorderClass]
-    public class MP4Recorder : RenderTextureRecorder<MP4RecorderSettings>
+    public class MP4Recorder : BaseImageRecorder<MP4RecorderSettings>
     {
         fcAPI.fcMP4Context m_ctx;
 
         public static RecorderInfo GetRecorderInfo()
         {
-            return RecorderInfo.Instantiate<MP4Recorder, MP4RecorderSettings>("Video", "MPeg-4 (Framecapturer)");
+            return RecorderInfo.Instantiate<MP4Recorder, MP4RecorderSettings>("Video", "UTJ/MPeg-4");
         }
 
         public override bool BeginRecording(RecordingSession session)
@@ -34,11 +34,11 @@ namespace UTJ.FrameCapturer.Recorders
 
         public override void RecordFrame(RecordingSession session)
         {
-            if (m_BoxedSources.Count != 1)
+            if (m_Sources.Count != 1)
                 throw new Exception("Unsupported number of sources");
 
-            var source = (RenderTextureSource)m_BoxedSources[0].m_Source;
-            var frame = source.buffer;
+            var source = (RenderTextureInput)m_Sources[0];
+            var frame = source.outputRT;
 
             if(!m_ctx)
             {
@@ -62,7 +62,7 @@ namespace UTJ.FrameCapturer.Recorders
             var outputPath = m_Settings.m_DestinationPath;
             if (outputPath.Length > 0 && !outputPath.EndsWith("/"))
                 outputPath += "/";
-            outputPath += m_OutputFile + (settings as MP4RecorderSettings).m_BaseFileName + ".mp4";
+            outputPath += (settings as MP4RecorderSettings).m_BaseFileName + ".mp4";
             return outputPath;
         }
 

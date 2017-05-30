@@ -1,22 +1,21 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Recorder.FrameRecorder;
+using UnityEngine.Recorder.FrameRecorder.DataSource;
 using UTJ.FrameCapturer;
 
 namespace UTJ.FrameCapturer.Recorders
 {
     [ExecuteInEditMode]
-    public class EXRRecorderSettings : ImageRecorderSettings
+    public class EXRRecorderSettings : BaseFCRecorderSettings
     {
-        public string m_BaseFileName  = "exrFile";
-        public string m_DestinationPath = "Recorder";
+
         public fcAPI.fcExrConfig m_ExrEncoderSettings = fcAPI.fcExrConfig.default_value;
 
-        public override bool isValid
+        public override List<RecorderInputSetting> GetDefaultSourcesSettings()
         {
-            get
-            {
-                return base.isValid && !string.IsNullOrEmpty(m_DestinationPath) && !string.IsNullOrEmpty(m_BaseFileName);
-            }
+            var settings = ScriptableObject.CreateInstance<CBRenderTextureInputSettings>();
+            return new List<RecorderInputSetting>() { ScriptableObject.CreateInstance<CBRenderTextureInputSettings>() };
         }
     }
 }
