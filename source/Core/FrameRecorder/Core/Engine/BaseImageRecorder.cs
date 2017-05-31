@@ -20,7 +20,7 @@ namespace UnityEngine.Recorder.FrameRecorder
         public override List<RecorderInputSetting> DefaultSourceSettings()
         {
             var settings = new List<RecorderInputSetting>();
-            var setting = ScriptableObject.CreateInstance(typeof(AdamBeautySourceSettings)) as AdamBeautySourceSettings;
+            var setting = ScriptableObject.CreateInstance(typeof(AdamBeautyInputSettings)) as AdamBeautyInputSettings;
 
             settings.Add(setting);
             return settings;

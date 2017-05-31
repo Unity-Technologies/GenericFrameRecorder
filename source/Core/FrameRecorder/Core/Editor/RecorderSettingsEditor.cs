@@ -162,23 +162,26 @@ namespace UnityEditor.Recorder.FrameRecorder
             switch ((DurationMode)m_DurationMode.intValue)
             {
                 case DurationMode.Indefinite:
+                {
+                    EditorGUILayout.PropertyField(m_StartFrame, new GUIContent("First Frame"));
                     break;
+                }
                 case DurationMode.SingleFrame:
                 {
-                    EditorGUILayout.PropertyField(m_StartFrame, new GUIContent("Frame"));
+                    EditorGUILayout.PropertyField(m_StartFrame, new GUIContent("Frame #"));
                     m_EndFrame.intValue = m_StartFrame.intValue;
                     break;
                 }
                 case DurationMode.FrameInterval:
                 {
-                    EditorGUILayout.PropertyField(m_StartFrame, new GUIContent("Start"));
-                    EditorGUILayout.PropertyField(m_EndFrame, new GUIContent("End"));
+                    EditorGUILayout.PropertyField(m_StartFrame, new GUIContent("First frame"));
+                    EditorGUILayout.PropertyField(m_EndFrame, new GUIContent("Last frame"));
                     break;
                 }
                 case DurationMode.TimeInterval:
                 {
-                    EditorGUILayout.PropertyField(m_StartTime, new GUIContent("Start"));
-                    EditorGUILayout.PropertyField(m_EndTime, new GUIContent("End"));
+                    EditorGUILayout.PropertyField(m_StartTime, new GUIContent("Start (sec)"));
+                    EditorGUILayout.PropertyField(m_EndTime, new GUIContent("End (sec)"));
                     break;
                 }
             }

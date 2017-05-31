@@ -54,7 +54,7 @@ namespace UnityEditor.Recorder.FrameRecorder.Example
 
             if (index != newIndex)
             {
-                var newType = newIndex == 0 ? typeof(CBRenderTextureInputSettings) : typeof(AdamBeautySourceSettings);
+                var newType = newIndex == 0 ? typeof(CBRenderTextureInputSettings) : typeof(AdamBeautyInputSettings);
                 var newSettings = (RecorderInputSetting)Activator.CreateInstance(newType);
                 ChangeInputSettings(0, newSettings);
             }

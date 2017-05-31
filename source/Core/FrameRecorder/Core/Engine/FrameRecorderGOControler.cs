@@ -4,21 +4,23 @@ namespace UnityEngine.Recorder.FrameRecorder
 {
     public class FrameRecorderGOControler
     {
-        const string k_HostGoName = "UnityEngine-Recorder-FrameRecorder2";
+        const string k_HostGoName = "UnityEngine-Recorder-FrameRecorder";
 
-        public static GameObject GetGameObject()
+        static GameObject GetGameObject(bool createIfAbsent)
         {
             var go = GameObject.Find(k_HostGoName);
-            if (go == null)
+            if (go == null && createIfAbsent)
             {
                 go = new GameObject(k_HostGoName);
             }
             return go;
         }
 
-        public static GameObject GetRecordingSessionsRoot()
+        static GameObject GetRecordingSessionsRoot( bool createIfAbsent )
         {
-            var root = GetGameObject();
+            var root = GetGameObject(createIfAbsent);
+            if (root == null)
+                return null;
             var settingsTr = root.transform.Find("RecordingSessions");
             GameObject settingsGO;
             if (settingsTr == null)
@@ -34,7 +36,7 @@ namespace UnityEngine.Recorder.FrameRecorder
 
         public static GameObject HookupRecorder()
         {
-            var ctrl = GetRecordingSessionsRoot();
+            var ctrl = GetRecordingSessionsRoot(true);
 
             var recorderGO = new GameObject();
 
@@ -45,13 +47,15 @@ namespace UnityEngine.Recorder.FrameRecorder
 
         public static GameObject FindRecorder(FrameRecorderSettings settings)
         {
-            var ctrl = GetRecordingSessionsRoot();
+            var ctrl = GetRecordingSessionsRoot(false);
+            if (ctrl == null)
+                return null;
 
             for (int i = 0; i < ctrl.transform.childCount; i++)
             {
                 var child = ctrl.transform.GetChild(i);
                 var settingsHost = child.GetComponent<RecorderComponent>();
-                if (settingsHost != null && settingsHost.session.settings == settings)
+                if (settingsHost != null && settingsHost.session != null && settingsHost.session.settings == settings)
                     return settingsHost.gameObject;
             }
 

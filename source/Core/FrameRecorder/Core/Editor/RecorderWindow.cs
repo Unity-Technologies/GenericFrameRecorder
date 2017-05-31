@@ -8,8 +8,16 @@ namespace UnityEditor.Recorder.FrameRecorder
 {
     public class RecorderWindow : EditorWindow
     {
+        enum EState
+        {
+            Idle,
+            WaitingForPlayModeToStartRecording,
+            Recording
+        }
+
         RecorderSettingsEditor m_SettingsEditor;
-        bool m_PendingStartRecording;
+        EState m_State = EState.Idle;
+
         RecorderSelector m_recorderSelector;
         string m_StartingCategory = string.Empty;
 
@@ -28,8 +36,19 @@ namespace UnityEditor.Recorder.FrameRecorder
             m_recorderSelector = null;
         }
 
+        DateTime m_LastRepaint = DateTime.MinValue;
+        protected void Update()
+        {
+            if( m_State == EState.Recording  &&  (DateTime.Now - m_LastRepaint).TotalMilliseconds > 50) 
+            {
+                Repaint();
+            }
+        }
+
         public void OnGUI()
         {
+            m_LastRepaint = DateTime.Now;
+
             // Bug? work arround: on Stop play, Enable is not called.
             if (m_SettingsEditor != null && m_SettingsEditor.target == null)
             {
@@ -60,7 +79,7 @@ namespace UnityEditor.Recorder.FrameRecorder
                 m_recorderSelector.Init( m_WindowSettingsAsset.m_Settings, m_StartingCategory);
             }
 
-            if (m_PendingStartRecording && EditorApplication.isPlaying)
+            if (m_State == EState.WaitingForPlayModeToStartRecording && EditorApplication.isPlaying)
                 DelayedStartRecording();
 
             var size = new Vector2(300, 400);
@@ -83,7 +102,7 @@ namespace UnityEditor.Recorder.FrameRecorder
 
                     EditorGUILayout.Separator();
                 }
-                RecordButton();
+                RecordButtonOnGui();
             }
 
             minSize = size;
@@ -96,41 +115,104 @@ namespace UnityEditor.Recorder.FrameRecorder
             m_SettingsEditor = null;
         }
 
-        void RecordButton()
+        void RecordButtonOnGui()
         {
-            var settings = (FrameRecorderSettings)m_SettingsEditor.target;
-            var recorderGO = FrameRecorderGOControler.FindRecorder(settings);
+            if (m_SettingsEditor == null || m_SettingsEditor.target == null)
+                return;
 
-            if (recorderGO == null)
+            switch (m_State)
             {
-                using (new EditorGUI.DisabledScope(!m_SettingsEditor.isValid))
+                case EState.Idle:
                 {
-                    if (GUILayout.Button("Start Recording"))
-                        StartRecording();
+                    using (new EditorGUI.DisabledScope(!m_SettingsEditor.isValid))
+                    {
+                        if (GUILayout.Button("Start Recording"))
+                            StartRecording();
+                    }
+                    break;
+                }
+                case EState.WaitingForPlayModeToStartRecording:
+                {
+                    using (new EditorGUI.DisabledScope(true))
+                        GUILayout.Button("Stop Recording"); // passive
+                    break;
+                }
+
+                case EState.Recording:
+                {
+                    var recorderGO = FrameRecorderGOControler.FindRecorder((FrameRecorderSettings)m_SettingsEditor.target);
+                    if (recorderGO == null)
+                    {
+                        GUILayout.Button("Start Recording"); // just to keep the ui system happy.
+                        m_State = EState.Idle;
+                    }
+                    else
+                    {
+                        if (GUILayout.Button("Stop Recording"))
+                            StopRecording();
+                        UpdateRecordingProgress(recorderGO);
+
+                    }
+                    break;
+                }
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        void UpdateRecordingProgress( GameObject go)
+        {
+            var rect = EditorGUILayout.BeginHorizontal(  );
+            rect.height = 20;
+            var recComp = go.GetComponent<RecorderComponent>();
+            if (recComp == null || recComp.session == null)
+                return;
+
+            var session = recComp.session;
+            var settings = recComp.session.m_Recorder.settings;
+            switch (settings.m_DurationMode)
+            {
+                case DurationMode.Indefinite:
+                {
+                    var label = string.Format("{0} Frames recorded", session.m_Recorder.recordedFramesCount);
+                    EditorGUI.ProgressBar(rect, 0, label );
+
+                    break;
+                }
+                case DurationMode.SingleFrame:
+                    // Display nothing
+                    break;
+                case DurationMode.FrameInterval:
+                {
+                    var label = (session.m_FrameIndex < settings.m_StartFrame) ? 
+                            string.Format("Skipping first {0} frames..", settings.m_StartFrame) : 
+                            string.Format("{0} Frames recorded", session.m_Recorder.recordedFramesCount);
+                    EditorGUI.ProgressBar(rect, (session.m_FrameIndex +1) / (float)(settings.m_EndFrame +1), label );
+                    break;
+                }
+                case DurationMode.TimeInterval:
+                {
+                    var label = (session.m_CurrentFrameStartTS < settings.m_StartTime) ?
+                        string.Format("Skipping first {0} seconds...", settings.m_StartTime) :
+                        string.Format("{0} Frames recorded", session.m_Recorder.recordedFramesCount);
+                    EditorGUI.ProgressBar(rect,(float)session.m_CurrentFrameStartTS / (settings.m_EndTime == 0f ? 0.0001f : settings.m_EndTime), label );
+                    break;
                 }
             }
-            else
-            {
-                if (GUILayout.Button("Stop Recording"))
-                    StopRecording();
-            }
+
+            EditorGUILayout.EndHorizontal();
         }
 
         void StartRecording()
         {
-            if (!EditorApplication.isPlaying || EditorApplication.isPlaying)
-            {
-                m_PendingStartRecording = true;
-                EditorApplication.isPlaying = true;
-                return;
-            }
-            else
-                StartRecording(false);
+            m_State = EState.WaitingForPlayModeToStartRecording;
+            EditorApplication.isPlaying = true;
+            return;
         }
 
         void DelayedStartRecording()
         {
-            m_PendingStartRecording = false;
             StartRecording(true);
         }
 
@@ -151,6 +233,7 @@ namespace UnityEditor.Recorder.FrameRecorder
             component.autoExitPlayMode = autoExitPlayMode;
 
             session.BeginRecording();
+            m_State = EState.Recording;
         }
 
         void StopRecording()

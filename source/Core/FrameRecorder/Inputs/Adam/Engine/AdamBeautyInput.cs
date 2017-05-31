@@ -5,7 +5,7 @@ using UnityEngine.Recorder.FrameRecorder;
 using UnityEngine.Recorder.FrameRecorder.DataSource;
 using UnityEngine.Recorder.FrameRecorder.Utilities;
 
-public class AdamBeautySource : RenderTextureInput
+public class AdamBeautyInput : RenderTextureInput
 {
     [HideInInspector]
     public Shader superShader;
@@ -32,9 +32,9 @@ public class AdamBeautySource : RenderTextureInput
 
     Vector2[] m_samples;
 
-    AdamBeautySourceSettings adamSettings
+    AdamBeautyInputSettings adamSettings
     {
-        get { return (AdamBeautySourceSettings)settings; }
+        get { return (AdamBeautyInputSettings)settings; }
     }
 
     void GenerateSamplesMSAA(Vector2[] samples, ESuperSamplingCount sc)
@@ -210,10 +210,13 @@ public class AdamBeautySource : RenderTextureInput
             if (m_hookedCameras != null)
             {
                 foreach (var c in m_hookedCameras)
+                {
                     if (c != null)
                     {
                         c.camera.targetTexture = c.textureBackup;
                     }
+                }
+                m_hookedCameras.Clear();
             }
 
             UnityHelpers.Destroy(m_renderRT);

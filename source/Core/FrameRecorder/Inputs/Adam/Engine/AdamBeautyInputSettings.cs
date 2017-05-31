@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Recorder.FrameRecorder;
 using UnityEngine.Recorder.FrameRecorder.DataSource;
 
-public class AdamBeautySourceSettings : InputSettings<AdamBeautySource>
+public class AdamBeautyInputSettings : InputSettings<AdamBeautyInput>
 {
     public EImageSource source = EImageSource.GameDisplay;
     public EImageDimension m_RenderSize = EImageDimension.x720p_HD;

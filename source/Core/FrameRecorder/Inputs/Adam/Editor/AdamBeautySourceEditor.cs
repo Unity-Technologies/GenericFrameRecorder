@@ -4,7 +4,7 @@ using UnityEditor.Recorder.FrameRecorder.Utilities;
 using UnityEngine;
 using UnityEngine.Recorder.FrameRecorder;
 
-[CustomEditor(typeof(AdamBeautySourceSettings))]
+[CustomEditor(typeof(AdamBeautyInputSettings))]
 public class AdamBeautySourceEditor : Editor
 {
     static EImageSource m_SupportedSources = EImageSource.GameDisplay | EImageSource.MainCamera | EImageSource.RenderTexture;
@@ -21,7 +21,7 @@ public class AdamBeautySourceEditor : Editor
         if (target == null)
             return;
 
-        var pf = new PropertyFinder<AdamBeautySourceSettings>(serializedObject);
+        var pf = new PropertyFinder<AdamBeautyInputSettings>(serializedObject);
         m_Source = pf.Find(w => w.source);
         m_RenderSize = pf.Find(w => w.m_RenderSize);
         m_RenderTexture = pf.Find(w => w.m_RenderTexture);

@@ -13,6 +13,9 @@ namespace UnityEngine.Recorder.FrameRecorder.DataSource
         {
             if (outputRT != null)
             {
+                if (outputRT == RenderTexture.active)
+                    RenderTexture.active = null;
+
                 outputRT.Release();
                 outputRT = null;
             }
