@@ -180,22 +180,17 @@ namespace UnityEditor.Recorder.FrameRecorder
             if (m_recorderSelector.selectedRecorder == null)
                 return;
 
-            var editorType = RecorderSettingsEditor.FindEditorForRecorder(m_recorderSelector.selectedRecorder);
-            if (editorType != null)
+            if (m_WindowSettingsAsset.m_Settings != null && RecordersInventory.GetRecorderInfo(m_recorderSelector.selectedRecorder).settings != m_WindowSettingsAsset.m_Settings.GetType())
             {
-                if (m_WindowSettingsAsset.m_Settings != null && RecordersInventory.GetRecorderInfo(m_recorderSelector.selectedRecorder).settings != m_WindowSettingsAsset.m_Settings.GetType())
-                {
-                    UnityHelpers.Destroy(m_WindowSettingsAsset.m_Settings, true);
-                    m_WindowSettingsAsset.m_Settings = null;
-                }
-
-                if( m_WindowSettingsAsset.m_Settings == null )
-                    m_WindowSettingsAsset.m_Settings = RecordersInventory.GenerateNewSettingsAsset(m_WindowSettingsAsset, m_recorderSelector.selectedRecorder );
-                m_SettingsEditor = Editor.CreateEditor( m_WindowSettingsAsset.m_Settings, editorType ) as RecorderSettingsEditor;
-                AssetDatabase.SaveAssets();
+                UnityHelpers.Destroy(m_WindowSettingsAsset.m_Settings, true);
+                m_WindowSettingsAsset.m_Settings = null;
             }
-            else
-                Debug.LogError(string.Format("No editor class declared for recorder of type " + m_recorderSelector.selectedRecorder.FullName));
+
+            if( m_WindowSettingsAsset.m_Settings == null )
+                m_WindowSettingsAsset.m_Settings = RecordersInventory.GenerateNewSettingsAsset(m_WindowSettingsAsset, m_recorderSelector.selectedRecorder );
+            m_SettingsEditor = Editor.CreateEditor( m_WindowSettingsAsset.m_Settings ) as RecorderSettingsEditor;
+            AssetDatabase.SaveAssets();
+
         }
 
     }

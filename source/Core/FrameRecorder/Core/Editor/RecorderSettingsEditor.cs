@@ -1,27 +1,14 @@
 using System;
-using System.Collections.Generic;
-using UnityEditor.Recorder.FrameRecorder.Utilities;
 using UnityEngine;
 using UnityEngine.Recorder.FrameRecorder;
 using UnityEngine.Recorder.FrameRecorder.DataSource;
 using UnityEngine.Recorder.FrameRecorder.Utilities;
+using UnityEditor.Recorder.FrameRecorder.Utilities;
 
 namespace UnityEditor.Recorder.FrameRecorder
 {
-    public class RecorderEditorAttribute : Attribute
-    {
-        public Type recorderType { get; private set; }
-
-        public RecorderEditorAttribute(Type type)
-        {
-            recorderType = type;
-        }
-    }
-
     public abstract class RecorderSettingsEditor : Editor
     {
-        static SortedDictionary<string, Type> m_Editors;
-
         protected SerializedProperty m_Inputs;
         SerializedProperty m_Verbose;
         SerializedProperty m_FrameRateMode;
@@ -260,25 +247,6 @@ namespace UnityEditor.Recorder.FrameRecorder
         protected virtual void OnExtraGroupsGui()
         {
             // nothing. this is for sub classes...
-        }
-
-        static void Init()
-        {
-            if (m_Editors != null)
-                return;
-
-            m_Editors = new SortedDictionary<string, Type>();
-            foreach (var editor in ClassHelpers.FilterByAttribute<RecorderEditorAttribute>())
-            {
-                var attrib = editor.Value[0];
-                m_Editors.Add((attrib as RecorderEditorAttribute).recorderType.FullName, editor.Key);
-            }
-        }
-
-        public static Type FindEditorForRecorder(Type recorder)
-        {
-            Init();
-            return m_Editors.ContainsKey(recorder.FullName) ? m_Editors[recorder.FullName] : null;
         }
     }
 }

@@ -6,16 +6,11 @@ using UnityEngine.Recorder.FrameRecorder.DataSource;
 
 namespace UTJ.FrameCapturer.Recorders
 {
-    [FrameRecorderClass]
+    [FrameRecorder(typeof(WEBMRecorderSettings),"Video", "UTJ/WebM" )]
     public class WEBMRecorder : BaseImageRecorder<WEBMRecorderSettings>
     {
         fcAPI.fcWebMContext m_ctx;
         fcAPI.fcStream m_stream;
-
-        public static RecorderInfo GetRecorderInfo()
-        {
-            return RecorderInfo.Instantiate<WEBMRecorder, WEBMRecorderSettings>("Video", "UTJ/WebM");
-        }
 
         public override bool BeginRecording(RecordingSession session)
         {

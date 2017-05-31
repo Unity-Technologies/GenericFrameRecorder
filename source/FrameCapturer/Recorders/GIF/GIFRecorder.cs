@@ -6,16 +6,11 @@ using UnityEngine.Recorder.FrameRecorder.DataSource;
 
 namespace UTJ.FrameCapturer.Recorders
 {
-    [FrameRecorderClass]
+    [FrameRecorder(typeof(GIFRecorderSettings),"Video", "UTJ/GIF" )]
     public class GIFRecorder : BaseImageRecorder<GIFRecorderSettings>
     {
         fcAPI.fcGifContext m_ctx;
         fcAPI.fcStream m_stream;
-
-        public static RecorderInfo GetRecorderInfo()
-        {
-            return RecorderInfo.Instantiate<GIFRecorder, GIFRecorderSettings>("Video", "UTJ/GIF");
-        }
 
         public override bool BeginRecording(RecordingSession session)
         {

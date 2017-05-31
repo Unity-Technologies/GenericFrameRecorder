@@ -12,37 +12,40 @@ namespace UnityEngine.Recorder.FrameRecorder
     {
         public Type recorderType;
         public Type settings;
+        public Type settingsEditor;
         public string category;
         public string displayName;
-
-        public static RecorderInfo Instantiate<TRecoder, TSettings>(string category, string displayName)
-            where TRecoder : class
-            where TSettings : class
-        {
-            return new RecorderInfo()
-            {
-                recorderType = typeof(TRecoder),
-                settings = typeof(TSettings),
-                category = category,
-                displayName = displayName
-            };
-        }
     }
+
 
     // to be internal once inside unity code base
     public static class RecordersInventory
     {
-        internal static SortedDictionary<string, RecorderInfo> recorders { get; private set; }
+        internal static SortedDictionary<string, RecorderInfo> m_Recorders { get; private set; }
+
+
+        static IEnumerable<KeyValuePair<Type, object[]>> FindRecorders()
+        {
+            var attribType = typeof(FrameRecorderAttribute);
+            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (var t in a.GetTypes())
+                {
+                    var attributes = t.GetCustomAttributes(attribType, false);
+                    if (attributes.Length != 0)
+                        yield return new KeyValuePair<Type, object[]>(t, attributes);
+                }
+            }
+        }
 
         static void Init()
         {
 #if UNITY_EDITOR
-            if (RecordersInventory.recorders != null)
+            if (m_Recorders != null)
                 return;
 
-            RecordersInventory.recorders = new SortedDictionary<string, RecorderInfo>();
-            var recorders = ClassHelpers.FilterByAttribute<FrameRecorderClassAttribute>(false);
-            foreach (var recorder in recorders)
+            m_Recorders = new SortedDictionary<string, RecorderInfo>();
+            foreach (var recorder in FindRecorders() )
                 AddRecorder(recorder.Key);
 #endif
         }
@@ -79,41 +82,44 @@ namespace UnityEngine.Recorder.FrameRecorder
 
         static bool AddRecorder(Type recorderType)
         {
-            RecorderInfo recInfo = null;
-            var method = recorderType.GetMethod("GetRecorderInfo", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-            if (method != null)
+            var recorderAttribs = recorderType.GetCustomAttributes(typeof(FrameRecorderAttribute), false);
+            if (recorderAttribs.Length == 1)
             {
-                try
-                {
-                    recInfo = method.Invoke(null, null) as RecorderInfo;
+                var recorderAttrib = recorderAttribs[0] as FrameRecorderAttribute;
+            
+                if (m_Recorders == null)
+                    m_Recorders = new SortedDictionary<string, RecorderInfo>();
 
-                    if (recInfo != null)
-                    {
-                        if (recorders == null)
-                            recorders = new SortedDictionary<string, RecorderInfo>();
-                        recorders.Add(recInfo.recorderType.FullName, recInfo);
+                var info = new RecorderInfo()
+                {
+                    recorderType = recorderType,
+                    settings = recorderAttrib.settings,
+                    category = recorderAttrib.category,
+                    displayName = recorderAttrib.displayName
+                };
+
+                m_Recorders.Add(info.recorderType.FullName, info);
 
 #if UNITY_EDITOR
-                        if (m_RecordersByCategory == null)
-                            m_RecordersByCategory = new SortedDictionary<string, List<RecorderInfo>>();
+                if (m_RecordersByCategory == null)
+                    m_RecordersByCategory = new SortedDictionary<string, List<RecorderInfo>>();
 
-                        if (!m_RecordersByCategory.ContainsKey(recInfo.category))
-                            m_RecordersByCategory.Add(recInfo.category, new List<RecorderInfo>());
+                if (!m_RecordersByCategory.ContainsKey(info.category))
+                    m_RecordersByCategory.Add(info.category, new List<RecorderInfo>());
 
-                        m_RecordersByCategory[recInfo.category].Add(recInfo);
+                m_RecordersByCategory[info.category].Add(info);
+
+
+                // Find associated editor to recorder's settings type.
+
+                 
+
 #endif
-                    }
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogException(ex);
-                }
+                return true;
             }
             else
             {
-                Debug.LogError(String.Format("The recorder class '{0}' need to provide method: static RecorderInfo GetRecorderInfo(...)", recorderType.FullName));
+                Debug.LogError(String.Format("The class '{0}' does not have a FrameRecorderAttribute attached to it. ", recorderType.FullName));
             }
 
             return false;
@@ -127,16 +133,16 @@ namespace UnityEngine.Recorder.FrameRecorder
         public static RecorderInfo GetRecorderInfo(Type recorderType)
         {
             Init();
-            if (recorders.ContainsKey(recorderType.FullName))
-                return recorders[recorderType.FullName];
+            if (m_Recorders.ContainsKey(recorderType.FullName))
+                return m_Recorders[recorderType.FullName];
 
 #if UNITY_EDITOR
             return null;
 #else
             if (AddRecorder(recorderType))
-                return recorders[recorderType.FullName];
+                return m_Recorders[recorderType.FullName];
             else
-                return null
+                return null;
 #endif
         }
 
@@ -144,7 +150,7 @@ namespace UnityEngine.Recorder.FrameRecorder
         {
             Init();
 
-            foreach (var recorderInfo in recorders)
+            foreach (var recorderInfo in m_Recorders)
             {
                 yield return recorderInfo.Value;
             }

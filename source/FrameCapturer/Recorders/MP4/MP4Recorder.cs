@@ -6,15 +6,10 @@ using UnityEngine.Recorder.FrameRecorder.DataSource;
 
 namespace UTJ.FrameCapturer.Recorders
 {
-    [FrameRecorderClass]
+    [FrameRecorder(typeof(MP4RecorderSettings),"Video", "UTJ/MPeg-4" )]
     public class MP4Recorder : BaseImageRecorder<MP4RecorderSettings>
     {
         fcAPI.fcMP4Context m_ctx;
-
-        public static RecorderInfo GetRecorderInfo()
-        {
-            return RecorderInfo.Instantiate<MP4Recorder, MP4RecorderSettings>("Video", "UTJ/MPeg-4");
-        }
 
         public override bool BeginRecording(RecordingSession session)
         {

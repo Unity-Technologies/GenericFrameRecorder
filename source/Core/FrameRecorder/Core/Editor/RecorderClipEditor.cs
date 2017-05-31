@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
 using Assets.Unity.FrameRecorder.Scripts.Editor;
 using UnityEngine.Recorder.FrameRecorder.Utilities;
-using UnityEngine;
 using UnityEngine.Recorder.FrameRecorder;
 using UnityEngine.Recorder.FrameRecorder.Timeline;
 using UnityEngine.Timeline;
@@ -77,22 +74,16 @@ namespace UnityEditor.Recorder.FrameRecorder.Timeline
             if (m_recorderSelector.selectedRecorder == null)
                 return;
 
-            var editorType = RecorderSettingsEditor.FindEditorForRecorder(m_recorderSelector.selectedRecorder);
-            if (editorType != null)
+            if (clip.m_Settings != null && RecordersInventory.GetRecorderInfo(m_recorderSelector.selectedRecorder).settings != clip.m_Settings.GetType())
             {
-                if (clip.m_Settings != null && RecordersInventory.GetRecorderInfo(m_recorderSelector.selectedRecorder).settings != clip.m_Settings.GetType())
-                {
-                    UnityHelpers.Destroy(clip.m_Settings, true);
-                    clip.m_Settings = null;
-                }
-
-                if(clip.m_Settings == null)
-                    clip.m_Settings = RecordersInventory.GenerateNewSettingsAsset(clip, m_recorderSelector.selectedRecorder );
-                m_SettingsEditor = Editor.CreateEditor(clip.m_Settings, editorType) as RecorderSettingsEditor;
-                AssetDatabase.SaveAssets();
+                UnityHelpers.Destroy(clip.m_Settings, true);
+                clip.m_Settings = null;
             }
-            else
-                Debug.LogError(string.Format("No editor class declared for recorder of type " + m_recorderSelector.selectedRecorder.FullName));
+
+            if(clip.m_Settings == null)
+                clip.m_Settings = RecordersInventory.GenerateNewSettingsAsset(clip, m_recorderSelector.selectedRecorder );
+            m_SettingsEditor = Editor.CreateEditor(clip.m_Settings) as RecorderSettingsEditor;
+            AssetDatabase.SaveAssets();
         }
 
         TimelineAsset FindTimelineAsset()

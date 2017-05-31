@@ -6,16 +6,11 @@ using UnityEngine.Recorder.FrameRecorder.DataSource;
 
 namespace UTJ.FrameCapturer.Recorders
 {
-    [FrameRecorderClass]
+    [FrameRecorder(typeof(EXRRecorderSettings),"Video", "UTJ/OpenEXR" )]
     public class EXRRecorder : BaseImageRecorder<EXRRecorderSettings>
     {
         static readonly string[] s_channelNames = { "R", "G", "B", "A" };
         fcAPI.fcExrContext m_ctx;
-
-        public static RecorderInfo GetRecorderInfo()
-        {
-            return RecorderInfo.Instantiate<EXRRecorder, EXRRecorderSettings>("Video", "UTJ/OpenEXR");
-        }
 
         public override List<RecorderInputSetting> DefaultSourceSettings()
         {

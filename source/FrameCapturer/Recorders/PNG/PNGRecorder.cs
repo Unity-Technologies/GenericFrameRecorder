@@ -5,15 +5,10 @@ using UnityEngine.Recorder.FrameRecorder.DataSource;
 
 namespace UTJ.FrameCapturer.Recorders
 {
-    [FrameRecorderClass]
+    [FrameRecorder(typeof(PNGRecorderSettings),"Video", "UTJ/PNG" )]
     public class PNGRecorder : BaseImageRecorder<PNGRecorderSettings>
     {
         fcAPI.fcPngContext m_ctx;
-
-        public static RecorderInfo GetRecorderInfo()
-        {
-            return RecorderInfo.Instantiate<PNGRecorder, PNGRecorderSettings>("Video", "UTJ/PNG");
-        }
 
         public override bool BeginRecording(RecordingSession session)
         {

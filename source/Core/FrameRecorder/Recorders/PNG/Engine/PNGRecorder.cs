@@ -6,14 +6,9 @@ using UnityEngine.Recorder.FrameRecorder.Utilities;
 
 namespace UnityEngine.Recorder.FrameRecorder
 {
-    [FrameRecorderClass]
+    [FrameRecorder(typeof(PNGRecorderSettings),"Video", "PNG" )]
     public class PNGRecorder : BaseImageRecorder<PNGRecorderSettings>
     {
-        public static RecorderInfo GetRecorderInfo()
-        {
-            return RecorderInfo.Instantiate<PNGRecorder, PNGRecorderSettings>("Video", "PNG" );
-        }
-
         string MakeFileName(RecordingSession session)
         {
             var fileName = m_Settings.m_DestinationPath;

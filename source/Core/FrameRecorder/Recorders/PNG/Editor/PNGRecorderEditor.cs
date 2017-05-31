@@ -7,7 +7,6 @@ using UnityEngine.Recorder.FrameRecorder.DataSource;
 namespace UnityEditor.Recorder.FrameRecorder.Example
 {
     [CustomEditor(typeof(PNGRecorderSettings))]
-    [RecorderEditor(typeof(PNGRecorder))]
     public class PNGRecorderEditor : RecorderSettingsEditor
     {
         SerializedProperty m_DestinationPath;
