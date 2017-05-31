@@ -29,11 +29,6 @@ namespace UTJ.FrameCapturer.Recorders
             }
         }
 
-        public override Vector2 minSize
-        {
-            get { return new Vector2(400, 370); }
-        }
-
         protected override void OnOutputGui()
         {
             GUILayout.BeginHorizontal();

@@ -36,7 +36,7 @@ namespace UnityEngine.Recorder.FrameRecorder
         public FrameRateMode m_FrameRateMode = FrameRateMode.Fixed;
         public double m_FrameRate = 24.0;
         public int m_StartFrame;
-        public int m_EndFrame = 1000;
+        public int m_EndFrame = 10;
         public float m_StartTime = 0.0f;
         public float m_EndTime = 1.0f;
         public DurationMode m_DurationMode;

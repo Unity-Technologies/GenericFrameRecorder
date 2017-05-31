@@ -82,8 +82,6 @@ namespace UnityEditor.Recorder.FrameRecorder
             if (m_State == EState.WaitingForPlayModeToStartRecording && EditorApplication.isPlaying)
                 DelayedStartRecording();
 
-            var size = new Vector2(300, 400);
-
             using (new EditorGUI.DisabledScope(EditorApplication.isPlaying))
                 m_recorderSelector.OnGui();
 
@@ -93,19 +91,11 @@ namespace UnityEditor.Recorder.FrameRecorder
                 using (new EditorGUI.DisabledScope(EditorApplication.isPlaying))
                 {
                     EditorGUILayout.Separator();
-
-                    var editorMinSize = m_SettingsEditor.minSize;
-                    if (editorMinSize.x > minSize.x) size.x = editorMinSize.x;
-                    if (editorMinSize.y > minSize.y) size.y = editorMinSize.y;
-
                     m_SettingsEditor.OnInspectorGUI();
-
                     EditorGUILayout.Separator();
                 }
                 RecordButtonOnGui();
             }
-
-            minSize = size;
         }
 
         public void OnDestroy()

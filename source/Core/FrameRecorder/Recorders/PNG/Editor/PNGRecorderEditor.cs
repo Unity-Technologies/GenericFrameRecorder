@@ -13,10 +13,6 @@ namespace UnityEditor.Recorder.FrameRecorder.Example
         SerializedProperty m_BaseFileName;
 
         string[] m_Candidates;
-        public override Vector2 minSize
-        {
-            get { return new Vector2(300, 340); }
-        }
         
         [MenuItem("Window/Recorder/Video...")]
         static void ShowRecorderWindow()

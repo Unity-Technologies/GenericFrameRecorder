@@ -19,11 +19,6 @@ namespace UnityEditor.Recorder.FrameRecorder
         SerializedProperty m_StartTime;
         SerializedProperty m_EndTime;
 
-        public virtual Vector2 minSize
-        {
-            get { return new Vector2(0, 0); }
-        }
-
         protected virtual void OnEnable()
         {
             if (target != null)
