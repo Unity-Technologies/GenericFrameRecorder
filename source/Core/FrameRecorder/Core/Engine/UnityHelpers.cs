@@ -1,6 +1,6 @@
 using Object = UnityEngine.Object;
 
-namespace UnityEngine.Recorder.FrameRecorder.Utilities
+namespace UnityEngine.FrameRecorder
 {
     public static class UnityHelpers
     {

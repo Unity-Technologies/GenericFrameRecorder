@@ -1,9 +1,10 @@
 ﻿using System;
-using UnityEditor;
-using UnityEngine.Recorder.FrameRecorder.Utilities;
+#if UNITY_EDITOR
+    using UnityEditor;
+#endif
 using UnityEngine.Rendering;
 
-namespace UnityEngine.Recorder.FrameRecorder.DataSource
+namespace UnityEngine.FrameRecorder.Input
 {
     public class CBRenderTextureInput : RenderTextureInput
     {

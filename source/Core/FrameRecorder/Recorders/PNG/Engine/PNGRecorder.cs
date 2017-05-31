@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using UnityEngine.Recorder.FrameRecorder.DataSource;
-using UnityEngine.Recorder.FrameRecorder.Utilities;
 
-namespace UnityEngine.Recorder.FrameRecorder
+namespace UnityEngine.FrameRecorder
 {
     [FrameRecorder(typeof(PNGRecorderSettings),"Video", "PNG" )]
     public class PNGRecorder : BaseImageRecorder<PNGRecorderSettings>

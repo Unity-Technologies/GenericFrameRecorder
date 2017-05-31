@@ -1,14 +1,13 @@
 using System;
-using UnityEngine.Recorder.FrameRecorder.Utilities;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-namespace UnityEngine.Recorder.FrameRecorder.Timeline
+namespace UnityEngine.FrameRecorder.Timeline
 {
     public class FrameRecorderClip : PlayableAsset, ITimelineClipAsset
     {
         [SerializeField]
-        public FrameRecorderSettings m_Settings;
+        public RecorderSettings m_Settings;
 
         public Type recorderType
         {

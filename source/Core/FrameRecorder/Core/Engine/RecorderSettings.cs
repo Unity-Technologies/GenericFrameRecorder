@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine.Recorder.FrameRecorder.DataSource;
-using UnityEngine.Recorder.FrameRecorder.Utilities;
 
-namespace UnityEngine.Recorder.FrameRecorder
+namespace UnityEngine.FrameRecorder
 {
     [Flags]
     public enum EImageSource
@@ -19,21 +16,22 @@ namespace UnityEngine.Recorder.FrameRecorder
     public enum FrameRateMode
     {
         Variable,
-        Fixed,
+        Constant,
     }
 
     public enum DurationMode
     {
-        Indefinite,
+        Manual,
         SingleFrame,
         FrameInterval,
         TimeInterval
     }
 
-    public abstract class FrameRecorderSettings : ScriptableObject
+    public abstract class RecorderSettings : ScriptableObject
     {
+        [Range(1,10)]
         public int m_CaptureEveryNthFrame = 1;
-        public FrameRateMode m_FrameRateMode = FrameRateMode.Fixed;
+        public FrameRateMode m_FrameRateMode = FrameRateMode.Constant;
         public double m_FrameRate = 24.0;
         public int m_StartFrame;
         public int m_EndFrame = 10;
@@ -60,7 +58,7 @@ namespace UnityEngine.Recorder.FrameRecorder
 
         public bool fixedDuration
         {
-            get { return m_DurationMode != DurationMode.Indefinite; }
+            get { return m_DurationMode != DurationMode.Manual; }
         }
 
         public virtual bool isValid

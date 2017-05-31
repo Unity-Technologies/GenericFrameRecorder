@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
-using UnityEngine.Recorder.FrameRecorder;
+using UnityEngine.FrameRecorder;
 
-/// <summary>
-/// This is just a helper class that should disappear once we have a proper way of saving the recorder window settings...
-/// </summary>
-public class RecorderWindowSettings : ScriptableObject
+namespace UnityEditor.FrameRecorder
 {
-    public FrameRecorderSettings m_Settings;
+    /// <summary>
+    /// This is just a helper class that should disappear once we have a proper way of saving the recorder window settings...
+    /// </summary>
+    public class RecorderWindowSettings : ScriptableObject
+    {
+        public RecorderSettings m_Settings;
+    }
 }

@@ -1,9 +1,6 @@
-using System;
-using System.Collections;
-using UnityEngine.Recorder.FrameRecorder.Utilities;
 using UnityEngine.Playables;
 
-namespace UnityEngine.Recorder.FrameRecorder.Timeline
+namespace UnityEngine.FrameRecorder.Timeline
 {
     /// <summary>
     /// Note: Totally ignores the time info comming from the playable infrastructure. Only conciders scaled time.

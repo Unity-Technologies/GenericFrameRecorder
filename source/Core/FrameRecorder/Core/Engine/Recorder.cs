@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine.Recorder.FrameRecorder.DataSource;
 
-namespace UnityEngine.Recorder.FrameRecorder
+namespace UnityEngine.FrameRecorder
 {
     public enum ERecordingSessionStage
     {
@@ -17,7 +16,7 @@ namespace UnityEngine.Recorder.FrameRecorder
     {
         double m_OriginalCaptureFrameRate;
 
-        public abstract List<RecorderInputSetting> DefaultSourceSettings();
+        public abstract List<RecorderInputSetting> DefaultInputs();
 
         public int recordedFramesCount { get; set; }
         
@@ -33,7 +32,7 @@ namespace UnityEngine.Recorder.FrameRecorder
         {
         }
 
-        public abstract FrameRecorderSettings settings { get; set; }
+        public abstract RecorderSettings settings { get; set; }
 
         // returns true if recording is starting. false if failed to begin recording or was already recording
         public virtual bool BeginRecording(RecordingSession session)
@@ -45,7 +44,7 @@ namespace UnityEngine.Recorder.FrameRecorder
                 Debug.Log(string.Format("Recorder {0} starting to record", GetType().Name));
 
             m_OriginalCaptureFrameRate = Time.captureFramerate;
-            var fixedRate = settings.m_FrameRateMode == FrameRateMode.Fixed ? (int)settings.m_FrameRate : m_OriginalCaptureFrameRate;
+            var fixedRate = settings.m_FrameRateMode == FrameRateMode.Constant ? (int)settings.m_FrameRate : m_OriginalCaptureFrameRate;
             if (fixedRate != m_OriginalCaptureFrameRate)
             {
                 if (Time.captureFramerate > 0)

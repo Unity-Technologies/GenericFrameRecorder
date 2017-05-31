@@ -1,10 +1,8 @@
-using Assets.Unity.FrameRecorder.Scripts.Editor;
-using UnityEngine.Recorder.FrameRecorder.Utilities;
-using UnityEngine.Recorder.FrameRecorder;
-using UnityEngine.Recorder.FrameRecorder.Timeline;
+using UnityEngine.FrameRecorder;
+using UnityEngine.FrameRecorder.Timeline;
 using UnityEngine.Timeline;
 
-namespace UnityEditor.Recorder.FrameRecorder.Timeline
+namespace UnityEditor.FrameRecorder.Timeline
 {
     [CustomEditor(typeof(FrameRecorderClip), true)]
     public class RecorderClipEditor : Editor
@@ -107,8 +105,8 @@ namespace UnityEditor.Recorder.FrameRecorder.Timeline
             if (m_Timeline == null)
                 return;
 
-            var settings = m_SettingsEditor.target as FrameRecorderSettings;
-            settings.m_DurationMode = DurationMode.Indefinite;
+            var settings = m_SettingsEditor.target as RecorderSettings;
+            settings.m_DurationMode = DurationMode.Manual;
 
             // Time
             settings.m_FrameRate = m_Timeline.editorSettings.fps;
@@ -119,8 +117,8 @@ namespace UnityEditor.Recorder.FrameRecorder.Timeline
             if (m_Timeline == null)
                 return;
 
-            var settings = m_SettingsEditor.target as FrameRecorderSettings;
-            settings.m_DurationMode = DurationMode.Indefinite;
+            var settings = m_SettingsEditor.target as RecorderSettings;
+            settings.m_DurationMode = DurationMode.Manual;
 
             // Time
             m_Timeline.editorSettings.fps = (float)settings.m_FrameRate;

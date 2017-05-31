@@ -1,11 +1,7 @@
-using System;
 using UnityEngine;
-using UnityEngine.Recorder.FrameRecorder;
-using UnityEngine.Recorder.FrameRecorder.DataSource;
-using UnityEngine.Recorder.FrameRecorder.Utilities;
-using UnityEditor.Recorder.FrameRecorder.Utilities;
+using UnityEngine.FrameRecorder;
 
-namespace UnityEditor.Recorder.FrameRecorder
+namespace UnityEditor.FrameRecorder
 {
     public abstract class RecorderSettingsEditor : Editor
     {
@@ -23,7 +19,7 @@ namespace UnityEditor.Recorder.FrameRecorder
         {
             if (target != null)
             {
-                var pf = new PropertyFinder<FrameRecorderSettings>(serializedObject);
+                var pf = new PropertyFinder<RecorderSettings>(serializedObject);
                 m_Inputs = pf.Find(x => x.m_SourceSettings);
                 m_Verbose = pf.Find(x => x.m_Verbose);
                 m_FrameRateMode = pf.Find(x => x.m_FrameRateMode);
@@ -42,7 +38,7 @@ namespace UnityEditor.Recorder.FrameRecorder
 
         public bool isValid
         {
-            get { return (target as FrameRecorderSettings).isValid; }
+            get { return (target as RecorderSettings).isValid; }
         }
 
         public bool showBounds { get; set; }
@@ -99,7 +95,7 @@ namespace UnityEditor.Recorder.FrameRecorder
 
         protected void PrepareInitialSources()
         {
-            var recSettings = (FrameRecorderSettings)target;
+            var recSettings = (RecorderSettings)target;
             if (recSettings.m_SourceSettings == null || recSettings.m_SourceSettings.Length == 0)
             {
                 var newSettings = recSettings.GetDefaultSourcesSettings();
@@ -132,7 +128,7 @@ namespace UnityEditor.Recorder.FrameRecorder
 
         protected virtual void OnOutputGui()
         {
-            EditorGUILayout.PropertyField(serializedObject.FindProperty<FrameRecorderSettings>(x => x.m_CaptureEveryNthFrame), new GUIContent("Every n'th frame"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty<RecorderSettings>(x => x.m_CaptureEveryNthFrame), new GUIContent("Every n'th frame"));
         }
 
         protected virtual void OnEncodingGui()
@@ -144,7 +140,7 @@ namespace UnityEditor.Recorder.FrameRecorder
 
             EditorGUILayout.PropertyField(m_FrameRateMode, new GUIContent("Frame rate mode"));
             ++EditorGUI.indentLevel;
-            var label = m_FrameRateMode.intValue == (int) FrameRateMode.Fixed ? "Frame rate" : "Max frame rate";
+            var label = m_FrameRateMode.intValue == (int) FrameRateMode.Constant ? "Frame rate" : "Max frame rate";
             EditorGUILayout.PropertyField(m_FrameRate, new GUIContent(label));
             --EditorGUI.indentLevel;
         }
@@ -156,7 +152,7 @@ namespace UnityEditor.Recorder.FrameRecorder
             ++EditorGUI.indentLevel;
             switch ((DurationMode)m_DurationMode.intValue)
             {
-                case DurationMode.Indefinite:
+                case DurationMode.Manual:
                 {
                     EditorGUILayout.PropertyField(m_StartFrame, new GUIContent("First Frame"));
                     break;

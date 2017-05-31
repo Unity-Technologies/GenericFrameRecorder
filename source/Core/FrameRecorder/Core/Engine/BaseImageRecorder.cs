@@ -1,23 +1,22 @@
-using System;
 using System.Collections.Generic;
+using UnityEngine.FrameRecorder.Input;
 #if UNITY_EDITOR
-using UnityEditor;
+    using UnityEditor;
 #endif
-using UnityEngine.Recorder.FrameRecorder.DataSource;
 
-namespace UnityEngine.Recorder.FrameRecorder
+namespace UnityEngine.FrameRecorder
 {
-    public abstract class BaseImageRecorder<TSettings> : Recorder where TSettings : FrameRecorderSettings
+    public abstract class BaseImageRecorder<TSettings> : Recorder where TSettings : RecorderSettings
     {
         [SerializeField]
         protected TSettings m_Settings;
-        public override FrameRecorderSettings settings
+        public override RecorderSettings settings
         {
             get { return m_Settings; }
             set { m_Settings = (TSettings)value; }
         }
 
-        public override List<RecorderInputSetting> DefaultSourceSettings()
+        public override List<RecorderInputSetting> DefaultInputs()
         {
             var settings = new List<RecorderInputSetting>();
             var setting = ScriptableObject.CreateInstance(typeof(AdamBeautyInputSettings)) as AdamBeautyInputSettings;

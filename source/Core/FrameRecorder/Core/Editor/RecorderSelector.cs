@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
-using UnityEngine.Recorder.FrameRecorder;
+using UnityEngine.FrameRecorder;
 
-namespace Assets.Unity.FrameRecorder.Scripts.Editor
+namespace UnityEditor.FrameRecorder
 {
     class RecorderSelector
     {
@@ -26,7 +25,7 @@ namespace Assets.Unity.FrameRecorder.Scripts.Editor
             m_SetRecorderCallback = setRecorderCallback;
         }
 
-        public void Init( FrameRecorderSettings settings, string startingCategory = "" )
+        public void Init( RecorderSettings settings, string startingCategory = "" )
         {
             // Pre existing settings obj?
             if( settings != null )

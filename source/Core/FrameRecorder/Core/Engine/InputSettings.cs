@@ -1,6 +1,6 @@
 using System;
 
-namespace UnityEngine.Recorder.FrameRecorder.DataSource
+namespace UnityEngine.FrameRecorder
 {
     public abstract class  RecorderInputSetting : ScriptableObject
     {

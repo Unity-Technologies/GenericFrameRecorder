@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using UnityEngine.Recorder.FrameRecorder.DataSource;
+using UnityEngine.FrameRecorder.Input;
 
-namespace UnityEngine.Recorder.FrameRecorder
+namespace UnityEngine.FrameRecorder
 {
     [ExecuteInEditMode]
-    public class PNGRecorderSettings : FrameRecorderSettings
+    public class PNGRecorderSettings : RecorderSettings
     {
         public string m_BaseFileName  = "pngFile";
         public string m_DestinationPath = "Recorder";

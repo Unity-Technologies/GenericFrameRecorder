@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine.Recorder.FrameRecorder.Utilities;
 
-namespace UnityEngine.Recorder.FrameRecorder
+namespace UnityEngine.FrameRecorder
 {
     public class RecordingSession : IDisposable
     {
@@ -13,7 +12,7 @@ namespace UnityEngine.Recorder.FrameRecorder
         public double m_CurrentFrameStartTS;
         public double m_RecordingStartTS;
 
-        public FrameRecorderSettings settings { get { return m_Recorder.settings; } }
+        public RecorderSettings settings { get { return m_Recorder.settings; } }
         public bool recording { get { return m_Recorder.recording; } }
 
         public bool BeginRecording()

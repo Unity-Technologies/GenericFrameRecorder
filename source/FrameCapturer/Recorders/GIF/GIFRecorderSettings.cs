@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Recorder.FrameRecorder;
-using UnityEngine.Recorder.FrameRecorder.DataSource;
+using UnityEngine.FrameRecorder;
+using UnityEngine.FrameRecorder.Input;
 
 namespace UTJ.FrameCapturer.Recorders
 {

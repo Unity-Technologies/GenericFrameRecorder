@@ -1,8 +1,8 @@
 using System;
 using System.IO;
 using UnityEngine;
-using UnityEngine.Recorder.FrameRecorder;
-using UnityEngine.Recorder.FrameRecorder.DataSource;
+using UnityEngine.FrameRecorder;
+using UnityEngine.FrameRecorder;
 
 namespace UTJ.FrameCapturer.Recorders
 {

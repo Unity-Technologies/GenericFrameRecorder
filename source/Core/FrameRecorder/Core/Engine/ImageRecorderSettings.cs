@@ -1,6 +1,6 @@
 using System;
 
-namespace UnityEngine.Recorder.FrameRecorder
+namespace UnityEngine.FrameRecorder
 {
     public enum ESuperSamplingCount
     {

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine.Recorder.FrameRecorder;
-using UnityEngine.Recorder.FrameRecorder.DataSource;
+using UnityEngine.FrameRecorder;
+using UnityEngine.FrameRecorder;
 
 namespace UTJ.FrameCapturer.Recorders
 {
@@ -12,7 +12,7 @@ namespace UTJ.FrameCapturer.Recorders
         static readonly string[] s_channelNames = { "R", "G", "B", "A" };
         fcAPI.fcExrContext m_ctx;
 
-        public override List<RecorderInputSetting> DefaultSourceSettings()
+        public override List<RecorderInputSetting> DefaultInputs()
         {
             throw new NotImplementedException();
         }

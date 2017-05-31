@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace UnityEngine.Recorder.FrameRecorder
+namespace UnityEngine.FrameRecorder
 {
     [ExecuteInEditMode]
     public class RecorderComponent : MonoBehaviour
@@ -29,7 +29,7 @@ namespace UnityEngine.Recorder.FrameRecorder
 
                 switch (session.m_Recorder.settings.m_DurationMode)
                 {
-                    case DurationMode.Indefinite:
+                    case DurationMode.Manual:
                         break;
                     case DurationMode.SingleFrame:
                         enabled = false;

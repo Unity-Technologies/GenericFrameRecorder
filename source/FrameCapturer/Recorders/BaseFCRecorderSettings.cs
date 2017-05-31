@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Recorder.FrameRecorder;
-using UnityEngine.Recorder.FrameRecorder.DataSource;
+using UnityEngine.FrameRecorder;
+using UnityEngine.FrameRecorder;
 
 namespace UTJ.FrameCapturer.Recorders
 {
-    public abstract class BaseFCRecorderSettings : FrameRecorderSettings
+    public abstract class BaseFCRecorderSettings : RecorderSettings
     {
         public string m_BaseFileName = "file";
         public string m_DestinationPath = "Recorder";

@@ -1,7 +1,6 @@
 using System;
-using UnityEngine.Recorder.FrameRecorder.Utilities;
 
-namespace UnityEngine.Recorder.FrameRecorder.DataSource
+namespace UnityEngine.FrameRecorder
 {
     public class RecorderInput : IDisposable
     {

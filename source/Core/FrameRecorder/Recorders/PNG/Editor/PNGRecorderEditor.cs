@@ -1,10 +1,9 @@
 using System;
-using UnityEditor.Recorder.FrameRecorder.Utilities;
 using UnityEngine;
-using UnityEngine.Recorder.FrameRecorder;
-using UnityEngine.Recorder.FrameRecorder.DataSource;
+using UnityEngine.FrameRecorder;
+using UnityEngine.FrameRecorder.Input;
 
-namespace UnityEditor.Recorder.FrameRecorder.Example
+namespace UnityEditor.FrameRecorder
 {
     [CustomEditor(typeof(PNGRecorderSettings))]
     public class PNGRecorderEditor : RecorderSettingsEditor

@@ -1,6 +1,6 @@
 using System;
 
-namespace UnityEngine.Recorder.FrameRecorder
+namespace UnityEngine.FrameRecorder
 {
     public class FrameRecorderGOControler
     {
@@ -45,7 +45,7 @@ namespace UnityEngine.Recorder.FrameRecorder
             return recorderGO;
         }
 
-        public static GameObject FindRecorder(FrameRecorderSettings settings)
+        public static GameObject FindRecorder(RecorderSettings settings)
         {
             var ctrl = GetRecordingSessionsRoot(false);
             if (ctrl == null)

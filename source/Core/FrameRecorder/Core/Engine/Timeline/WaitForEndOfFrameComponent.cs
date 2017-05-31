@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace UnityEngine.Recorder.FrameRecorder.Timeline
+namespace UnityEngine.FrameRecorder.Timeline
 {
     // the purpose of this class is to signal the FrameRecorderPlayable when frame is done.
     [ExecuteInEditMode]

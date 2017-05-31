@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UnityEditor.Recorder.FrameRecorder
+namespace UnityEditor.FrameRecorder
 {
     public static class EnumHelper
     {
+
         public static int GetEnumValueFromMaskedIndex<TEnum>(int index, int mask)
         {
             if (!typeof(TEnum).IsEnum) throw new ArgumentException("Arg not an enum");

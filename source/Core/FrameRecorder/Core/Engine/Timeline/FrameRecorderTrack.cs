@@ -1,6 +1,6 @@
 using UnityEngine.Timeline;
 
-namespace UnityEngine.Recorder.FrameRecorder.Timeline
+namespace UnityEngine.FrameRecorder.Timeline
 {
     [System.Serializable]
     [TrackClipType(typeof(FrameRecorderClip))]

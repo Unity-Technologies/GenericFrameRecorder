@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEditor;
-using UnityEngine.Recorder.FrameRecorder.DataSource;
-using UnityEngine.Recorder.FrameRecorder.Utilities;
 
-namespace UnityEngine.Recorder.FrameRecorder
+namespace UnityEngine.FrameRecorder
 {
     public class RecorderInfo
     {
@@ -16,7 +13,6 @@ namespace UnityEngine.Recorder.FrameRecorder
         public string category;
         public string displayName;
     }
-
 
     // to be internal once inside unity code base
     public static class RecordersInventory
@@ -156,7 +152,7 @@ namespace UnityEngine.Recorder.FrameRecorder
             }
         }
 
-        public static Recorder GenerateNewRecorder(Type recorderType, FrameRecorderSettings settings)
+        public static Recorder GenerateNewRecorder(Type recorderType, RecorderSettings settings)
         {
             Init();
             var factory = GetRecorderInfo(recorderType);
@@ -171,14 +167,14 @@ namespace UnityEngine.Recorder.FrameRecorder
                 throw new ArgumentException("No factory was registered for " + recorderType.Name);
         }
 
-        public static FrameRecorderSettings GenerateNewSettingsAsset(UnityEngine.Object parentAsset, Type recorderType)
+        public static RecorderSettings GenerateNewSettingsAsset(UnityEngine.Object parentAsset, Type recorderType)
         {
             Init();
             var recorderinfo = GetRecorderInfo(recorderType);
             if (recorderinfo != null)
             {
-                FrameRecorderSettings settings = null;
-                settings = ScriptableObject.CreateInstance(recorderinfo.settings) as FrameRecorderSettings;
+                RecorderSettings settings = null;
+                settings = ScriptableObject.CreateInstance(recorderinfo.settings) as RecorderSettings;
                 settings.name = "Frame Recorder Settings";
                 settings.recorderType = recorderType;
                 //settings.hideFlags = HideFlags.HideInHierarchy;
@@ -194,7 +190,7 @@ namespace UnityEngine.Recorder.FrameRecorder
         public static List<RecorderInputSetting> GetRecordersDefaultSourceSettings(Type recorderType)
         {
             var recorder = ScriptableObject.CreateInstance(recorderType) as Recorder;
-            var defautSettings = recorder.DefaultSourceSettings();
+            var defautSettings = recorder.DefaultInputs();
             UnityHelpers.Destroy(recorder);
             return defautSettings;
         }

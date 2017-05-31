@@ -1,10 +1,9 @@
 using System;
-using Assets.Unity.FrameRecorder.Scripts.Editor;
-using UnityEngine.Recorder.FrameRecorder.Utilities;
+using UnityEngine.FrameRecorder;
 using UnityEngine;
-using UnityEngine.Recorder.FrameRecorder;
+using UnityEngine.FrameRecorder;
 
-namespace UnityEditor.Recorder.FrameRecorder
+namespace UnityEditor.FrameRecorder
 {
     public class RecorderWindow : EditorWindow
     {
@@ -130,7 +129,7 @@ namespace UnityEditor.Recorder.FrameRecorder
 
                 case EState.Recording:
                 {
-                    var recorderGO = FrameRecorderGOControler.FindRecorder((FrameRecorderSettings)m_SettingsEditor.target);
+                    var recorderGO = FrameRecorderGOControler.FindRecorder((RecorderSettings)m_SettingsEditor.target);
                     if (recorderGO == null)
                     {
                         GUILayout.Button("Start Recording"); // just to keep the ui system happy.
@@ -163,7 +162,7 @@ namespace UnityEditor.Recorder.FrameRecorder
             var settings = recComp.session.m_Recorder.settings;
             switch (settings.m_DurationMode)
             {
-                case DurationMode.Indefinite:
+                case DurationMode.Manual:
                 {
                     var label = string.Format("{0} Frames recorded", session.m_Recorder.recordedFramesCount);
                     EditorGUI.ProgressBar(rect, 0, label );
@@ -208,7 +207,7 @@ namespace UnityEditor.Recorder.FrameRecorder
 
         void StartRecording(bool autoExitPlayMode)
         {
-            var settings = (FrameRecorderSettings)m_SettingsEditor.target;
+            var settings = (RecorderSettings)m_SettingsEditor.target;
             var go = FrameRecorderGOControler.HookupRecorder();
             var session = new RecordingSession()
             {
@@ -230,7 +229,7 @@ namespace UnityEditor.Recorder.FrameRecorder
         {
             if (m_SettingsEditor != null)
             {
-                var settings = (FrameRecorderSettings)m_SettingsEditor.target;
+                var settings = (RecorderSettings)m_SettingsEditor.target;
                 if (settings != null)
                 {
                     var recorderGO = FrameRecorderGOControler.FindRecorder(settings);
