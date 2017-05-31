@@ -28,8 +28,6 @@ namespace UnityEditor.FrameRecorder.Input
 
         public override void OnInspectorGUI()
         {
-            ++EditorGUI.indentLevel;
-
             using (var check = new EditorGUI.ChangeCheckScope())
             {
                 if (m_MaskedSourceNames == null)
@@ -68,7 +66,6 @@ namespace UnityEditor.FrameRecorder.Input
                 }
             }
 
-            --EditorGUI.indentLevel;
             serializedObject.ApplyModifiedProperties();
         }
     }

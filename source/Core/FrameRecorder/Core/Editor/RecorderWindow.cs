@@ -14,7 +14,7 @@ namespace UnityEditor.FrameRecorder
             Recording
         }
 
-        RecorderSettingsEditor m_SettingsEditor;
+        RecorderEditor m_Editor;
         EState m_State = EState.Idle;
 
         RecorderSelector m_recorderSelector;
@@ -49,10 +49,10 @@ namespace UnityEditor.FrameRecorder
             m_LastRepaint = DateTime.Now;
 
             // Bug? work arround: on Stop play, Enable is not called.
-            if (m_SettingsEditor != null && m_SettingsEditor.target == null)
+            if (m_Editor != null && m_Editor.target == null)
             {
-                UnityHelpers.Destroy(m_SettingsEditor);
-                m_SettingsEditor = null;
+                UnityHelpers.Destroy(m_Editor);
+                m_Editor = null;
                 m_recorderSelector = null;
             }
 
@@ -84,13 +84,13 @@ namespace UnityEditor.FrameRecorder
             using (new EditorGUI.DisabledScope(EditorApplication.isPlaying))
                 m_recorderSelector.OnGui();
 
-            if (m_SettingsEditor != null)
+            if (m_Editor != null)
             {
-                m_SettingsEditor.showBounds = true;
+                m_Editor.showBounds = true;
                 using (new EditorGUI.DisabledScope(EditorApplication.isPlaying))
                 {
                     EditorGUILayout.Separator();
-                    m_SettingsEditor.OnInspectorGUI();
+                    m_Editor.OnInspectorGUI();
                     EditorGUILayout.Separator();
                 }
                 RecordButtonOnGui();
@@ -100,20 +100,20 @@ namespace UnityEditor.FrameRecorder
         public void OnDestroy()
         {
             StopRecording();
-            UnityHelpers.Destroy(m_SettingsEditor);
-            m_SettingsEditor = null;
+            UnityHelpers.Destroy(m_Editor);
+            m_Editor = null;
         }
 
         void RecordButtonOnGui()
         {
-            if (m_SettingsEditor == null || m_SettingsEditor.target == null)
+            if (m_Editor == null || m_Editor.target == null)
                 return;
 
             switch (m_State)
             {
                 case EState.Idle:
                 {
-                    using (new EditorGUI.DisabledScope(!m_SettingsEditor.isValid))
+                    using (new EditorGUI.DisabledScope(!m_Editor.isValid))
                     {
                         if (GUILayout.Button("Start Recording"))
                             StartRecording();
@@ -129,7 +129,7 @@ namespace UnityEditor.FrameRecorder
 
                 case EState.Recording:
                 {
-                    var recorderGO = FrameRecorderGOControler.FindRecorder((RecorderSettings)m_SettingsEditor.target);
+                    var recorderGO = FrameRecorderGOControler.FindRecorder((RecorderSettings)m_Editor.target);
                     if (recorderGO == null)
                     {
                         GUILayout.Button("Start Recording"); // just to keep the ui system happy.
@@ -207,7 +207,7 @@ namespace UnityEditor.FrameRecorder
 
         void StartRecording(bool autoExitPlayMode)
         {
-            var settings = (RecorderSettings)m_SettingsEditor.target;
+            var settings = (RecorderSettings)m_Editor.target;
             var go = FrameRecorderGOControler.HookupRecorder();
             var session = new RecordingSession()
             {
@@ -227,9 +227,9 @@ namespace UnityEditor.FrameRecorder
 
         void StopRecording()
         {
-            if (m_SettingsEditor != null)
+            if (m_Editor != null)
             {
-                var settings = (RecorderSettings)m_SettingsEditor.target;
+                var settings = (RecorderSettings)m_Editor.target;
                 if (settings != null)
                 {
                     var recorderGO = FrameRecorderGOControler.FindRecorder(settings);
@@ -243,10 +243,10 @@ namespace UnityEditor.FrameRecorder
 
         public void OnRecorderSelected()
         {
-            if (m_SettingsEditor != null)
+            if (m_Editor != null)
             {
-                UnityHelpers.Destroy(m_SettingsEditor);
-                m_SettingsEditor = null;
+                UnityHelpers.Destroy(m_Editor);
+                m_Editor = null;
             }
 
             if (m_recorderSelector.selectedRecorder == null)
@@ -260,7 +260,7 @@ namespace UnityEditor.FrameRecorder
 
             if( m_WindowSettingsAsset.m_Settings == null )
                 m_WindowSettingsAsset.m_Settings = RecordersInventory.GenerateNewSettingsAsset(m_WindowSettingsAsset, m_recorderSelector.selectedRecorder );
-            m_SettingsEditor = Editor.CreateEditor( m_WindowSettingsAsset.m_Settings ) as RecorderSettingsEditor;
+            m_Editor = Editor.CreateEditor( m_WindowSettingsAsset.m_Settings ) as RecorderEditor;
             AssetDatabase.SaveAssets();
 
         }

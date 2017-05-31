@@ -33,8 +33,6 @@ namespace UnityEditor.FrameRecorder.Input
 
         public override void OnInspectorGUI()
         {
-            ++EditorGUI.indentLevel;
-
             using (var check = new EditorGUI.ChangeCheckScope())
             {
                 if (m_MaskedSourceNames == null)
@@ -79,7 +77,6 @@ namespace UnityEditor.FrameRecorder.Input
             if (m_FinalSize.intValue > renderSize.intValue)
                 renderSize.intValue = m_FinalSize.intValue;
 
-            --EditorGUI.indentLevel;
             serializedObject.ApplyModifiedProperties();
         }
     }

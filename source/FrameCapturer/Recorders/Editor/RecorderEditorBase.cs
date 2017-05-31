@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UTJ.FrameCapturer.Recorders
 {
-    public class RecorderEditorBase : RecorderSettingsEditor
+    public class RecorderEditorBase : RecorderEditor
     {
         public string m_BaseFileName;
         public string m_DestinationPath;

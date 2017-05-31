@@ -11,6 +11,7 @@ namespace UnityEngine.FrameRecorder
         public int m_FrameIndex; // count starts at 0.
         public double m_CurrentFrameStartTS;
         public double m_RecordingStartTS;
+        int m_InitialFrame = 0;
 
         public RecorderSettings settings { get { return m_Recorder.settings; } }
         public bool recording { get { return m_Recorder.recording; } }
@@ -19,6 +20,7 @@ namespace UnityEngine.FrameRecorder
         {
             if (!m_Recorder.BeginRecording(this))
                 return false;
+            m_InitialFrame = Time.renderedFrameCount;
             m_Recorder.SignalSourcesOfStage(ERecordingSessionStage.BeginRecording, this);
             return true;
         }
@@ -38,6 +40,14 @@ namespace UnityEngine.FrameRecorder
                 m_Recorder.recordedFramesCount++;
             }
             m_Recorder.SignalSourcesOfStage(ERecordingSessionStage.FrameDone, this);
+
+            // Note: This is not great when multiple recorders are simultaneously active...
+            if (m_Recorder.settings.m_FrameRateMode == FrameRateMode.Constant && m_Recorder.settings.m_SynchFrameRate )
+            {
+                float wt =(float) (1.0f / m_Recorder.settings.m_FrameRate) * (Time.renderedFrameCount - m_InitialFrame);
+                while (Time.realtimeSinceStartup - m_InitialFrame < wt)
+                    System.Threading.Thread.Sleep(1);
+            }
         }
 
         public void PrepareNewFrame()

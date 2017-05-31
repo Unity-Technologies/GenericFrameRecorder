@@ -3,7 +3,7 @@ using UnityEngine.FrameRecorder;
 
 namespace UnityEditor.FrameRecorder
 {
-    public abstract class RecorderSettingsEditor : Editor
+    public abstract class RecorderEditor : Editor
     {
         protected SerializedProperty m_Inputs;
         SerializedProperty m_Verbose;
@@ -14,6 +14,7 @@ namespace UnityEditor.FrameRecorder
         SerializedProperty m_EndFrame;
         SerializedProperty m_StartTime;
         SerializedProperty m_EndTime;
+        SerializedProperty m_SynchFrameRate;
 
         protected virtual void OnEnable()
         {
@@ -29,6 +30,7 @@ namespace UnityEditor.FrameRecorder
                 m_EndFrame =  pf.Find(x => x.m_EndFrame);
                 m_StartTime =  pf.Find(x => x.m_StartTime);
                 m_EndTime =  pf.Find(x => x.m_EndTime);
+                m_SynchFrameRate = pf.Find(x => x.m_SynchFrameRate);
             }
         }
 
@@ -137,12 +139,13 @@ namespace UnityEditor.FrameRecorder
 
         protected virtual void OnTimeGui()
         {
-
             EditorGUILayout.PropertyField(m_FrameRateMode, new GUIContent("Frame rate mode"));
-            ++EditorGUI.indentLevel;
-            var label = m_FrameRateMode.intValue == (int) FrameRateMode.Constant ? "Frame rate" : "Max frame rate";
+            var label = m_FrameRateMode.intValue == (int) FrameRateMode.Constant ? "Target fps" : "Max fps";
             EditorGUILayout.PropertyField(m_FrameRate, new GUIContent(label));
-            --EditorGUI.indentLevel;
+            if (m_FrameRateMode.intValue == (int)FrameRateMode.Constant)
+            {
+                EditorGUILayout.PropertyField(m_SynchFrameRate, new GUIContent("Sync. framerate"));
+            }
         }
 
         protected virtual void OnBounds()

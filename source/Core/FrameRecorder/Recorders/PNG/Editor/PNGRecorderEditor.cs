@@ -6,7 +6,7 @@ using UnityEngine.FrameRecorder.Input;
 namespace UnityEditor.FrameRecorder
 {
     [CustomEditor(typeof(PNGRecorderSettings))]
-    public class PNGRecorderEditor : RecorderSettingsEditor
+    public class PNGRecorderEditor : RecorderEditor
     {
         SerializedProperty m_DestinationPath;
         SerializedProperty m_BaseFileName;
@@ -42,10 +42,8 @@ namespace UnityEditor.FrameRecorder
         {
             var input = m_Inputs.GetArrayElementAtIndex(0).objectReferenceValue;
 
-            EditorGUI.indentLevel++;
             var index = input.GetType() == typeof(CBRenderTextureInputSettings) ? 0 : 1;
             var newIndex = EditorGUILayout.Popup("Image Generator", index, m_Candidates);
-            EditorGUI.indentLevel--;
 
             if (index != newIndex)
             {

@@ -7,7 +7,7 @@ namespace UnityEditor.FrameRecorder.Timeline
     [CustomEditor(typeof(FrameRecorderClip), true)]
     public class RecorderClipEditor : Editor
     {
-        RecorderSettingsEditor m_SettingsEditor;
+        RecorderEditor m_Editor;
         TimelineAsset m_Timeline;
         RecorderSelector m_recorderSelector;
 
@@ -22,10 +22,10 @@ namespace UnityEditor.FrameRecorder.Timeline
                 return;
 
             // Bug? work arround: on Stop play, Enable is not called.
-            if (m_SettingsEditor != null && m_SettingsEditor.target == null)
+            if (m_Editor != null && m_Editor.target == null)
             {
-                UnityHelpers.Destroy(m_SettingsEditor);
-                m_SettingsEditor = null;
+                UnityHelpers.Destroy(m_Editor);
+                m_Editor = null;
                 m_recorderSelector = null;
             }
 
@@ -37,9 +37,9 @@ namespace UnityEditor.FrameRecorder.Timeline
 
             m_recorderSelector.OnGui();
 
-            if (m_SettingsEditor != null)
+            if (m_Editor != null)
             {
-                m_SettingsEditor.showBounds = false;
+                m_Editor.showBounds = false;
                 m_Timeline = FindTimelineAsset();
 
                 PushTimelineIntoRecorder();
@@ -48,7 +48,7 @@ namespace UnityEditor.FrameRecorder.Timeline
                 {
                     EditorGUILayout.Separator();
 
-                    m_SettingsEditor.OnInspectorGUI();
+                    m_Editor.OnInspectorGUI();
 
                     EditorGUILayout.Separator();
 
@@ -63,10 +63,10 @@ namespace UnityEditor.FrameRecorder.Timeline
         {
             var clip = this.target as FrameRecorderClip;
 
-            if (m_SettingsEditor != null)
+            if (m_Editor != null)
             {
-                UnityHelpers.Destroy(m_SettingsEditor);
-                m_SettingsEditor = null;
+                UnityHelpers.Destroy(m_Editor);
+                m_Editor = null;
             }
 
             if (m_recorderSelector.selectedRecorder == null)
@@ -80,7 +80,7 @@ namespace UnityEditor.FrameRecorder.Timeline
 
             if(clip.m_Settings == null)
                 clip.m_Settings = RecordersInventory.GenerateNewSettingsAsset(clip, m_recorderSelector.selectedRecorder );
-            m_SettingsEditor = Editor.CreateEditor(clip.m_Settings) as RecorderSettingsEditor;
+            m_Editor = Editor.CreateEditor(clip.m_Settings) as RecorderEditor;
             AssetDatabase.SaveAssets();
         }
 
@@ -105,7 +105,7 @@ namespace UnityEditor.FrameRecorder.Timeline
             if (m_Timeline == null)
                 return;
 
-            var settings = m_SettingsEditor.target as RecorderSettings;
+            var settings = m_Editor.target as RecorderSettings;
             settings.m_DurationMode = DurationMode.Manual;
 
             // Time
@@ -117,7 +117,7 @@ namespace UnityEditor.FrameRecorder.Timeline
             if (m_Timeline == null)
                 return;
 
-            var settings = m_SettingsEditor.target as RecorderSettings;
+            var settings = m_Editor.target as RecorderSettings;
             settings.m_DurationMode = DurationMode.Manual;
 
             // Time

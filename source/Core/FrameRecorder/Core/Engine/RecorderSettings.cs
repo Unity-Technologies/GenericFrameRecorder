@@ -32,13 +32,15 @@ namespace UnityEngine.FrameRecorder
         [Range(1,10)]
         public int m_CaptureEveryNthFrame = 1;
         public FrameRateMode m_FrameRateMode = FrameRateMode.Constant;
-        public double m_FrameRate = 24.0;
+        [Range(1,120)]
+        public double m_FrameRate = 30.0;
         public int m_StartFrame;
         public int m_EndFrame = 10;
         public float m_StartTime = 0.0f;
         public float m_EndTime = 1.0f;
         public DurationMode m_DurationMode;
         public bool m_Verbose = false;
+        public bool m_SynchFrameRate = true;
 
         public RecorderInputSetting[] m_SourceSettings = new RecorderInputSetting[0];
             
