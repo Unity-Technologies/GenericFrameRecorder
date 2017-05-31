@@ -20,7 +20,7 @@ namespace UnityEngine.FrameRecorder
 
         public int recordedFramesCount { get; set; }
         
-        protected List<RecorderInput> m_Sources;
+        protected List<RecorderInput> m_Inputs;
 
         public virtual void Reset()
         {
@@ -55,12 +55,12 @@ namespace UnityEngine.FrameRecorder
                     Debug.Log("Frame recorder set fixed frame rate to " + fixedRate);
             }
 
-            m_Sources = new List<RecorderInput>();
-            foreach (var sourceSettings in settings.m_SourceSettings)
+            m_Inputs = new List<RecorderInput>();
+            foreach (var inputSettings in settings.m_SourceSettings)
             {
-                var source = Activator.CreateInstance(sourceSettings.inputType) as RecorderInput;
-                source.settings = sourceSettings;
-                m_Sources.Add(source);
+                var input = Activator.CreateInstance(inputSettings.inputType) as RecorderInput;
+                input.settings = inputSettings;
+                m_Inputs.Add(input);
             }
             return recording = true;
         }
@@ -78,10 +78,10 @@ namespace UnityEngine.FrameRecorder
                     Debug.Log("Frame recorder resetting fixed frame rate to original value of " + m_OriginalCaptureFrameRate);
             }
 
-            foreach (var source in m_Sources)
+            foreach (var input in m_Inputs)
             {
-                if (source is IDisposable)
-                    (source as IDisposable).Dispose();
+                if (input is IDisposable)
+                    (input as IDisposable).Dispose();
             }
 
             Debug.Log(string.Format("{0} recording stopped, total frame count: {1}", GetType().Name, recordedFramesCount));
@@ -103,24 +103,24 @@ namespace UnityEngine.FrameRecorder
             switch (stage)
             {
                 case ERecordingSessionStage.BeginRecording:
-                    foreach( var source in m_Sources )
-                        source.BeginRecording(session);
+                    foreach( var input in m_Inputs )
+                        input.BeginRecording(session);
                     break;
                 case ERecordingSessionStage.NewFrameStarting:
-                    foreach( var source in m_Sources )
-                        source.NewFrameStarting(session);
+                    foreach( var input in m_Inputs )
+                        input.NewFrameStarting(session);
                     break;
                 case ERecordingSessionStage.NewFrameReady:
-                    foreach( var source in m_Sources )
-                        source.NewFrameReady(session);
+                    foreach( var input in m_Inputs )
+                        input.NewFrameReady(session);
                     break;
                 case ERecordingSessionStage.FrameDone:
-                    foreach( var source in m_Sources )
-                        source.FrameDone(session);
+                    foreach( var input in m_Inputs )
+                        input.FrameDone(session);
                     break;
                 case ERecordingSessionStage.EndRecording:
-                    foreach( var source in m_Sources )
-                        source.EndRecording(session);
+                    foreach( var input in m_Inputs )
+                        input.EndRecording(session);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("stage", stage, null);

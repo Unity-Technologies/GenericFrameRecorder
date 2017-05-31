@@ -29,12 +29,12 @@ namespace UTJ.FrameCapturer.Recorders
 
         public override void RecordFrame(RecordingSession session)
         {
-            if (m_Sources.Count != 1)
+            if (m_Inputs.Count != 1)
                 throw new Exception("Unsupported number of sources");
 
             var path = BuildOutputPath(session);
-            var source = (RenderTextureInput)m_Sources[0];
-            var frame = source.outputRT;
+            var input = (RenderTextureInput)m_Inputs[0];
+            var frame = input.outputRT;
 
             fcAPI.fcLock(frame, (data, fmt) =>
             {

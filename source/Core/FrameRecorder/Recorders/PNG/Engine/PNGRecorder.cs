@@ -17,16 +17,16 @@ namespace UnityEngine.FrameRecorder
 
         public override void RecordFrame(RecordingSession session)
         {
-            if (m_Sources.Count != 1)
+            if (m_Inputs.Count != 1)
                 throw new Exception("Unsupported number of sources");
 
-            var source = (RenderTextureInput)m_Sources[0];
+            var input = (RenderTextureInput)m_Inputs[0];
 
-            var width = source.outputRT.width;
-            var height = source.outputRT.height;
+            var width = input.outputRT.width;
+            var height = input.outputRT.height;
             var tex = new Texture2D(width, height, TextureFormat.RGB24, false);
             var backupActive = RenderTexture.active;
-            RenderTexture.active = source.outputRT;
+            RenderTexture.active = input.outputRT;
             tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
             tex.Apply();
             RenderTexture.active = backupActive;
