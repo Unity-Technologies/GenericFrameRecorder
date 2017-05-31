@@ -5,12 +5,9 @@ namespace UnityEngine.FrameRecorder.Input
 {
     public class AdamBeautyInput : RenderTextureInput
     {
-        [HideInInspector]
-        public Shader superShader;
-        [HideInInspector]
-        public Shader accumulateShader;
-        [HideInInspector]
-        public Shader normalizeShader;
+        Shader superShader;
+        Shader accumulateShader;
+        Shader normalizeShader;
 
         RenderTexture m_renderRT;
         RenderTexture[] m_accumulateRTs = new RenderTexture[2];

@@ -4,14 +4,14 @@ namespace UnityEngine.FrameRecorder
 {
     public abstract class  RecorderInputSetting : ScriptableObject
     {
-        public abstract Type sourceType { get; }
+        public abstract Type inputType { get; }
     }
 
-    public class InputSettings<TSource> : RecorderInputSetting
+    public class InputSettings<TInput> : RecorderInputSetting
     {
-        public override Type sourceType
+        public override Type inputType
         {
-            get { return typeof(TSource); }
+            get { return typeof(TInput); }
         }
     }
 }

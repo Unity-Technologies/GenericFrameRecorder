@@ -58,7 +58,7 @@ namespace UnityEngine.FrameRecorder
             m_Sources = new List<RecorderInput>();
             foreach (var sourceSettings in settings.m_SourceSettings)
             {
-                var source = Activator.CreateInstance(sourceSettings.sourceType) as RecorderInput;
+                var source = Activator.CreateInstance(sourceSettings.inputType) as RecorderInput;
                 source.settings = sourceSettings;
                 m_Sources.Add(source);
             }

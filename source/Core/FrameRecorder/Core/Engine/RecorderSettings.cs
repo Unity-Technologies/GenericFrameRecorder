@@ -10,7 +10,7 @@ namespace UnityEngine.FrameRecorder
         SceneView = 2,
         MainCamera  = 4,
         TaggedCamera = 8,
-        RenderTexture = 16
+        RenderTexture = 16,
     }
 
     public enum FrameRateMode
