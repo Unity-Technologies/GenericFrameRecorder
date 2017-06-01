@@ -20,9 +20,9 @@ And last but not least, is the ensuring that at any point a custom recorder can 
 ### Through the Editor's Record window
 
 1. Select a type of recording and open the recorder window
-![](GenericFrameRecorder/docs/images/recorder-menu.png)
+![](docs/images/recorder-menu.png)
 2. Edit the recorders settings
-![](GenericFrameRecorder/docs/images/RecorderWindow.png)
+![](docs/images/RecorderWindow.png)
 3. Click "Start Recording" to lauch recording.
 
 Note that this can be done  from edit mode and from game mode...
@@ -32,16 +32,16 @@ a
 2. Add a "Frame Recorder track" to the timeline.
 3. Add a "Frame Recorder clip" to the track.
 4. Select the newly added slip
-![](GenericFrameRecorder/docs/images/TimelineTrack.png)
+![](docs/images/TimelineTrack.png)
 5. Edit the clip's settings
-![](GenericFrameRecorder/docs/images/RecorderClip.png)
+![](docs/images/RecorderClip.png)
 6. Enter play mode and trigger the timeline through behaviours...
 
 ## Design
 
 ### Conceptual blocks
 The Recording framework is composed of three conceptual groups:
-![](GenericFrameRecorder/docs/images/ConceptualBlocks.PNG)
+![](docs/images/ConceptualBlocks.PNG)
 * Recorders: the part that takes data feeds (Inputs) and transform them into whatever format they want (Image input -> mp4 file). They do NOT deal with gathering the data from Unity: that is the Inputs task. Every recorder is broken down into three peices: Recorder, Settings and Settings Editor.
 * Inputs: specizalied classes that know how to gather a given type of data from unity and how to pre-package that data in a way that is ready from consumption by the Recorders. Like recorders, Inputs are borken down into three parts: Input, Setttings and Settings Editor.
 * Support: holds the FrameRecorder's logic, UI, timeline integration and services.
