@@ -5,7 +5,7 @@ namespace UnityEngine.FrameRecorder.Timeline
     /// <summary>
     /// Note: Totally ignores the time info comming from the playable infrastructure. Only conciders scaled time.
     /// </summary>
-    public class FrameRecorderPlayable : PlayableBehaviour
+    public class RecorderPlayableBehaviour : PlayableBehaviour
     {
         PlayState m_PlayState = PlayState.Paused;
         public RecordingSession session { get; set; }
