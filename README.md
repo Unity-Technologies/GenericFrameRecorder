@@ -22,10 +22,10 @@ Code reusability and easy of use for developers is also a prime consideration. A
 
 1. Select a type of recording and open the recorder window
 
-![](GenericFrameRecorder/docs/images/recorder-menu.png)
+![](docs/images/recorder-menu.png)
 2. Edit the recorders settings
 
-![](GenericFrameRecorder/docs/images/RecorderWindow.png)
+![](docs/images/RecorderWindow.png)
 
 3. Click "Start Recording" to lauch recording.
 
@@ -36,9 +36,9 @@ Note that this can be done  from edit mode and from game mode...
 2. Add a "Frame Recorder track" to the timeline.
 3. Add a "Frame Recorder clip" to the track.
 4. Select the newly added slip
-![](GenericFrameRecorder/docs/images/TimelineTrack.png)
+![](docs/images/TimelineTrack.png)
 5. Edit the clip's settings
-![](GenericFrameRecorder/docs/images/RecorderClip.png)
+![](docs/images/RecorderClip.png)
 6. Enter play mode and trigger the timeline through behaviours...
 
 ## Design
@@ -46,7 +46,7 @@ Note that this can be done  from edit mode and from game mode...
 ### Conceptual blocks breakdown
 The Recording framework is composed of three conceptual groups:
 
-![](GenericFrameRecorder/docs/images/ConceptualBlocks.PNG)
+![](docs/images/ConceptualBlocks.PNG)
 * **Recorders**: the part that takes data feeds (Inputs) and transform them into whatever format they want (Image input -> mp4 file). They do NOT deal with gathering the data from Unity: that is the Inputs task. Every recorder is broken down into three pieces: Recorder, Settings and Settings Editor.
 * **Inputs**: specialized classes that know how to gather a given type of data from unity and how to pre-package that data in a way that is ready from consumption by the Recorders. Like recorders, Inputs are borken down into three parts: Input, Setttings and Settings Editor.
 * **Support**: holds the FrameRecorder's logic, UI, timeline integration and services.
@@ -54,7 +54,7 @@ The Recording framework is composed of three conceptual groups:
 ### Recorders and there Inputs
 Here are the classes that make up recorders and their inputs.
 
-![](GenericFrameRecorder/docs/images/Recorders_and_inputs.PNG)
+![](docs/images/Recorders_and_inputs.PNG)
 
 #### Recorder:
 * Base/abstract class of all “recorders”. A recorder being the class that consumes the artifacts coming from the Unity engine and is responsible for transforming/encoding and “storing” them into the final output of a recording event. Examples would be: MP4, WAV, Alembic, Animation clips.
@@ -87,7 +87,7 @@ Here are the classes that make up recorders and their inputs.
 #### InputSettingsEditor
 
 ### The Recorder Editor classes
-![](GenericFrameRecorder/docs/images/EditorClasses.PNG)
+![](docs/images/EditorClasses.PNG)
 
 ### Game mode classes
 
