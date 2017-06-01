@@ -8,7 +8,7 @@ namespace UnityEngine.FrameRecorder.Timeline
     class WaitForEndOfFrameComponent : MonoBehaviour
     {
         [NonSerialized]
-        public FrameRecorderPlayable m_playable;
+        public RecorderPlayableBehaviour m_playable;
 
         public IEnumerator WaitForEndOfFrame()
         {

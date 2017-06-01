@@ -21,7 +21,7 @@ namespace UnityEngine.FrameRecorder.Timeline
 
         public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
         {
-            var playable = ScriptPlayable<FrameRecorderPlayable>.Create( graph );
+            var playable = ScriptPlayable<RecorderPlayableBehaviour>.Create( graph );
             var behaviour = playable.GetBehaviour();
             if (recorderType != null && UnityHelpers.IsPlaying())
             {
