@@ -55,6 +55,7 @@ The Recording framework is composed of three conceptual groups:
 Here are the classes that make up recorders and their inputs.
 
 ![](docs/images/Recorders_and_inputs.PNG)
+![](docs/images/EditorClasses.PNG)
 
 #### Recorder:
 * Base/abstract class of all “recorders”. A recorder being the class that consumes the artifacts coming from the Unity engine and is responsible for transforming/encoding and “storing” them into the final output of a recording event. Examples would be: MP4, WAV, Alembic, Animation clips.
@@ -67,7 +68,7 @@ Here are the classes that make up recorders and their inputs.
 #### RecorderSettings
 * Each non-abstract recorder must provide a specialization of this class. This is where the recorders settings (output path, encoding settings, etc) are stored.
 * Recorder settings are persited assets (ScritableObject).
-* RecorderSettings do not hold the Input settings directly but refer to assets that are the Input settings.
+* RecorderSettings do not hold the Input settings directly but refer to assets that are the Input settings. The InputSettings intances belong to a single RecorderSettings instance and their life time is tied to the owner RecorderSettings instance.
 * This base class comes with universal setting fields that apply to all recorders.
 * Instances of this class are stored as sub-assets of other assets. The parent asset varies depending on the situation (recorder window vs timeline for example).
 * The system does NOT enforce a recorder to use a RecorderInputs. It’s just the prefered way of doing things.
@@ -81,20 +82,25 @@ Here are the classes that make up recorders and their inputs.
   * The recorder needs to select an Input that listens on the display and outputs a RenderTexture.
   * The selected Input is responsible for figuring out how to do that.
 * Inputs, just like the recorders, get notified of events like BeginRecording, new frame, etc.
-#### RecorderSettingsEditor
-#### RecorderInput
 #### InputSettings
+* This is the base class for RecorderInput settings.
+* Input settings live as persited sub-assets to a parent asset. The parent asset is situation dependent.
+#### RecorderSettingsEditor
+* Base class for implementing the editor window for the Recorder settings.
+* The base class's OnGUI's implementation structures the layout of the editor in groups (Inputs, Outputs, Encoding, Time, Bounds).
+* Specialized implementations are encouraged to minimize deviating from the default grouping, but if needed they can tweek a little or or du away with with the default behaviour alltogether.
+* The default Input section will identify which inputs are to be configured for the recorder and invoke those InputSettings editors inplace.
 #### InputSettingsEditor
-
-### The Recorder Editor classes
-![](docs/images/EditorClasses.PNG)
+* Base class for InputSettings editor.
+* If no custom editor is provided for a given InputSettings class, a default one is provided.
 
 ### Game mode classes
+![](docs/images/GameModeClasses.PNG)
 
 ### Timeline integration
+![](docs/images/TimelineClasses.PNG)
 
-### Creating a new type of Recorder
-
-### Creating a new Input
+## Example Recorder : PNG sequence
+![](docs/images/PNGRecorder.PNG)
 
 
