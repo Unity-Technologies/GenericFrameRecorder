@@ -6,15 +6,13 @@ Extensibility is a prim concideration and since not all use cases can be thought
 
 Recorder types are detected at run time and made available to the recording framework dynamically.
 
-A key consideration is peoviding a uniform UX. By defining a standard pattern and basic classes, the framework can treat all recorders equally and display them consistently. This allows for a generic “recorder window” that is provided and takes care of configuring and starting a “recording session” from edit mode.
+A key consideration is providing a uniform UX. By defining a standard pattern and basic classes, the framework can treat all recorders equally and display them consistently. This allows for a generic “recorder window” that is provided and takes care of configuring and starting a “recording session” from edit mode.
 
 Code reusability and easy of use for developers is also a prime consideration. As much as possible, modularization in a Lego mentality is promoted so that work done for one specific recorder, say MP4 recording, can be reused by an other type of recorder, say PNG or WAV recorders.
 
 ### Current limitations
 * Recorders are Player standalone friendly, but not the editors.
 * Framerate is set at the Recorder level which makes for potential conflict when multiple recorders are active simultaneously.
-
-
 
 ## Triggering a Recording
 
@@ -23,6 +21,7 @@ Code reusability and easy of use for developers is also a prime consideration. A
 1. Select a type of recording and open the recorder window
 
 ![](docs/images/recorder-menu.png)
+
 2. Edit the recorders settings
 
 ![](docs/images/RecorderWindow.png)
@@ -37,21 +36,23 @@ Note that this can be done  from edit mode and from game mode...
 3. Add a "Frame Recorder clip" to the track.
 4. Select the newly added slip
 ![](docs/images/TimelineTrack.png)
+
 5. Edit the clip's settings
 ![](docs/images/RecorderClip.png)
+
 6. Enter play mode and trigger the timeline through behaviours...
 
 ## Design
 
-### Conceptual blocks breakdown
+### Conceptual breakdown
 The Recording framework is composed of three conceptual groups:
 
 ![](docs/images/ConceptualBlocks.PNG)
 * **Recorders**: the part that takes data feeds (Inputs) and transform them into whatever format they want (Image input -> mp4 file). They do NOT deal with gathering the data from Unity: that is the Inputs task. Every recorder is broken down into three pieces: Recorder, Settings and Settings Editor.
-* **Inputs**: specialized classes that know how to gather a given type of data from unity and how to pre-package that data in a way that is ready from consumption by the Recorders. Like recorders, Inputs are borken down into three parts: Input, Setttings and Settings Editor.
+* **Inputs**: specialized classes that know how to gather a given type of data from unity and how to pre-package that data in a way that is ready for consumption by the Recorders. Like recorders, Inputs are borken down into three parts: Input, Setttings and Settings Editor.
 * **Support**: holds the FrameRecorder's logic, UI, timeline integration and services.
 
-### Recorders and there Inputs
+### Recorders and their Inputs
 Here are the classes that make up recorders and their inputs.
 
 ![](docs/images/Recorders_and_inputs.PNG)
@@ -96,6 +97,17 @@ Here are the classes that make up recorders and their inputs.
 
 ### Game mode classes
 ![](docs/images/GameModeClasses.PNG)
+
+#### RecordingSession
+* This is a helper class that is used to hold and carry around the contextual state of a recording session.
+* Is the time reference used by the recorders: Recorders should, as a general rule, never access the unity Time class.
+* Is responsible for informing the recorder of events (begin recording, new frame, etc.)
+* Contains:
+  * Owns the recorder instance
+  * Reference to the GameoObject that hosts the recorder
+  * Current frame count (rendered, not recorded)
+  * Current frame’s start time stamp relative to the start of the recording session.
+  * Timestamp of when the recording session started.
 
 ### Timeline integration
 ![](docs/images/TimelineClasses.PNG)
