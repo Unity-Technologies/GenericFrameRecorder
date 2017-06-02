@@ -1,14 +1,26 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 using UnityEngine.FrameRecorder;
 using UnityEngine.FrameRecorder;
+using UnityEngine.FrameRecorder.Input;
 
 namespace UTJ.FrameCapturer.Recorders
 {
     [FrameRecorder(typeof(PNGRecorderSettings),"Video", "UTJ/PNG" )]
-    public class PNGRecorder : BaseImageRecorder<PNGRecorderSettings>
+    public class PNGRecorder : GenericRecorder<PNGRecorderSettings>
     {
         fcAPI.fcPngContext m_ctx;
+
+        public override List<RecorderInputSetting> DefaultInputs()
+        {
+            var settings = new List<RecorderInputSetting>();
+            var setting = ScriptableObject.CreateInstance(typeof(AdamBeautyInputSettings)) as AdamBeautyInputSettings;
+
+            settings.Add(setting);
+            return settings;
+        }
 
         public override bool BeginRecording(RecordingSession session)
         {

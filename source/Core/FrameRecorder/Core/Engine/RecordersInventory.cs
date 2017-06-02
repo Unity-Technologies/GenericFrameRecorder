@@ -14,6 +14,13 @@ namespace UnityEngine.FrameRecorder
         public string displayName;
     }
 
+
+    /// <summary>
+    /// What is this: 
+    /// Motivation  : 
+    /// Notes: 
+    /// </summary>    
+
     // to be internal once inside unity code base
     public static class RecordersInventory
     {

@@ -12,6 +12,11 @@ namespace UnityEngine.FrameRecorder
         EndRecording,
     }
 
+    /// <summary>
+    /// What is this: 
+    /// Motivation  : 
+    /// Notes: 
+    /// </summary>    
     public abstract class Recorder : ScriptableObject
     {
         double m_OriginalCaptureFrameRate;

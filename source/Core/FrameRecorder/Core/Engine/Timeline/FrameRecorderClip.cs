@@ -4,6 +4,12 @@ using UnityEngine.Timeline;
 
 namespace UnityEngine.FrameRecorder.Timeline
 {
+    /// <summary>
+    /// What is it: Implements a Timeline Clip asset that can be inserted onto a timeline track to trigger a recording of something.
+    /// Motivation: Allow Timeline to trigger recordings
+    /// 
+    /// Note: Instances of this call Own their associated Settings asset's lifetime.
+    /// </summary>
     public class FrameRecorderClip : PlayableAsset, ITimelineClipAsset
     {
         [SerializeField]

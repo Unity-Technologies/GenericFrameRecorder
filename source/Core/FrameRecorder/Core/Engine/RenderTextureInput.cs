@@ -1,5 +1,11 @@
 namespace UnityEngine.FrameRecorder
 {
+
+    /// <summary>
+    /// What is this: 
+    /// Motivation  : 
+    /// Notes: 
+    /// </summary>    
     public abstract class RenderTextureInput : RecorderInput
     {
         public RenderTexture outputRT { get; set; }

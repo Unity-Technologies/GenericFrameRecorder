@@ -2,11 +2,21 @@ using System;
 
 namespace UnityEngine.FrameRecorder
 {
+    /// <summary>
+    /// What is this: 
+    /// Motivation  : 
+    /// Notes: 
+    /// </summary>    
     public abstract class  RecorderInputSetting : ScriptableObject
     {
         public abstract Type inputType { get; }
     }
 
+    /// <summary>
+    /// What is this: 
+    /// Motivation  : 
+    /// Notes: 
+    /// </summary>    
     public class InputSettings<TInput> : RecorderInputSetting
     {
         public override Type inputType

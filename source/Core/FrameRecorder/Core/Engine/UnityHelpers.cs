@@ -2,6 +2,12 @@ using Object = UnityEngine.Object;
 
 namespace UnityEngine.FrameRecorder
 {
+
+    /// <summary>
+    /// What is this: 
+    /// Motivation  : 
+    /// Notes: 
+    /// </summary>    
     public static class UnityHelpers
     {
         public static void Destroy(Object obj, bool allowDestroyingAssets = false)

@@ -2,6 +2,12 @@ using System;
 
 namespace UnityEngine.FrameRecorder
 {
+
+    /// <summary>
+    /// What is this: 
+    /// Motivation  : 
+    /// Notes: 
+    /// </summary>    
     public class FrameRecorderGOControler
     {
         const string k_HostGoName = "UnityEngine-Recorder-FrameRecorder";

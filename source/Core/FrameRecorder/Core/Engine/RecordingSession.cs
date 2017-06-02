@@ -1,13 +1,17 @@
 using System;
-using System.Collections.Generic;
 
 namespace UnityEngine.FrameRecorder
 {
+
+    /// <summary>
+    /// What is this: 
+    /// Motivation  : 
+    /// Notes: 
+    /// </summary>    
     public class RecordingSession : IDisposable
     {
         public Recorder m_Recorder;
         public GameObject m_RecorderGO;
-        public List<UnityEngine.Object> m_ObjsOfInterest;
         public int m_FrameIndex; // count starts at 0.
         public double m_CurrentFrameStartTS;
         public double m_RecordingStartTS;

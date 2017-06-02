@@ -2,6 +2,12 @@ using System;
 
 namespace UnityEngine.FrameRecorder
 {
+
+    /// <summary>
+    /// What is this: 
+    /// Motivation  : 
+    /// Notes: 
+    /// </summary>    
     public class RecorderInput : IDisposable
     {
         public int SourceID { get; set; }

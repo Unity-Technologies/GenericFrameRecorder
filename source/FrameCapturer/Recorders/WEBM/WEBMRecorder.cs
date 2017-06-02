@@ -1,16 +1,27 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.FrameRecorder;
 using UnityEngine.FrameRecorder;
+using UnityEngine.FrameRecorder.Input;
 
 namespace UTJ.FrameCapturer.Recorders
 {
     [FrameRecorder(typeof(WEBMRecorderSettings),"Video", "UTJ/WebM" )]
-    public class WEBMRecorder : BaseImageRecorder<WEBMRecorderSettings>
+    public class WEBMRecorder : GenericRecorder<WEBMRecorderSettings>
     {
         fcAPI.fcWebMContext m_ctx;
         fcAPI.fcStream m_stream;
+
+        public override List<RecorderInputSetting> DefaultInputs()
+        {
+            var settings = new List<RecorderInputSetting>();
+            var setting = ScriptableObject.CreateInstance(typeof(AdamBeautyInputSettings)) as AdamBeautyInputSettings;
+
+            settings.Add(setting);
+            return settings;
+        }
 
         public override bool BeginRecording(RecordingSession session)
         {

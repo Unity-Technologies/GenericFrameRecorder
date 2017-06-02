@@ -3,8 +3,14 @@ using UnityEngine.Playables;
 namespace UnityEngine.FrameRecorder.Timeline
 {
     /// <summary>
-    /// Note: Totally ignores the time info comming from the playable infrastructure. Only conciders scaled time.
-    /// </summary>
+    /// What is it: Implements a playable that records something triggered by a Timeline Recorder Clip.
+    /// Motivation: Allow Timeline to trigger recordings
+    /// 
+    /// Notes: 
+    ///     - Totally ignores the time info comming from the playable infrastructure. Only conciders scaled time.
+    ///     - Does not support multiple OnGraphStart...
+    ///     - It relies on WaitForEndOfFrameComponent to inform the Session object that it's time to record to frame.
+    /// </summary>    
     public class RecorderPlayableBehaviour : PlayableBehaviour
     {
         PlayState m_PlayState = PlayState.Paused;
@@ -67,8 +73,13 @@ namespace UnityEngine.FrameRecorder.Timeline
         {
             if (session == null)
                 return;
+
             if (session.recording && m_PlayState == PlayState.Playing)
+            {
                 session.EndRecording();
+                session.Dispose();
+                session = null;
+            }
 
             m_PlayState = PlayState.Paused;
         }

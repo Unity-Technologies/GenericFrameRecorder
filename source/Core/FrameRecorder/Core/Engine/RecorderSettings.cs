@@ -27,6 +27,12 @@ namespace UnityEngine.FrameRecorder
         TimeInterval
     }
 
+
+    /// <summary>
+    /// What is this: 
+    /// Motivation  : 
+    /// Notes: 
+    /// </summary>    
     public abstract class RecorderSettings : ScriptableObject
     {
         [Range(1,10)]

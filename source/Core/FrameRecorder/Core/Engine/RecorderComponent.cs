@@ -3,6 +3,12 @@ using System.Collections;
 
 namespace UnityEngine.FrameRecorder
 {
+
+    /// <summary>
+    /// What is this: 
+    /// Motivation  : 
+    /// Notes: 
+    /// </summary>    
     [ExecuteInEditMode]
     public class RecorderComponent : MonoBehaviour
     {

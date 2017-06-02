@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using UnityEngine.FrameRecorder.Input;
 
 namespace UnityEngine.FrameRecorder
 {
     [FrameRecorder(typeof(PNGRecorderSettings),"Video", "PNG" )]
-    public class PNGRecorder : BaseImageRecorder<PNGRecorderSettings>
+    public class PNGRecorder : GenericRecorder<PNGRecorderSettings>
     {
         string MakeFileName(RecordingSession session)
         {
@@ -38,6 +40,15 @@ namespace UnityEngine.FrameRecorder
                 Directory.CreateDirectory(m_Settings.m_DestinationPath);
 
             File.WriteAllBytes(MakeFileName(session), bytes);
+        }
+
+        public override List<RecorderInputSetting> DefaultInputs()
+        {
+            var settings = new List<RecorderInputSetting>();
+            var setting = ScriptableObject.CreateInstance(typeof(AdamBeautyInputSettings)) as AdamBeautyInputSettings;
+
+            settings.Add(setting);
+            return settings;
         }
 
     }
