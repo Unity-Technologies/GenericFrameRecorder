@@ -3,11 +3,20 @@ using UnityEngine.FrameRecorder.Input;
 
 namespace UnityEngine.FrameRecorder
 {
+
+    public enum PNGRecordeOutputFormat
+    {
+        PNG,
+        JPEG,
+        EXR
+    }
+
     [ExecuteInEditMode]
     public class PNGRecorderSettings : RecorderSettings
     {
-        public string m_BaseFileName  = "pngFile";
+        public string m_BaseFileName  = "image";
         public string m_DestinationPath = "Recorder";
+        public PNGRecordeOutputFormat m_OutputFormat = PNGRecordeOutputFormat.JPEG;
 
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()
         {

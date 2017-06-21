@@ -10,6 +10,7 @@ namespace UnityEditor.FrameRecorder
     {
         SerializedProperty m_DestinationPath;
         SerializedProperty m_BaseFileName;
+        SerializedProperty m_OutputFormat;
 
         string[] m_Candidates;
         
@@ -31,6 +32,7 @@ namespace UnityEditor.FrameRecorder
             m_Inputs = pf.Find(w => w.m_SourceSettings);
             m_DestinationPath = pf.Find(w => w.m_DestinationPath);
             m_BaseFileName = pf.Find(w => w.m_BaseFileName);
+            m_OutputFormat = pf.Find(w => w.m_OutputFormat);
         }
 
         protected override void OnEncodingGroupGui()
@@ -48,7 +50,11 @@ namespace UnityEditor.FrameRecorder
             if (index != newIndex)
             {
                 var newType = newIndex == 0 ? typeof(CBRenderTextureInputSettings) : typeof(AdamBeautyInputSettings);
-                var newSettings = (RecorderInputSetting)Activator.CreateInstance(newType);
+                var newSettings = ScriptableObject.CreateInstance(newType) as RecorderInputSetting;
+                if (newType == typeof(CBRenderTextureInputSettings))
+                {
+                    (newSettings as CBRenderTextureInputSettings).m_FlipVertical = true;
+                }
                 ChangeInputSettings(0, newSettings);
             }
 
@@ -57,6 +63,8 @@ namespace UnityEditor.FrameRecorder
 
         protected override void OnOutputGui()
         {
+            EditorGUILayout.PropertyField(m_OutputFormat, new GUIContent("Output format"));
+
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Directory");
             m_DestinationPath.stringValue = EditorGUILayout.TextField(m_DestinationPath.stringValue);

@@ -140,7 +140,7 @@ namespace UnityEngine.FrameRecorder.Input
 
                 // TODO: This should not be here!!!
                 m_mat_copy = new Material(CopyShader);
-                if (m_Camera.targetTexture != null)
+                if (m_Camera.targetTexture != null || cbSettings.m_FlipVertical )
                     m_mat_copy.EnableKeyword("OFFSCREEN");
 
                 var tid = Shader.PropertyToID("_TmpFrameBuffer");

@@ -1,6 +1,4 @@
-﻿
-
-namespace UnityEngine.FrameRecorder.Input
+﻿namespace UnityEngine.FrameRecorder.Input
 {
     public class CBRenderTextureInputSettings : InputSettings<CBRenderTextureInput>
     {
@@ -8,5 +6,6 @@ namespace UnityEngine.FrameRecorder.Input
         public EImageDimension m_RenderSize = EImageDimension.x720p_HD;
         public string m_CameraTag;
         public RenderTexture m_SourceRTxtr;
+        public bool m_FlipVertical = false;
     }
 }
