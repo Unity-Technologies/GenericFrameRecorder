@@ -1,7 +1,6 @@
 using System;
 using UnityEngine.FrameRecorder;
 using UnityEngine;
-using UnityEngine.FrameRecorder;
 
 namespace UnityEditor.FrameRecorder
 {

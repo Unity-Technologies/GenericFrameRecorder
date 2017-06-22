@@ -25,7 +25,6 @@ namespace UnityEditor.FrameRecorder
         {
             if (!typeof(TEnum).IsEnum) throw new ArgumentException("Arg not an enum");
             var values = Enum.GetValues(typeof(TEnum));
-            var result = new List<string>();
             for( int i = 0, j = -1; i < values.Length; i++ )
             {
                 var v = (int)values.GetValue(i);

@@ -20,7 +20,7 @@ namespace UnityEditor.FrameRecorder
             RecorderWindow.ShowAndPreselectCategory("Video");
         }
 
-        protected void OnEnable()
+        protected override void OnEnable()
         {
             base.OnEnable();
 
