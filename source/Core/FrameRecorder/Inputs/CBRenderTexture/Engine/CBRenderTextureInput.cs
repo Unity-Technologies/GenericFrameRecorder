@@ -27,6 +27,17 @@ namespace UnityEngine.FrameRecorder.Input
             return (EditorWindow)Res;
         }
 
+
+    void GetGameRenderSize(out int width, out int height )
+    {
+        var gameView = GetMainGameView();
+        var prop = gameView.GetType().GetProperty("currentGameViewSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var gvsize = prop.GetValue(gameView, new object[0]{});
+        var gvSizeType = gvsize.GetType();
+       
+        height = (int)gvSizeType.GetProperty("height", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).GetValue(gvsize, new object[0]{});
+        width = (int)gvSizeType.GetProperty("width", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).GetValue(gvsize, new object[0]{});
+    }
 #endif
 
         CBRenderTextureInputSettings cbSettings
@@ -70,12 +81,10 @@ namespace UnityEngine.FrameRecorder.Input
             {
                 case EImageSource.GameDisplay:
                 {
-                    int screenWidth  =Screen.width;
+                    int screenWidth  = Screen.width;
                     int screenHeight = Screen.height;
 #if UNITY_EDITOR
-                    var window = GetMainGameView();
-                    screenWidth  =(int)window.position.width; // magic number: guaranteed to not be universal
-                    screenHeight = (int)window.position.height - 17; // magic number: guaranteed to not be universal
+                    GetGameRenderSize(out screenWidth, out screenHeight);
 #endif
                     if (cbSettings.m_RenderSize == EImageDimension.Manual)
                     {
