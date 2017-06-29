@@ -56,15 +56,5 @@ namespace UnityEngine.FrameRecorder
 
             File.WriteAllBytes(MakeFileName(session), bytes);
         }
-
-        public override List<RecorderInputSetting> DefaultInputs()
-        {
-            var settings = new List<RecorderInputSetting>();
-            var setting = ScriptableObject.CreateInstance(typeof(AdamBeautyInputSettings)) as AdamBeautyInputSettings;
-
-            settings.Add(setting);
-            return settings;
-        }
-
     }
 }

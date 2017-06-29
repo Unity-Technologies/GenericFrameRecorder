@@ -20,7 +20,7 @@ namespace UnityEngine.FrameRecorder
 
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()
         {
-            return new List<RecorderInputSetting>() { ScriptableObject.CreateInstance<AdamBeautyInputSettings>() };
+            return new List<RecorderInputSetting>() { ScriptableObject.CreateInstance<CBRenderTextureInputSettings>() };
         }
 
         public override bool isValid

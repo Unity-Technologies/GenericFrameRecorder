@@ -21,8 +21,6 @@ namespace UnityEngine.FrameRecorder
     {
         double m_OriginalCaptureFrameRate;
 
-        public abstract List<RecorderInputSetting> DefaultInputs();
-
         public int recordedFramesCount { get; set; }
         
         protected List<RecorderInput> m_Inputs;

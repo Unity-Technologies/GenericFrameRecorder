@@ -193,14 +193,5 @@ namespace UnityEngine.FrameRecorder
             else
                 throw new ArgumentException("No factory was registered for " + recorderType.Name);            
         }
-
-        public static List<RecorderInputSetting> GetRecordersDefaultSourceSettings(Type recorderType)
-        {
-            var recorder = ScriptableObject.CreateInstance(recorderType) as Recorder;
-            var defautSettings = recorder.DefaultInputs();
-            UnityHelpers.Destroy(recorder);
-            return defautSettings;
-        }
-
     }
 }
