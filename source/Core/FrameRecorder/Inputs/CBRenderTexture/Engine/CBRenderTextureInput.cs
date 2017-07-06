@@ -31,12 +31,10 @@ namespace UnityEngine.FrameRecorder.Input
     void GetGameRenderSize(out int width, out int height )
     {
         var gameView = GetMainGameView();
-        var prop = gameView.GetType().GetProperty("currentGameViewSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        var gvsize = prop.GetValue(gameView, new object[0]{});
-        var gvSizeType = gvsize.GetType();
-       
-        height = (int)gvSizeType.GetProperty("height", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).GetValue(gvsize, new object[0]{});
-        width = (int)gvSizeType.GetProperty("width", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).GetValue(gvsize, new object[0]{});
+        var prop = gameView.GetType().GetProperty("targetSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var size = (Vector2)prop.GetValue(gameView, new object[0] { })  ;
+        width = (int)size.x;
+        height = (int)size.y;
     }
 #endif
 
