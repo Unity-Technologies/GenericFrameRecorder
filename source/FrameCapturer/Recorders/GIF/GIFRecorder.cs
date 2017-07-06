@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.FrameRecorder;
-using UnityEngine.FrameRecorder;
-using UnityEngine.FrameRecorder.Input;
 
 namespace UTJ.FrameCapturer.Recorders
 {
@@ -13,15 +10,6 @@ namespace UTJ.FrameCapturer.Recorders
     {
         fcAPI.fcGifContext m_ctx;
         fcAPI.fcStream m_stream;
-
-        public override List<RecorderInputSetting> DefaultInputs()
-        {
-            var settings = new List<RecorderInputSetting>();
-            var setting = ScriptableObject.CreateInstance(typeof(AdamBeautyInputSettings)) as AdamBeautyInputSettings;
-
-            settings.Add(setting);
-            return settings;
-        }
 
         public override bool BeginRecording(RecordingSession session)
         {

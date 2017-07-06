@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using UnityEngine.FrameRecorder;
 using UnityEngine.FrameRecorder;
 
 namespace UTJ.FrameCapturer.Recorders
@@ -11,11 +9,6 @@ namespace UTJ.FrameCapturer.Recorders
     {
         static readonly string[] s_channelNames = { "R", "G", "B", "A" };
         fcAPI.fcExrContext m_ctx;
-
-        public override List<RecorderInputSetting> DefaultInputs()
-        {
-            throw new NotImplementedException();
-        }
 
         public override bool BeginRecording(RecordingSession session)
         {

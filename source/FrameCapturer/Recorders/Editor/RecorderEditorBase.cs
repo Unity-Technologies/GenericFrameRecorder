@@ -18,7 +18,7 @@ namespace UTJ.FrameCapturer.Recorders
             RecorderWindow.ShowAndPreselectCategory("Video");
         }
 
-        protected void OnEnable()
+        protected override void OnEnable()
         {
             base.OnEnable();
             if (target != null)

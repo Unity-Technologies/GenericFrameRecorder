@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.FrameRecorder;
+﻿using UnityEngine;
 using UnityEngine.FrameRecorder;
 
 namespace UTJ.FrameCapturer.Recorders
