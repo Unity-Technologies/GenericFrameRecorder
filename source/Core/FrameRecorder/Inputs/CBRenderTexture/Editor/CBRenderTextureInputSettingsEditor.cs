@@ -12,6 +12,7 @@ namespace UnityEditor.FrameRecorder.Input
         SerializedProperty m_Source;
         SerializedProperty m_CameraTag;
         SerializedProperty m_RenderSize;
+        SerializedProperty m_RenderAspect;
         SerializedProperty m_SourceRTxtr;
 
         protected void OnEnable()
@@ -24,6 +25,7 @@ namespace UnityEditor.FrameRecorder.Input
             m_CameraTag = pf.Find(w => w.m_CameraTag);
             m_RenderSize = pf.Find(w => w.m_RenderSize);
             m_SourceRTxtr = pf.Find(w => w.m_SourceRTxtr);
+            m_RenderAspect = pf.Find(w => w.m_RenderAspect);
         }
 
         public override void OnInspectorGUI()
@@ -50,6 +52,10 @@ namespace UnityEditor.FrameRecorder.Input
             if (inputType != EImageSource.RenderTexture)
             {
                 EditorGUILayout.PropertyField(m_RenderSize, new GUIContent("Resolution"));
+                if (m_RenderSize.intValue > (int)EImageDimension.Window)
+                {
+                    EditorGUILayout.PropertyField(m_RenderAspect, new GUIContent("Aspect Ratio"));
+                }
             }
             else
             {

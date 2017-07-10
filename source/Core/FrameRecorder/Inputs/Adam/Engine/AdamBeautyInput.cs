@@ -106,7 +106,7 @@ namespace UnityEngine.FrameRecorder.Input
             // Calculate aspect and render/output sizes
             // Clamp size to 16K, which is the min always supported size in d3d11
             // Force output to divisible by two as x264 doesn't approve of odd image dimensions.
-            var aspect = (int)adamSettings.m_AspectRatio / 10000f;
+            var aspect = AspectRatioHelper.GetRealAR(adamSettings.m_AspectRatio);
             m_renderHeight = (int)adamSettings.m_RenderSize;
             m_renderWidth = Mathf.Min(16 * 1024, Mathf.RoundToInt(m_renderHeight * aspect));
             m_outputHeight = (int)adamSettings.m_FinalSize;

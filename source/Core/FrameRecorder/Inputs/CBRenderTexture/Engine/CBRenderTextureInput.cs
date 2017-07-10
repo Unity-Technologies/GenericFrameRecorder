@@ -18,26 +18,6 @@ namespace UnityEngine.FrameRecorder.Input
         Camera          m_Camera;
         bool            m_cameraChanged;
 
-#if UNITY_EDITOR
-        public static EditorWindow GetMainGameView()
-        {
-            System.Type T = System.Type.GetType("UnityEditor.GameView,UnityEditor");
-            System.Reflection.MethodInfo GetMainGameView = T.GetMethod("GetMainGameView", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-            System.Object Res = GetMainGameView.Invoke(null, null);
-            return (EditorWindow)Res;
-        }
-
-
-    void GetGameRenderSize(out int width, out int height )
-    {
-        var gameView = GetMainGameView();
-        var prop = gameView.GetType().GetProperty("targetSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        var size = (Vector2)prop.GetValue(gameView, new object[0] { })  ;
-        width = (int)size.x;
-        height = (int)size.y;
-    }
-#endif
-
         CBRenderTextureInputSettings cbSettings
         {
             get { return (CBRenderTextureInputSettings)settings; }
@@ -82,19 +62,30 @@ namespace UnityEngine.FrameRecorder.Input
                     int screenWidth  = Screen.width;
                     int screenHeight = Screen.height;
 #if UNITY_EDITOR
-                    GetGameRenderSize(out screenWidth, out screenHeight);
+                    switch (cbSettings.m_RenderSize)
+                    {
+                        case EImageDimension.Window:
+                        {
+                            GameViewSize.GetGameRenderSize(out screenWidth, out screenHeight);
+                            outputWidth = screenWidth;
+                            outputHeight = screenHeight;
+                            break;
+                        }
+
+                        default:
+                        {
+                            outputHeight = (int)cbSettings.m_RenderSize;
+                            outputWidth = (int)(outputHeight * AspectRatioHelper.GetRealAR(cbSettings.m_RenderAspect));
+
+                            var size = GameViewSize.FindSize(outputWidth, outputHeight);
+                            if (size == null)
+                                size = GameViewSize.AddSize(outputWidth, outputHeight);
+                            GameViewSize.SelectSize(size);
+                            break;
+                        }
+                    }
 #endif
-                    if (cbSettings.m_RenderSize == EImageDimension.Manual)
-                    {
-                        outputWidth = screenWidth;
-                        outputHeight = screenHeight;
-                    }
-                    else
-                    {
-                        outputHeight = (int)cbSettings.m_RenderSize;
-                        outputWidth = (int)((float)cbSettings.m_RenderSize / screenHeight * screenWidth);
-                    }
-                    break;
+                        break;
                 }
                 case EImageSource.MainCamera:
                 case EImageSource.TaggedCamera:
