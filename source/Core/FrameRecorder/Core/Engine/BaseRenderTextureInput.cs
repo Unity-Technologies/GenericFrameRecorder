@@ -6,7 +6,7 @@ namespace UnityEngine.FrameRecorder
     /// Motivation  : 
     /// Notes: 
     /// </summary>    
-    public abstract class RenderTextureInput : RecorderInput
+    public abstract class BaseRenderTextureInput : RecorderInput
     {
         public RenderTexture outputRT { get; set; }
 

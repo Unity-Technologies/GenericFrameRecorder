@@ -22,7 +22,7 @@ namespace UnityEngine.FrameRecorder
             if (m_Inputs.Count != 1)
                 throw new Exception("Unsupported number of sources");
 
-            var input = (RenderTextureInput)m_Inputs[0];
+            var input = (BaseRenderTextureInput)m_Inputs[0];
 
             var width = input.outputRT.width;
             var height = input.outputRT.height;

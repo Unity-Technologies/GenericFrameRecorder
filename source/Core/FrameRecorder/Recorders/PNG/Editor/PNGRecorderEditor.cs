@@ -27,7 +27,7 @@ namespace UnityEditor.FrameRecorder
             if (target == null)
                 return;
 
-            m_Candidates = new [] { "Command Buffered Camera", "Camera as RenderTexture" };
+            m_Candidates = new [] { "Command Buffered Camera", "Camera as RenderTexture", "Render Texture" };
             var pf = new PropertyFinder<PNGRecorderSettings>(serializedObject);
             m_Inputs = pf.Find(w => w.m_SourceSettings);
             m_DestinationPath = pf.Find(w => w.m_DestinationPath);
@@ -44,12 +44,25 @@ namespace UnityEditor.FrameRecorder
         {
             var input = m_Inputs.GetArrayElementAtIndex(0).objectReferenceValue;
 
-            var index = input.GetType() == typeof(CBRenderTextureInputSettings) ? 0 : 1;
+            var index = input.GetType() == typeof(CBRenderTextureInputSettings) ? 0 :
+                        input.GetType() == typeof(AdamBeautyInputSettings) ? 1 : 2; 
             var newIndex = EditorGUILayout.Popup("Image Generator", index, m_Candidates);
 
             if (index != newIndex)
             {
-                var newType = newIndex == 0 ? typeof(CBRenderTextureInputSettings) : typeof(AdamBeautyInputSettings);
+                Type newType = null;
+                switch (newIndex)
+                {
+                    case 0:
+                        newType = typeof(CBRenderTextureInputSettings);
+                        break;
+                    case 1:
+                        newType = typeof(AdamBeautyInputSettings);
+                        break;
+                    case 2:
+                        newType = typeof(RenderTextureInputSettings);
+                        break;
+                }
                 var newSettings = ScriptableObject.CreateInstance(newType) as RecorderInputSetting;
                 if (newType == typeof(CBRenderTextureInputSettings))
                 {

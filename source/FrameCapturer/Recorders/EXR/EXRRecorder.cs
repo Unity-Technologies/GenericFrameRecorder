@@ -33,7 +33,7 @@ namespace UTJ.FrameCapturer.Recorders
                 throw new Exception("Unsupported number of sources");
 
             var path = BuildOutputPath(session);
-            var input = (RenderTextureInput)m_Inputs[0];
+            var input = (BaseRenderTextureInput)m_Inputs[0];
             var frame = input.outputRT;
 
             fcAPI.fcLock(frame, (data, fmt) =>

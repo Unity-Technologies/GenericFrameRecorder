@@ -7,13 +7,12 @@ namespace UnityEditor.FrameRecorder.Input
     [CustomEditor(typeof(CBRenderTextureInputSettings))]
     public class CBRenderTextureInputSettingsEditor : Editor
     {
-        static EImageSource m_SupportedSources = EImageSource.GameDisplay | EImageSource.MainCamera | EImageSource.RenderTexture;
+        static EImageSource m_SupportedSources = EImageSource.GameDisplay | EImageSource.MainCamera;
         string[] m_MaskedSourceNames;
         SerializedProperty m_Source;
         SerializedProperty m_CameraTag;
         SerializedProperty m_RenderSize;
         SerializedProperty m_RenderAspect;
-        SerializedProperty m_SourceRTxtr;
 
         protected void OnEnable()
         {
@@ -24,7 +23,6 @@ namespace UnityEditor.FrameRecorder.Input
             m_Source = pf.Find(w => w.source);
             m_CameraTag = pf.Find(w => w.m_CameraTag);
             m_RenderSize = pf.Find(w => w.m_RenderSize);
-            m_SourceRTxtr = pf.Find(w => w.m_SourceRTxtr);
             m_RenderAspect = pf.Find(w => w.m_RenderAspect);
         }
 
@@ -55,20 +53,6 @@ namespace UnityEditor.FrameRecorder.Input
                 if (m_RenderSize.intValue > (int)EImageDimension.Window)
                 {
                     EditorGUILayout.PropertyField(m_RenderAspect, new GUIContent("Aspect Ratio"));
-                }
-            }
-            else
-            {
-                EditorGUILayout.PropertyField(m_SourceRTxtr, new GUIContent("RenderTexture"));
-                using (new EditorGUI.DisabledScope(true))
-                {
-                    var res = "N/A";
-                    if (m_SourceRTxtr.objectReferenceValue != null)
-                    {
-                        var renderTexture = (RenderTexture)m_SourceRTxtr.objectReferenceValue;
-                        res = string.Format("{0} , {1}", renderTexture.width, renderTexture.height);
-                    }
-                    EditorGUILayout.TextField("Resolution", res);
                 }
             }
 

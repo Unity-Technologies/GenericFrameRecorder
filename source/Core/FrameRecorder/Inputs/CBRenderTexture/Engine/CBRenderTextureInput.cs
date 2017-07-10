@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 
 namespace UnityEngine.FrameRecorder.Input
 {
-    public class CBRenderTextureInput : RenderTextureInput
+    public class CBRenderTextureInput : BaseRenderTextureInput
     {
         Shader          m_shCopy;
         Material        m_mat_copy;
@@ -89,7 +89,6 @@ namespace UnityEngine.FrameRecorder.Input
                 }
                 case EImageSource.MainCamera:
                 case EImageSource.TaggedCamera:
-                case EImageSource.RenderTexture:
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -118,9 +117,13 @@ namespace UnityEngine.FrameRecorder.Input
                     }
                     break;
                 }
+                case EImageSource.RenderTexture:
+                {
+                    break;
+                }
+
                 case EImageSource.MainCamera:
                 case EImageSource.TaggedCamera:
-                case EImageSource.RenderTexture:
                 default:
                     throw new ArgumentOutOfRangeException();
             }

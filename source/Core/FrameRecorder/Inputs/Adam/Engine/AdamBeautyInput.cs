@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace UnityEngine.FrameRecorder.Input
 {
-    public class AdamBeautyInput : RenderTextureInput
+    public class AdamBeautyInput : BaseRenderTextureInput
     {
         Shader superShader;
         Shader accumulateShader;

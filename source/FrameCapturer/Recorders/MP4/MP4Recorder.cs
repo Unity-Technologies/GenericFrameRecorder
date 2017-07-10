@@ -31,7 +31,7 @@ namespace UTJ.FrameCapturer.Recorders
             if (m_Inputs.Count != 1)
                 throw new Exception("Unsupported number of sources");
 
-            var input = (RenderTextureInput)m_Inputs[0];
+            var input = (BaseRenderTextureInput)m_Inputs[0];
             var frame = input.outputRT;
 
             if(!m_ctx)

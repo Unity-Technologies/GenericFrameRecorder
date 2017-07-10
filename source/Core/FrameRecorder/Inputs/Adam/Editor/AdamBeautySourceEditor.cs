@@ -7,7 +7,7 @@ namespace UnityEditor.FrameRecorder.Input
     [CustomEditor(typeof(AdamBeautyInputSettings))]
     public class AdamBeautySourceEditor : Editor
     {
-        static EImageSource m_SupportedSources = EImageSource.GameDisplay | EImageSource.MainCamera | EImageSource.RenderTexture;
+        static EImageSource m_SupportedSources = EImageSource.GameDisplay | EImageSource.MainCamera /*| EImageSource.RenderTexture*/; // not sure what to do with the RT as source here.
         string[] m_MaskedSourceNames;
         SerializedProperty m_Source;
         SerializedProperty m_RenderSize;
