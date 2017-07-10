@@ -5,8 +5,8 @@ using UnityEngine.FrameRecorder.Input;
 
 namespace UnityEditor.FrameRecorder
 {
-    [CustomEditor(typeof(PNGRecorderSettings))]
-    public class PNGRecorderEditor : RecorderEditor
+    [CustomEditor(typeof(DefaultRecorderSettings))]
+    public class DefaultRecorderEditor : RecorderEditor
     {
         SerializedProperty m_DestinationPath;
         SerializedProperty m_BaseFileName;
@@ -28,7 +28,7 @@ namespace UnityEditor.FrameRecorder
                 return;
 
             m_Candidates = new [] { "Command Buffered Camera", "Camera as RenderTexture", "Render Texture" };
-            var pf = new PropertyFinder<PNGRecorderSettings>(serializedObject);
+            var pf = new PropertyFinder<DefaultRecorderSettings>(serializedObject);
             m_Inputs = pf.Find(w => w.m_SourceSettings);
             m_DestinationPath = pf.Find(w => w.m_DestinationPath);
             m_BaseFileName = pf.Find(w => w.m_BaseFileName);
