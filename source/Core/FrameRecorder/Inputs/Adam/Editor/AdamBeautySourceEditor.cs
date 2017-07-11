@@ -7,7 +7,7 @@ namespace UnityEditor.FrameRecorder.Input
     [CustomEditor(typeof(AdamBeautyInputSettings))]
     public class AdamBeautySourceEditor : Editor
     {
-        static EImageSource m_SupportedSources = EImageSource.GameDisplay | EImageSource.MainCamera /*| EImageSource.RenderTexture*/; // not sure what to do with the RT as source here.
+        static EImageSource m_SupportedSources = EImageSource.GameDisplay; //| EImageSource.MainCamera | EImageSource.RenderTexture*/; // not sure what to do with the RT as source here.
         string[] m_MaskedSourceNames;
         SerializedProperty m_Source;
         SerializedProperty m_RenderSize;
@@ -33,6 +33,7 @@ namespace UnityEditor.FrameRecorder.Input
 
         public override void OnInspectorGUI()
         {
+            /*
             using (var check = new EditorGUI.ChangeCheckScope())
             {
                 if (m_MaskedSourceNames == null)
@@ -43,6 +44,7 @@ namespace UnityEditor.FrameRecorder.Input
                 if (check.changed)
                     m_Source.intValue = EnumHelper.GetEnumValueFromMaskedIndex<EImageSource>(index, (int)m_SupportedSources);
             }
+            */
             var inputType = (EImageSource)m_Source.intValue;
 
             if (inputType != EImageSource.RenderTexture)
