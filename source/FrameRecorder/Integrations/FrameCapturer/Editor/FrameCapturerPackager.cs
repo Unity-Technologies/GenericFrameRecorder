@@ -13,8 +13,8 @@ namespace UTJ.FrameCapturer.Recorders
     class FrameCapturerPackagerInternal : ScriptableObject
     {
         const string k_PackageName = "FrameCapturerRecorders";
-        const string k_WitnessClass = "Recorder";
-        const string k_WitnessNamespace = "UnityEngine.FrameRecorder";
+        const string k_WitnessClass = "fcAPI";
+        const string k_WitnessNamespace = "UTJ.FrameCapturer";
 
         static string m_PkgFile;
         static string m_ScriptFile;
@@ -25,26 +25,38 @@ namespace UTJ.FrameCapturer.Recorders
             {
                 Path.Combine(FRPackagerPaths.GetIntegrationPath(), "FrameCapturer/Recorders"),
             };
-            var destFile = Path.Combine(FRPackagerPaths.GetIntegrationPackagePath(), k_PackageName + ".unitypackage");
+
+            var destDir = FRPackagerPaths.GetIntegrationPackagePath();
+            if (!Directory.Exists(destDir))
+                Directory.CreateDirectory(destDir);
+
+            var destFile = Path.Combine(destDir, k_PackageName + ".unitypackage");
             AssetDatabase.ExportPackage(files, destFile, ExportPackageOptions.Recurse);
             Debug.Log("Generated package: " + destFile);
 
             return destFile;
         }
+
+        static bool AutoExtractAllowed
+        {
+            get { return !AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetTypes().Any(y => y.Name == "FRPackager" && y.Namespace == "UnityEditor.FrameRecorder")); }
+        }
+
+        static bool FrameCapturerPresent
+        {
+            get { return AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetTypes().Any(y => y.Name == k_WitnessClass && y.Namespace == k_WitnessNamespace)); }
+        }
         
         static FrameCapturerPackagerInternal() // auto extracts
         {
-            var havePostProcessing = AppDomain.CurrentDomain.GetAssemblies()
-                .Any(x => x.GetTypes().Any(y => y.Name == k_WitnessClass && y.Namespace == k_WitnessNamespace));
-
-            if (havePostProcessing)
+            if(AutoExtractAllowed && FrameCapturerPresent )
             {
-                m_PkgFile = Path.Combine( FRPackagerPaths.GetIntegrationPackagePath(),  "../" + k_PackageName + ".unityPackage" );
+                m_PkgFile = Path.Combine( FRPackagerPaths.GetIntegrationPackagePath(),  k_PackageName + ".unityPackage" );
                 m_ScriptFile = Path.Combine(FRPackagerPaths.GetIntegrationPath(), "FrameCapturer/Recorders/BaseFCRecorderSettings.cs");
                 if ( File.Exists(m_PkgFile) && 
                     (!File.Exists(m_ScriptFile) || File.GetLastWriteTime(m_PkgFile) > File.GetLastWriteTime(m_ScriptFile)))
                 {
-                    Debug.Log("PostProcessing asset detected - Importing FrameCapturer's Recorders");
+                    Debug.Log("Importing FrameCapturer's Recorders: Processing...");
                     AssetDatabase.importPackageCompleted += AssetDatabase_importPackageCompleted;
                     AssetDatabase.importPackageFailed += AssetDatabase_importPackageFailed;
                     AssetDatabase.importPackageCancelled += RemovePackageImportCallbacks;
@@ -59,7 +71,7 @@ namespace UTJ.FrameCapturer.Recorders
             {
                 File.SetLastWriteTime(m_ScriptFile, File.GetLastWriteTime(m_PkgFile));
                 RemovePackageImportCallbacks(k_PackageName);
-                Debug.LogError("FrameRecorder enabled/updated integration package" + k_PackageName );
+                Debug.Log("Importing FrameCapturer's Recorders: Done.");
             }
         }
 
