@@ -26,12 +26,15 @@ namespace UnityEngine.FrameRecorder
 
             var width = input.outputRT.width;
             var height = input.outputRT.height;
+            
             var tex = new Texture2D(width, height, m_Settings.m_OutputFormat !=  PNGRecordeOutputFormat.EXR ? TextureFormat.RGBA32 : TextureFormat.RGBAFloat, false);
             var backupActive = RenderTexture.active;
             RenderTexture.active = input.outputRT;
             tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
             tex.Apply();
             RenderTexture.active = backupActive;
+            
+            //var tex = ScreenCapture.CaptureScreenshotAsTexture();
 
             byte[] bytes;
             switch (m_Settings.m_OutputFormat)
