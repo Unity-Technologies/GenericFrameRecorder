@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.FrameRecorder;
 using UnityEngine;
 
 namespace UTJ.FrameCapturer.Recorders
@@ -18,14 +19,13 @@ namespace UTJ.FrameCapturer.Recorders
         static string m_PkgFile;
         static string m_ScriptFile;
 
-        public static string GeneratePackage( string rootPath )
+        public static string GeneratePackage()
         {
             string[] files = new string[]
             {
-                Path.Combine(rootPath, "Integrations/FrameCapturer/Recorders"),
+                Path.Combine(FRPackagerPaths.GetIntegrationPath(), "FrameCapturer/Recorders"),
             };
-            var path = Path.Combine(GetScriptPath(), "../.." );
-            var destFile = Path.Combine(path, k_PackageName + ".unitypackage");
+            var destFile = Path.Combine(FRPackagerPaths.GetIntegrationPackagePath(), k_PackageName + ".unitypackage");
             AssetDatabase.ExportPackage(files, destFile, ExportPackageOptions.Recurse);
             Debug.Log("Generated package: " + destFile);
 
@@ -39,9 +39,8 @@ namespace UTJ.FrameCapturer.Recorders
 
             if (havePostProcessing)
             {
-                var path = GetScriptPath();
-                m_PkgFile = Path.Combine( path,  "../" + k_PackageName + ".unityPackage" );
-                m_ScriptFile = Path.Combine(path, "BaseFCRecorderSettings.cs");
+                m_PkgFile = Path.Combine( FRPackagerPaths.GetIntegrationPackagePath(),  "../" + k_PackageName + ".unityPackage" );
+                m_ScriptFile = Path.Combine(FRPackagerPaths.GetIntegrationPath(), "FrameCapturer/Recorders/BaseFCRecorderSettings.cs");
                 if ( File.Exists(m_PkgFile) && 
                     (!File.Exists(m_ScriptFile) || File.GetLastWriteTime(m_PkgFile) > File.GetLastWriteTime(m_ScriptFile)))
                 {
@@ -60,6 +59,7 @@ namespace UTJ.FrameCapturer.Recorders
             {
                 File.SetLastWriteTime(m_ScriptFile, File.GetLastWriteTime(m_PkgFile));
                 RemovePackageImportCallbacks(k_PackageName);
+                Debug.LogError("FrameRecorder enabled/updated integration package" + k_PackageName );
             }
         }
 
@@ -78,17 +78,7 @@ namespace UTJ.FrameCapturer.Recorders
             AssetDatabase.importPackageCancelled -= RemovePackageImportCallbacks;
             AssetDatabase.importPackageFailed -= AssetDatabase_importPackageFailed;
         }
-
-        static string GetScriptPath()
-        {
-            ScriptableObject dummy = ScriptableObject.CreateInstance<FrameCapturerPackager>();
-            string path = Application.dataPath + AssetDatabase.GetAssetPath(
-                MonoScript.FromScriptableObject(dummy)).Substring("Assets".Length);
-
-            path = path.Substring(0, path.LastIndexOf('/')-1);
-            path = path.Substring(0, path.LastIndexOf('/'));
-            return Path.Combine(path, "Recorders");
-        }        
+      
     }
 
 }
