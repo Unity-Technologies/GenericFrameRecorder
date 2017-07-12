@@ -70,6 +70,13 @@ namespace UnityEngine.FrameRecorder.Input
                             GameViewSize.GetGameRenderSize(out screenWidth, out screenHeight);
                             outputWidth = screenWidth;
                             outputHeight = screenHeight;
+
+                            if (cbSettings.m_PadSize)
+                            {
+                                outputWidth = (outputWidth + 1) & ~1;
+                                outputHeight = (outputHeight + 1) & ~1;
+                            }
+
                             break;
                         }
 
@@ -78,9 +85,16 @@ namespace UnityEngine.FrameRecorder.Input
                             outputHeight = (int)cbSettings.m_RenderSize;
                             outputWidth = (int)(outputHeight * AspectRatioHelper.GetRealAR(cbSettings.m_RenderAspect));
 
+                            if (cbSettings.m_PadSize)
+                            {
+                                outputWidth = (outputWidth + 1) & ~1;
+                                outputHeight = (outputHeight + 1) & ~1;
+                            }
+
                             var size = GameViewSize.FindSize(outputWidth, outputHeight);
                             if (size == null)
                                 size = GameViewSize.AddSize(outputWidth, outputHeight);
+
                             GameViewSize.SelectSize(size);
                             break;
                         }

@@ -12,7 +12,9 @@ namespace UTJ.FrameCapturer.Recorders
 
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()
         {
-            return new List<RecorderInputSetting>() { ScriptableObject.CreateInstance<CBRenderTextureInputSettings>() };
+            var settings = ScriptableObject.CreateInstance<CBRenderTextureInputSettings>();
+            settings.m_PadSize = true;
+            return new List<RecorderInputSetting>() { settings };
         }
     }
 }
