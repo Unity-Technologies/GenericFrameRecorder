@@ -6,7 +6,7 @@ namespace UnityEditor.FrameRecorder
 {
     static class FRPackager
     {
-        const string k_PackageName = "GenericFrameFrameRecorder";
+        const string k_PackageName = "GenericFrameRecorder";
 
         [MenuItem("Assets/FrameRecorder - Generate Package")]
         static void GeneratePackage()
