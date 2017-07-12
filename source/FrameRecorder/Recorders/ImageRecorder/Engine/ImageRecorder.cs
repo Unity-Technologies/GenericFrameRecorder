@@ -5,8 +5,8 @@ using UnityEngine.FrameRecorder.Input;
 
 namespace UnityEngine.FrameRecorder
 {
-    [FrameRecorder(typeof(DefaultRecorderSettings),"Video", "PNG, Jpeg, OpenEXR" )]
-    public class DefaultRecorder : GenericRecorder<DefaultRecorderSettings>
+    [FrameRecorder(typeof(ImageRecorderSettings),"Video", "PNG, Jpeg, OpenEXR" )]
+    public class ImageRecorder : GenericRecorder<ImageRecorderSettings>
     {
         string MakeFileName(RecordingSession session)
         {

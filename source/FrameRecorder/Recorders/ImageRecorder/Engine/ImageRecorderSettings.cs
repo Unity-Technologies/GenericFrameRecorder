@@ -12,7 +12,7 @@ namespace UnityEngine.FrameRecorder
     }
 
     [ExecuteInEditMode]
-    public class DefaultRecorderSettings : RecorderSettings
+    public class ImageRecorderSettings : RecorderSettings
     {
         public string m_BaseFileName  = "image";
         public string m_DestinationPath = "Recorder";
