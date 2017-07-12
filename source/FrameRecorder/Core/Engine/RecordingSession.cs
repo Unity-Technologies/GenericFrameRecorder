@@ -49,8 +49,9 @@ namespace UnityEngine.FrameRecorder
             if (m_Recorder.settings.m_FrameRateMode == FrameRateMode.Constant && m_Recorder.settings.m_SynchFrameRate )
             {
                 float wt =(float) (1.0f / m_Recorder.settings.m_FrameRate) * (Time.renderedFrameCount - m_InitialFrame);
-                while (Time.realtimeSinceStartup - m_InitialFrame < wt)
-                    System.Threading.Thread.Sleep(1);
+                double sleep = wt - (Time.realtimeSinceStartup - m_RecordingStartTS);
+                if( sleep > 0)
+                    System.Threading.Thread.Sleep((int)sleep);
             }
         }
 

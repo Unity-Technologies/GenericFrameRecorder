@@ -58,6 +58,7 @@ namespace UnityEngine.FrameRecorder.Input
             switch (cbSettings.source)
             {
                 case EImageSource.GameDisplay:
+                case EImageSource.MainCamera:
                 {
                     int screenWidth  = Screen.width;
                     int screenHeight = Screen.height;
@@ -87,7 +88,6 @@ namespace UnityEngine.FrameRecorder.Input
 #endif
                         break;
                 }
-                case EImageSource.MainCamera:
                 case EImageSource.TaggedCamera:
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -117,12 +117,16 @@ namespace UnityEngine.FrameRecorder.Input
                     }
                     break;
                 }
-                case EImageSource.RenderTexture:
-                {
-                    break;
-                }
 
                 case EImageSource.MainCamera:
+                {
+                    if (TargetCamera != Camera.main)
+                    {
+                        TargetCamera = Camera.main;
+                        m_cameraChanged = true;
+                    }
+                    break;
+                }
                 case EImageSource.TaggedCamera:
                 default:
                     throw new ArgumentOutOfRangeException();

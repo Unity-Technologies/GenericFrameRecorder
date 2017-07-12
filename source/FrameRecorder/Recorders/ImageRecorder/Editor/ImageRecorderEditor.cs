@@ -64,10 +64,9 @@ namespace UnityEditor.FrameRecorder
                         break;
                 }
                 var newSettings = ScriptableObject.CreateInstance(newType) as RecorderInputSetting;
-                if (newType == typeof(CBRenderTextureInputSettings))
-                {
+                if( newIndex == 0 )
                     (newSettings as CBRenderTextureInputSettings).m_FlipVertical = true;
-                }
+
                 ChangeInputSettings(0, newSettings);
             }
 

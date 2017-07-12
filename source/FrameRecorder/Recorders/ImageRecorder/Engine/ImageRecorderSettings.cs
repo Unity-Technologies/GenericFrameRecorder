@@ -20,7 +20,9 @@ namespace UnityEngine.FrameRecorder
 
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()
         {
-            return new List<RecorderInputSetting>() { ScriptableObject.CreateInstance<CBRenderTextureInputSettings>() };
+            var defaultSettings = ScriptableObject.CreateInstance<CBRenderTextureInputSettings>();
+            defaultSettings.m_FlipVertical = true;
+            return new List<RecorderInputSetting>() { defaultSettings};
         }
 
         public override bool isValid
