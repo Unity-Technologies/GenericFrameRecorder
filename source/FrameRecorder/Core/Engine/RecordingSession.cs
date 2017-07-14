@@ -46,12 +46,25 @@ namespace UnityEngine.FrameRecorder
             m_Recorder.SignalSourcesOfStage(ERecordingSessionStage.FrameDone, this);
 
             // Note: This is not great when multiple recorders are simultaneously active...
-            if (m_Recorder.settings.m_FrameRateMode == FrameRateMode.Constant && m_Recorder.settings.m_SynchFrameRate )
+            if (m_Recorder.settings.m_FrameRateMode == FrameRateMode.Variable ||
+                (m_Recorder.settings.m_FrameRateMode == FrameRateMode.Constant && m_Recorder.settings.m_SynchFrameRate)
+            )
             {
-                float target =(float) (1.0f / m_Recorder.settings.m_FrameRate) * (Time.renderedFrameCount - m_InitialFrame);
-                double sleep = (target - (Time.unscaledTime - m_RecordingStartTS)) * 1000;
+                var frameCount = Time.renderedFrameCount - m_InitialFrame;
+                var frameLen = 1.0f / m_Recorder.settings.m_FrameRate;
+                var elapsed = Time.unscaledTime - m_RecordingStartTS;
+                var target = frameLen * (frameCount+1);
+                var sleep =  (int)((target - elapsed) * 1000);
+
                 if (sleep > 0)
-                    System.Threading.Thread.Sleep((int)sleep);
+                {
+                    if(settings.m_Verbose)
+                        Debug.Log( string.Format("Recording session info => dT: {0:F1}s, Target dT: {1:F1}s, Retarding: {2}ms, fps: {3:F1}", elapsed, target, sleep, frameCount / elapsed ));
+
+                    System.Threading.Thread.Sleep(sleep);
+                }
+                else if (sleep < -frameLen)
+                    m_InitialFrame--;
             }
         }
 

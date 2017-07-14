@@ -33,8 +33,6 @@ namespace UnityEngine.FrameRecorder
             tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
             tex.Apply();
             RenderTexture.active = backupActive;
-            
-            //var tex = ScreenCapture.CaptureScreenshotAsTexture();
 
             byte[] bytes;
             switch (m_Settings.m_OutputFormat)

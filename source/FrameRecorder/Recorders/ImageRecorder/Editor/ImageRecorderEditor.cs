@@ -27,7 +27,7 @@ namespace UnityEditor.FrameRecorder
             if (target == null)
                 return;
 
-            m_Candidates = new [] { "Command Buffered Camera", "Camera as RenderTexture", "Render Texture" };
+            m_Candidates = new [] { "Command Buffered Camera", "Offscreen rendering", "Render Texture" };
             var pf = new PropertyFinder<ImageRecorderSettings>(serializedObject);
             m_Inputs = pf.Find(w => w.m_SourceSettings);
             m_DestinationPath = pf.Find(w => w.m_DestinationPath);
