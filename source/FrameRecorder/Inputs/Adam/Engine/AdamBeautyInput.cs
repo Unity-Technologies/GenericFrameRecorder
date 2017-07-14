@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace UnityEngine.FrameRecorder.Input
 {
@@ -145,6 +147,8 @@ namespace UnityEngine.FrameRecorder.Input
             {
                 case EImageSource.GameDisplay:
                 {
+                    bool sort = false;
+
                     // Find all cameras targetting Display
                     foreach (var cam in Resources.FindObjectsOfTypeAll<Camera>())
                     {
@@ -166,6 +170,12 @@ namespace UnityEngine.FrameRecorder.Input
                         hookedCam = new HookedCamera() { camera = cam, textureBackup = cam.targetTexture };
                         cam.targetTexture = m_renderRT;
                         m_hookedCameras.Add(hookedCam);
+                        sort = true;
+                    }
+
+                    if (sort)
+                    {
+                        m_hookedCameras = m_hookedCameras.OrderBy(x => x.camera.depth).ToList();
                     }
                     break;
                 }
@@ -186,6 +196,7 @@ namespace UnityEngine.FrameRecorder.Input
                         break;
 
                     var hookedCam = new HookedCamera() { camera = cam, textureBackup = cam.targetTexture };
+                    cam.targetTexture = m_renderRT;
                     m_hookedCameras.Add(hookedCam);
                     break;
                 }
@@ -227,33 +238,23 @@ namespace UnityEngine.FrameRecorder.Input
 
         public override void NewFrameReady(RecordingSession session)
         {
-            foreach (var hookedCam in m_hookedCameras)
-            {
-                RenderTexture src;
-                if (adamSettings.m_SuperSampling == ESuperSamplingCount.x1 || hookedCam.textureBackup == hookedCam.camera.targetTexture)
-                {
-                    src = hookedCam.camera.targetTexture;
-                }
-                else
-                {
-                    src = PerformSubSampling(hookedCam.camera);
-                }
+            PerformSubSampling();
 
-                if (adamSettings.m_RenderSize == adamSettings.m_FinalSize)
-                {
-                    // Blit with normalization if sizes match.
-                    m_normalizeMaterial.SetFloat("_NormalizationFactor", 1.0f / (float)adamSettings.m_SuperSampling);
-                    Graphics.Blit(src, outputRT, m_normalizeMaterial);
-                }
-                else
-                {
-                    // Ideally we would use a separable filter here, but we're massively bound by readback and disk anyway for hi-res.
-                    m_superMaterial.SetVector("_Target_TexelSize", new Vector4(1f / m_outputWidth, 1f / m_outputHeight, m_outputWidth, m_outputHeight));
-                    m_superMaterial.SetFloat("_KernelCosPower", adamSettings.m_SuperKernelPower);
-                    m_superMaterial.SetFloat("_KernelScale", adamSettings.m_SuperKernelScale);
-                    m_superMaterial.SetFloat("_NormalizationFactor", 1.0f / (float)adamSettings.m_SuperSampling);
-                    Graphics.Blit(src, outputRT, m_superMaterial);
-                }
+            if (adamSettings.m_RenderSize == adamSettings.m_FinalSize)
+            {
+                // Blit with normalization if sizes match.
+                m_normalizeMaterial.SetFloat("_NormalizationFactor", 1.0f / (float)adamSettings.m_SuperSampling);
+                Graphics.Blit(m_renderRT, outputRT, m_normalizeMaterial);
+                SaveRT(outputRT);
+            }
+            else
+            {
+                // Ideally we would use a separable filter here, but we're massively bound by readback and disk anyway for hi-res.
+                m_superMaterial.SetVector("_Target_TexelSize", new Vector4(1f / m_outputWidth, 1f / m_outputHeight, m_outputWidth, m_outputHeight));
+                m_superMaterial.SetFloat("_KernelCosPower", adamSettings.m_SuperKernelPower);
+                m_superMaterial.SetFloat("_KernelScale", adamSettings.m_SuperKernelScale);
+                m_superMaterial.SetFloat("_NormalizationFactor", 1.0f / (float)adamSettings.m_SuperSampling);
+                Graphics.Blit(m_renderRT, outputRT, m_superMaterial);
             }
         }
 
@@ -296,6 +297,68 @@ namespace UnityEngine.FrameRecorder.Input
             cam.projectionMatrix = oldProjectionMatrix;
 
             return dst;
+        }
+
+        void PerformSubSampling()
+        {
+            if (adamSettings.m_SuperSampling == ESuperSamplingCount.x1)
+                return;
+
+            if (m_hookedCameras.Count == 1)
+            {
+                Graphics.Blit(PerformSubSampling(m_hookedCameras[0].camera), m_renderRT);
+            }
+            else
+            {
+                RenderTexture accumulateInto = null;
+                m_renderRT.wrapMode = TextureWrapMode.Clamp;
+                m_renderRT.filterMode = FilterMode.Point;
+
+                Graphics.SetRenderTarget(m_accumulateRTs[0]);
+                GL.Clear(false, true, Color.black);
+
+                for (int i = 0, n = (int)adamSettings.m_SuperSampling; i < n; i++)
+                {
+                    foreach (var hookedCam in m_hookedCameras)
+                    {
+                        var cam = hookedCam.camera;
+
+                        // Render n times the camera and accumulate renders.
+                        var oldProjectionMatrix = cam.projectionMatrix;
+                        ShiftProjectionMatrix(cam, m_samples[i] - new Vector2(0.5f, 0.5f));
+                        cam.Render();
+                        cam.projectionMatrix = oldProjectionMatrix;
+                    }
+
+                    accumulateInto = m_accumulateRTs[(i + 1) % 2];
+                    var accumulatedWith = m_accumulateRTs[i % 2];
+                    m_accumulateMaterial.SetTexture("_PreviousTexture", accumulatedWith);
+                    Graphics.Blit(m_renderRT, accumulateInto, m_accumulateMaterial);
+                }
+
+                Graphics.Blit(accumulateInto, m_renderRT);
+            }
+        }
+
+        void SaveRT(RenderTexture input)
+        {
+
+            var width = input.width;
+            var height = input.height;
+            
+            var tex = new Texture2D(width, height, TextureFormat.RGBA32 , false);
+            var backupActive = RenderTexture.active;
+            RenderTexture.active = input;
+            tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+            tex.Apply();
+            RenderTexture.active = backupActive;
+
+            byte[] bytes;
+            bytes = tex.EncodeToPNG();
+
+            UnityHelpers.Destroy(tex);
+
+            File.WriteAllBytes("Recorder/DebugDump.png", bytes);
         }
     }
 }
