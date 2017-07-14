@@ -60,7 +60,6 @@ namespace UnityEngine.FrameRecorder
                 {
                     if(settings.m_Verbose)
                         Debug.Log( string.Format("Recording session info => dT: {0:F1}s, Target dT: {1:F1}s, Retarding: {2}ms, fps: {3:F1}", elapsed, target, sleep, frameCount / elapsed ));
-
                     System.Threading.Thread.Sleep(sleep);
                 }
                 else if (sleep < -frameLen)
