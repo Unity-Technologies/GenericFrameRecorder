@@ -35,7 +35,7 @@ namespace UnityEngine.FrameRecorder.Timeline
                 {
                     m_Recorder = RecordersInventory.GenerateNewRecorder(recorderType, m_Settings),
                     m_RecorderGO = FrameRecorderGOControler.HookupRecorder(),
-                    m_RecordingStartTS = Time.time,
+                    m_RecordingStartTS = Time.unscaledTime,
                     m_FrameIndex = 0
                 };
             }

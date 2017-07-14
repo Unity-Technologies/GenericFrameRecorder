@@ -85,6 +85,8 @@ namespace UnityEditor.FrameRecorder
             GUILayout.EndHorizontal();
 
             EditorGUILayout.PropertyField(m_BaseFileName, new GUIContent("File name"));
+
+            base.OnOutputGui();
         }
     }
 }

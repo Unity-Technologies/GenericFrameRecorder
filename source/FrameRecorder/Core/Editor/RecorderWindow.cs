@@ -212,7 +212,7 @@ namespace UnityEditor.FrameRecorder
             {
                 m_Recorder = RecordersInventory.GenerateNewRecorder(m_recorderSelector.selectedRecorder, settings),
                 m_RecorderGO = go,
-                m_RecordingStartTS = Time.time / Time.timeScale,
+                m_RecordingStartTS = Time.unscaledTime,
                 m_FrameIndex = 0
             };
 

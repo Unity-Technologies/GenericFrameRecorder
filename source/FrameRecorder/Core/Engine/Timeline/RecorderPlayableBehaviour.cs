@@ -38,7 +38,7 @@ namespace UnityEngine.FrameRecorder.Timeline
         {
             if (session != null && session.recording)
             {
-                session.m_CurrentFrameStartTS = (Time.time / Time.timeScale) - session.m_RecordingStartTS;
+                session.m_CurrentFrameStartTS = Time.unscaledTime - session.m_RecordingStartTS;
                 session.PrepareNewFrame();
             }
         }
@@ -65,7 +65,7 @@ namespace UnityEngine.FrameRecorder.Timeline
                 return;
 
             // Assumption: OnPlayStateChanged( PlayState.Playing ) ONLY EVER CALLED ONCE for this type of playable.
-            session.m_RecordingStartTS = Time.time / Time.timeScale;
+            session.m_RecordingStartTS = Time.unscaledTime;
             m_PlayState = PlayState.Playing;
         }
 
