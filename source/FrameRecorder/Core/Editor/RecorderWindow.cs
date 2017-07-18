@@ -100,6 +100,7 @@ namespace UnityEditor.FrameRecorder
                         EditorGUILayout.Separator();
                     }
                     RecordButtonOnGui();
+                    GUILayout.Space(50);
                 }
             }
             finally
