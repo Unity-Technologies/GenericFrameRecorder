@@ -12,9 +12,10 @@ namespace UnityEngine.FrameRecorder
     {
         public Recorder m_Recorder;
         public GameObject m_RecorderGO;
-        public int m_FrameIndex; // count starts at 0.
+        
         public double m_CurrentFrameStartTS;
         public double m_RecordingStartTS;
+        int     m_FrameIndex = 0;
         int     m_InitialFrame = 0;
         int     m_FirstRecordedFrameCount = -1;
         float   m_FPSTimeStart;
@@ -23,6 +24,7 @@ namespace UnityEngine.FrameRecorder
 
         public RecorderSettings settings { get { return m_Recorder.settings; } }
         public bool recording { get { return m_Recorder.recording; } }
+        public int frameIndex {get { return m_FrameIndex; }}
 
         public int RecordedFrameSpan
         {
@@ -95,10 +97,12 @@ namespace UnityEngine.FrameRecorder
                 }
             }
 
+            m_FrameIndex++;
         }
 
         public void PrepareNewFrame()
         {
+            m_CurrentFrameStartTS = Time.unscaledTime - m_RecordingStartTS;
             m_Recorder.SignalSourcesOfStage(ERecordingSessionStage.NewFrameStarting, this);
             m_Recorder.PrepareNewFrame(this);
         }

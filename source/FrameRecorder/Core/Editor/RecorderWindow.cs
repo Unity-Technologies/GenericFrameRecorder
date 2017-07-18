@@ -185,10 +185,10 @@ namespace UnityEditor.FrameRecorder
                     break;
                 case DurationMode.FrameInterval:
                 {
-                    var label = (session.m_FrameIndex < settings.m_StartFrame) ? 
+                    var label = (session.frameIndex < settings.m_StartFrame) ? 
                             string.Format("Skipping first {0} frames..", settings.m_StartFrame) : 
                             string.Format("{0} Frames recorded", session.m_Recorder.recordedFramesCount);
-                    EditorGUI.ProgressBar(rect, (session.m_FrameIndex +1) / (float)(settings.m_EndFrame +1), label );
+                    EditorGUI.ProgressBar(rect, (session.frameIndex +1) / (float)(settings.m_EndFrame +1), label );
                     break;
                 }
                 case DurationMode.TimeInterval:
@@ -224,8 +224,6 @@ namespace UnityEditor.FrameRecorder
             {
                 m_Recorder = RecordersInventory.GenerateNewRecorder(m_recorderSelector.selectedRecorder, settings),
                 m_RecorderGO = go,
-                m_RecordingStartTS = Time.unscaledTime,
-                m_FrameIndex = 0
             };
 
             var component = go.AddComponent<RecorderComponent>();

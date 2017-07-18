@@ -96,7 +96,7 @@ namespace UnityEngine.FrameRecorder
 
         public virtual bool SkipFrame(RecordingSession ctx)
         {
-            return !recording || (ctx.m_FrameIndex % settings.m_CaptureEveryNthFrame) != 0 || ctx.m_CurrentFrameStartTS < settings.m_StartTime;
+            return !recording || (ctx.frameIndex % settings.m_CaptureEveryNthFrame) != 0 || ctx.m_CurrentFrameStartTS < settings.m_StartTime;
         }
 
         public bool recording { get; protected set; }

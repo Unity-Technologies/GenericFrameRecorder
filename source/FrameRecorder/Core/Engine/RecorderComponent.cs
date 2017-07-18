@@ -18,12 +18,7 @@ namespace UnityEngine.FrameRecorder
         public void Update()
         {
             if (session != null && session.recording)
-            {
-                session.m_CurrentFrameStartTS = Time.unscaledTime - session.m_RecordingStartTS;
-                session.m_FrameIndex++;
-
                 session.PrepareNewFrame();
-            }
         }
 
         IEnumerator RecordFrame()
@@ -41,7 +36,7 @@ namespace UnityEngine.FrameRecorder
                         enabled = false;
                         break;
                     case DurationMode.FrameInterval:
-                        if (session.m_FrameIndex >= session.settings.m_EndFrame)
+                        if (session.frameIndex >= session.settings.m_EndFrame)
                             enabled = false;
                         break;
                     case DurationMode.TimeInterval:
@@ -67,7 +62,7 @@ namespace UnityEngine.FrameRecorder
         {
             if (session != null && session.recording)
             {
-                if (session.m_FrameIndex >= session.settings.m_StartFrame)
+                if (session.frameIndex >= session.settings.m_StartFrame)
                 {
                     StartCoroutine(RecordFrame());
                 }

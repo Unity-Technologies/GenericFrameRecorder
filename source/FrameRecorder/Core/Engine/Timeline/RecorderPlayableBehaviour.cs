@@ -38,7 +38,6 @@ namespace UnityEngine.FrameRecorder.Timeline
         {
             if (session != null && session.recording)
             {
-                session.m_CurrentFrameStartTS = Time.unscaledTime - session.m_RecordingStartTS;
                 session.PrepareNewFrame();
             }
         }
@@ -52,9 +51,6 @@ namespace UnityEngine.FrameRecorder.Timeline
                     endOfFrameComp = session.m_RecorderGO.AddComponent<WaitForEndOfFrameComponent>();
                     endOfFrameComp.m_playable = this;
                 }
-
-                if (session.recording)
-                    session.m_FrameIndex++;
             }
         }
 
