@@ -19,7 +19,7 @@ namespace UnityEngine.FrameRecorder
         {
             if (session != null && session.recording)
             {
-                session.m_CurrentFrameStartTS = (Time.time / Time.timeScale) - session.m_RecordingStartTS;
+                session.m_CurrentFrameStartTS = Time.unscaledTime - session.m_RecordingStartTS;
                 session.m_FrameIndex++;
 
                 session.PrepareNewFrame();
@@ -45,9 +45,20 @@ namespace UnityEngine.FrameRecorder
                             enabled = false;
                         break;
                     case DurationMode.TimeInterval:
+                    {
+                        if (session.settings.m_FrameRateMode == FrameRateMode.Variable)
+                        {
                         if (session.m_CurrentFrameStartTS >= session.settings.m_EndTime)
                             enabled = false;
+                        }
+                        else
+                        {
+                            var expectedFrames = (session.settings.m_EndTime - session.settings.m_StartTime) * session.settings.m_FrameRate;
+                            if (session.RecordedFrameSpan >= expectedFrames)
+                                enabled = false;
+                        }
                         break;
+                    }
                 }
             }
         }

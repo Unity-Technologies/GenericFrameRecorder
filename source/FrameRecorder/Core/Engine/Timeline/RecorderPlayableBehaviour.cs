@@ -65,7 +65,6 @@ namespace UnityEngine.FrameRecorder.Timeline
                 return;
 
             // Assumption: OnPlayStateChanged( PlayState.Playing ) ONLY EVER CALLED ONCE for this type of playable.
-            session.m_RecordingStartTS = Time.unscaledTime;
             m_PlayState = PlayState.Playing;
         }
 
