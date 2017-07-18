@@ -245,7 +245,6 @@ namespace UnityEngine.FrameRecorder.Input
                 // Blit with normalization if sizes match.
                 m_normalizeMaterial.SetFloat("_NormalizationFactor", 1.0f / (float)adamSettings.m_SuperSampling);
                 Graphics.Blit(m_renderRT, outputRT, m_normalizeMaterial);
-                SaveRT(outputRT);
             }
             else
             {
