@@ -33,7 +33,7 @@ namespace UnityEngine.FrameRecorder
 
         public bool BeginRecording()
         {
-            m_RecordingStartTS = Time.unscaledTime;
+            m_RecordingStartTS = (Time.time / Time.timeScale);
 
             if (!m_Recorder.BeginRecording(this))
                 return false;
@@ -102,7 +102,7 @@ namespace UnityEngine.FrameRecorder
 
         public void PrepareNewFrame()
         {
-            m_CurrentFrameStartTS = Time.unscaledTime - m_RecordingStartTS;
+            m_CurrentFrameStartTS = (Time.time / Time.timeScale) - m_RecordingStartTS;
             m_Recorder.SignalSourcesOfStage(ERecordingSessionStage.NewFrameStarting, this);
             m_Recorder.PrepareNewFrame(this);
         }
