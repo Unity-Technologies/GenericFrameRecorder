@@ -13,6 +13,7 @@ namespace UnityEditor.FrameRecorder.Input
         SerializedProperty m_CameraTag;
         SerializedProperty m_RenderSize;
         SerializedProperty m_RenderAspect;
+        SerializedProperty m_FlipVertically;
 
         protected void OnEnable()
         {
@@ -24,6 +25,7 @@ namespace UnityEditor.FrameRecorder.Input
             m_CameraTag = pf.Find(w => w.m_CameraTag);
             m_RenderSize = pf.Find(w => w.m_RenderSize);
             m_RenderAspect = pf.Find(w => w.m_RenderAspect);
+            m_FlipVertically = pf.Find(w => w.m_FlipVertical);
         }
 
         public override void OnInspectorGUI()
@@ -57,6 +59,9 @@ namespace UnityEditor.FrameRecorder.Input
                     EditorGUILayout.PropertyField(m_RenderAspect, new GUIContent("Aspect Ratio"));
                 }
             }
+
+            EditorGUILayout.PropertyField(m_FlipVertically, new GUIContent("Flip image vertically"));
+           
 
             serializedObject.ApplyModifiedProperties();
         }

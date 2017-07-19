@@ -15,6 +15,7 @@ namespace UnityEditor.FrameRecorder
         SerializedProperty m_StartTime;
         SerializedProperty m_EndTime;
         SerializedProperty m_SynchFrameRate;
+        SerializedProperty m_CaptureEveryNthFrame;
 
         protected virtual void OnEnable()
         {
@@ -31,6 +32,7 @@ namespace UnityEditor.FrameRecorder
                 m_StartTime =  pf.Find(x => x.m_StartTime);
                 m_EndTime =  pf.Find(x => x.m_EndTime);
                 m_SynchFrameRate = pf.Find(x => x.m_SynchFrameRate);
+                m_CaptureEveryNthFrame = pf.Find(x => x.m_CaptureEveryNthFrame);
             }
         }
 
@@ -130,7 +132,7 @@ namespace UnityEditor.FrameRecorder
 
         protected virtual void OnOutputGui()
         {
-            EditorGUILayout.PropertyField(serializedObject.FindProperty<RecorderSettings>(x => x.m_CaptureEveryNthFrame), new GUIContent("Every n'th frame"));
+            EditorGUILayout.PropertyField(m_CaptureEveryNthFrame, new GUIContent("Every n'th frame"));
         }
 
         protected virtual void OnEncodingGui()
