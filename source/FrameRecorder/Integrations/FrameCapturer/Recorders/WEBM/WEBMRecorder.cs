@@ -51,7 +51,7 @@ namespace UTJ.FrameCapturer.Recorders
 
             fcAPI.fcLock(frame, TextureFormat.RGB24, (data, fmt) =>
             {
-                fcAPI.fcWebMAddVideoFramePixels(m_ctx, data, fmt, session.m_CurrentFrameStartTS);
+                fcAPI.fcWebMAddVideoFramePixels(m_ctx, data, fmt, session.RecorderTime);
             });
         }
 

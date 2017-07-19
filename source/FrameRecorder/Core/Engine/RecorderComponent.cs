@@ -43,8 +43,8 @@ namespace UnityEngine.FrameRecorder
                     {
                         if (session.settings.m_FrameRateMode == FrameRateMode.Variable)
                         {
-                        if (session.m_CurrentFrameStartTS >= session.settings.m_EndTime)
-                            enabled = false;
+                            if (session.m_CurrentFrameStartTS >= session.settings.m_EndTime)
+                                enabled = false;
                         }
                         else
                         {
