@@ -7,7 +7,7 @@ namespace UnityEditor.FrameRecorder.Input
     [CustomEditor(typeof(CBRenderTextureInputSettings))]
     public class CBRenderTextureInputSettingsEditor : Editor
     {
-        //static EImageSource m_SupportedSources = EImageSource.MainCamera; // | EImageSource.GameDisplay;
+        static EImageSource m_SupportedSources = EImageSource.MainCamera | EImageSource.GameDisplay;
         string[] m_MaskedSourceNames;
         SerializedProperty m_Source;
         SerializedProperty m_CameraTag;
@@ -30,7 +30,6 @@ namespace UnityEditor.FrameRecorder.Input
 
         public override void OnInspectorGUI()
         {
-            /* re-enable when more than just Game view is supported
             using (var check = new EditorGUI.ChangeCheckScope())
             {
                 if (m_MaskedSourceNames == null)
@@ -41,7 +40,6 @@ namespace UnityEditor.FrameRecorder.Input
                 if (check.changed)
                     m_Source.intValue = EnumHelper.GetEnumValueFromMaskedIndex<EImageSource>(index, (int)m_SupportedSources);
             }
-            */
 
             var inputType = (EImageSource)m_Source.intValue;
             if ((EImageSource)m_Source.intValue == EImageSource.TaggedCamera)
