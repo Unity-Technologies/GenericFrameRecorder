@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿#if UNITY_EDITOR
+
+using System;
 using UnityEditor;
-using UnityEngine;
 
 namespace UnityEngine.FrameRecorder.Input
 {
@@ -120,3 +119,5 @@ namespace UnityEngine.FrameRecorder.Input
     }
 
 }
+
+#endif

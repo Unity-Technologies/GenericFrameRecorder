@@ -20,7 +20,7 @@ namespace UnityEngine.FrameRecorder
             else
                 Object.DestroyImmediate(obj, allowDestroyingAssets);
 #else
-            Object.Destroy(m_HostGO);
+            Object.Destroy(obj);
 #endif
             obj = null;
         }

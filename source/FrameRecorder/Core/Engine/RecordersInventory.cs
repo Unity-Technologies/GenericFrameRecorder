@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 namespace UnityEngine.FrameRecorder
 {
@@ -173,7 +175,7 @@ namespace UnityEngine.FrameRecorder
             else
                 throw new ArgumentException("No factory was registered for " + recorderType.Name);
         }
-
+#if UNITY_EDITOR
         public static RecorderSettings GenerateNewSettingsAsset(UnityEngine.Object parentAsset, Type recorderType)
         {
             Init();
@@ -184,7 +186,6 @@ namespace UnityEngine.FrameRecorder
                 settings = ScriptableObject.CreateInstance(recorderinfo.settings) as RecorderSettings;
                 settings.name = "Frame Recorder Settings";
                 settings.recorderType = recorderType;
-                //settings.hideFlags = HideFlags.HideInHierarchy;
 
                 AssetDatabase.AddObjectToAsset(settings, parentAsset);
                 AssetDatabase.SaveAssets();
@@ -193,5 +194,6 @@ namespace UnityEngine.FrameRecorder
             else
                 throw new ArgumentException("No factory was registered for " + recorderType.Name);            
         }
+#endif
     }
 }
