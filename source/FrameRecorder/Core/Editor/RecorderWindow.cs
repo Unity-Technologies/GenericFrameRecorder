@@ -199,12 +199,10 @@ namespace UnityEditor.FrameRecorder
                     break;
                 }
                 case DurationMode.SingleFrame:
-                    // Display nothing
-                    break;
                 case DurationMode.FrameInterval:
                 {
                     var label = (session.frameIndex < settings.m_StartFrame) ? 
-                            string.Format("Skipping first {0} frames..", settings.m_StartFrame) : 
+                            string.Format("Skipping first {0} frames...", settings.m_StartFrame-1) : 
                             string.Format("{0} Frames recorded", session.m_Recorder.recordedFramesCount);
                     EditorGUI.ProgressBar(rect, (session.frameIndex +1) / (float)(settings.m_EndFrame +1), label );
                     break;

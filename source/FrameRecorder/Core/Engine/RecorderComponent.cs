@@ -33,12 +33,17 @@ namespace UnityEngine.FrameRecorder
                     case DurationMode.Manual:
                         break;
                     case DurationMode.SingleFrame:
-                        enabled = false;
-                        break;
-                    case DurationMode.FrameInterval:
-                        if (session.frameIndex >= session.settings.m_EndFrame)
+                    {
+                        if (session.m_Recorder.recordedFramesCount == 1)
                             enabled = false;
                         break;
+                    }
+                    case DurationMode.FrameInterval:
+                    {
+                        if (session.frameIndex > session.settings.m_EndFrame)
+                            enabled = false;
+                        break;
+                    }
                     case DurationMode.TimeInterval:
                     {
                         if (session.settings.m_FrameRateMode == FrameRateMode.Variable)
@@ -61,12 +66,7 @@ namespace UnityEngine.FrameRecorder
         public void LateUpdate()
         {
             if (session != null && session.recording)
-            {
-                if (session.frameIndex >= session.settings.m_StartFrame)
-                {
-                    StartCoroutine(RecordFrame());
-                }
-            }
+                StartCoroutine(RecordFrame());
         }
 
         public void OnDisable()

@@ -159,7 +159,6 @@ namespace UnityEditor.FrameRecorder
             {
                 case DurationMode.Manual:
                 {
-                    EditorGUILayout.PropertyField(m_StartFrame, new GUIContent("First Frame"));
                     break;
                 }
                 case DurationMode.SingleFrame:
