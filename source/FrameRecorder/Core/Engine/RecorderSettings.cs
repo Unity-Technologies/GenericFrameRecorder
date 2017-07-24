@@ -35,7 +35,6 @@ namespace UnityEngine.FrameRecorder
     /// </summary>    
     public abstract class RecorderSettings : ScriptableObject
     {
-        [Range(1,10)]
         public int m_CaptureEveryNthFrame = 1;
         public FrameRateMode m_FrameRateMode = FrameRateMode.Constant;
         [Range(1,120)]
