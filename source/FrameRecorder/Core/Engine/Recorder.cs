@@ -19,11 +19,17 @@ namespace UnityEngine.FrameRecorder
     /// </summary>    
     public abstract class Recorder : ScriptableObject
     {
-        double m_OriginalCaptureFrameRate;
+        static int sm_CaptureFrameRateCount;
+        bool m_ModifiedCaptureFR;
 
         public int recordedFramesCount { get; set; }
         
         protected List<RecorderInput> m_Inputs;
+
+        public virtual void Awake()
+        {
+            sm_CaptureFrameRateCount = 0;
+        }
 
         public virtual void Reset()
         {
@@ -33,6 +39,16 @@ namespace UnityEngine.FrameRecorder
 
         protected virtual void OnDestroy()
         {
+            if (m_ModifiedCaptureFR )
+            {
+                sm_CaptureFrameRateCount--;
+                if (sm_CaptureFrameRateCount == 0)
+                {
+                    Time.captureFramerate = 0;
+                    if (settings.m_Verbose)
+                        Debug.Log("Frame recorder resetting 'CaptureFrameRate' to zero");
+                }
+            }
         }
 
         public abstract RecorderSettings settings { get; set; }
@@ -46,16 +62,18 @@ namespace UnityEngine.FrameRecorder
             if (settings.m_Verbose)
                 Debug.Log(string.Format("Recorder {0} starting to record", GetType().Name));
 
-            m_OriginalCaptureFrameRate = Time.captureFramerate;
-            var fixedRate = settings.m_FrameRateMode == FrameRateMode.Constant ? (int)settings.m_FrameRate : m_OriginalCaptureFrameRate;
-            if (fixedRate != m_OriginalCaptureFrameRate)
+            var fixedRate = settings.m_FrameRateMode == FrameRateMode.Constant ? (int)settings.m_FrameRate : 0;
+            if (fixedRate > 0)
             {
-                if (Time.captureFramerate > 0)
-                    Debug.LogWarning(string.Format("Frame Recorder {0} is set to record at a fixed rate and another component has already set a conflicting value for [Time.captureFramerate], new value being applied : {1}!", GetType().Name, fixedRate));
+                if (Time.captureFramerate != 0 && fixedRate != Time.captureFramerate )
+                    Debug.LogError(string.Format("Frame Recorder {0} is set to record at a fixed rate and another component has already set a conflicting value for [Time.captureFramerate], new value being applied : {1}!", GetType().Name, fixedRate));
+                else if( Time.captureFramerate == 0 && settings.m_Verbose )
+                    Debug.Log("Frame recorder set fixed frame rate to " + fixedRate);
+
                 Time.captureFramerate = (int)fixedRate;
 
-                if (settings.m_Verbose)
-                    Debug.Log("Frame recorder set fixed frame rate to " + fixedRate);
+                sm_CaptureFrameRateCount++;
+                m_ModifiedCaptureFR = true;
             }
 
             m_Inputs = new List<RecorderInput>();
@@ -74,11 +92,16 @@ namespace UnityEngine.FrameRecorder
                 return;
             recording = false;
 
-            if (Time.captureFramerate != m_OriginalCaptureFrameRate)
+            if (m_ModifiedCaptureFR )
             {
-                Time.captureFramerate = (int)m_OriginalCaptureFrameRate;
-                if (settings.m_Verbose)
-                    Debug.Log("Frame recorder resetting fixed frame rate to original value of " + m_OriginalCaptureFrameRate);
+                m_ModifiedCaptureFR = false;
+                sm_CaptureFrameRateCount--;
+                if (sm_CaptureFrameRateCount == 0)
+                {
+                    Time.captureFramerate = 0;
+                    if (settings.m_Verbose)
+                        Debug.Log("Frame recorder resetting 'CaptureFrameRate' to zero");
+                }
             }
 
             foreach (var input in m_Inputs)
