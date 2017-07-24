@@ -28,6 +28,8 @@ namespace UnityEngine.FrameRecorder
             GC.SuppressFinalize(this);
         }
 
+        public virtual void SessionCreated(RecordingSession session) {}
+
         public virtual void BeginRecording(RecordingSession session) {}
 
         public virtual void NewFrameStarting(RecordingSession session) {}

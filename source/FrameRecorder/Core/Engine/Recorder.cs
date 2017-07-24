@@ -10,6 +10,7 @@ namespace UnityEngine.FrameRecorder
         NewFrameReady,
         FrameDone,
         EndRecording,
+        SessionCreated
     }
 
     /// <summary>
@@ -53,14 +54,10 @@ namespace UnityEngine.FrameRecorder
 
         public abstract RecorderSettings settings { get; set; }
 
-        // returns true if recording is starting. false if failed to begin recording or was already recording
-        public virtual bool BeginRecording(RecordingSession session)
+        public virtual void SessionCreated(RecordingSession session)
         {
-            if (recording)
-                return false;
-
             if (settings.m_Verbose)
-                Debug.Log(string.Format("Recorder {0} starting to record", GetType().Name));
+                Debug.Log(string.Format("Recorder {0} session created", GetType().Name));
 
             var fixedRate = settings.m_FrameRateMode == FrameRateMode.Constant ? (int)settings.m_FrameRate : 0;
             if (fixedRate > 0)
@@ -83,6 +80,16 @@ namespace UnityEngine.FrameRecorder
                 input.settings = inputSettings;
                 m_Inputs.Add(input);
             }
+        }
+
+        public virtual bool BeginRecording(RecordingSession session)
+        {
+            if (recording)
+                throw new Exception("Already recording!");
+
+            if (settings.m_Verbose)
+                Debug.Log(string.Format("Recorder {0} starting to record", GetType().Name));
+         
             return recording = true;
         }
 
@@ -128,10 +135,17 @@ namespace UnityEngine.FrameRecorder
 
         public bool recording { get; protected set; }
 
-        public void SignalSourcesOfStage(ERecordingSessionStage stage, RecordingSession session)
+        public void SignalInputsOfStage(ERecordingSessionStage stage, RecordingSession session)
         {
+            if (m_Inputs == null)
+                return;
+
             switch (stage)
             {
+                case ERecordingSessionStage.SessionCreated:
+                    foreach( var input in m_Inputs )
+                        input.SessionCreated(session);
+                    break;
                 case ERecordingSessionStage.BeginRecording:
                     foreach( var input in m_Inputs )
                         input.BeginRecording(session);

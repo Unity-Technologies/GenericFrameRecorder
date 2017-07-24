@@ -1,6 +1,7 @@
 ﻿#if UNITY_EDITOR
 
 using System;
+using System.Reflection;
 using UnityEditor;
 
 namespace UnityEngine.FrameRecorder.Input
@@ -8,6 +9,9 @@ namespace UnityEngine.FrameRecorder.Input
 
     public class GameViewSize
     {
+
+        static object m_InitialSizeObj;
+
 
         public static EditorWindow GetMainGameView()
         {
@@ -116,8 +120,35 @@ namespace UnityEngine.FrameRecorder.Input
             obj.Invoke(gameView, new object[] { index, size });
         }
 
-    }
+        public static object StoredInitialSize
+        {
+            get
+            {
+                return m_InitialSizeObj; 
+            }
+        }
 
+        public static object currentSize
+        {
+            get
+            {
+                var gv = GetMainGameView();
+                var prop = gv.GetType().GetProperty("currentGameViewSize", BindingFlags.NonPublic | BindingFlags.Instance);
+                return prop.GetValue(gv, new object[0] { });
+            }
+        }
+
+        public static void BackupCurrentSize()
+        {
+            m_InitialSizeObj = currentSize;
+        }
+
+        public static void RestoreSize()
+        {
+            SelectSize(m_InitialSizeObj);
+            m_InitialSizeObj = null;
+        }
+    }
 }
 
 #endif

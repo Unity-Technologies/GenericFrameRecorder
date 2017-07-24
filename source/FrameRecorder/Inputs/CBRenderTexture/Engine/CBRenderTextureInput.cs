@@ -8,6 +8,8 @@ namespace UnityEngine.FrameRecorder.Input
 {
     public class CBRenderTextureInput : BaseRenderTextureInput
     {
+        static int m_ModifiedResolutionCount = 0;
+        bool m_ModifiedResulution = false;
         Shader          m_shCopy;
         Material        m_mat_copy;
         Mesh            m_quad;
@@ -95,6 +97,17 @@ namespace UnityEngine.FrameRecorder.Input
                             if (size == null)
                                 size = GameViewSize.AddSize(outputWidth, outputHeight);
 
+                            if( m_ModifiedResolutionCount == 0 )
+                                GameViewSize.BackupCurrentSize();
+                            else
+                            {
+                                if (size != GameViewSize.currentSize)
+                                {
+                                    Debug.LogError("Requestion a resultion change while a recorder's input has already requested one! Undefined behaviour.");
+                                }
+                            }
+                            m_ModifiedResolutionCount++;
+                            m_ModifiedResulution = true;
                             GameViewSize.SelectSize(size);
                             break;
                         }
@@ -180,6 +193,16 @@ namespace UnityEngine.FrameRecorder.Input
             if (disposing)
             {
                 ReleaseCamera();
+
+#if UNITY_EDITOR
+                if (m_ModifiedResulution)
+                {
+                    m_ModifiedResolutionCount --;
+                    if( m_ModifiedResolutionCount == 0 )
+                        GameViewSize.RestoreSize();
+                }
+#endif
+
             }
 
             base.Dispose(disposing);

@@ -246,6 +246,7 @@ namespace UnityEditor.FrameRecorder
             component.session = session;
             component.autoExitPlayMode = autoExitPlayMode;
 
+            session.SessionCreated();
             session.BeginRecording();
             m_State = EState.Recording;
         }

@@ -23,7 +23,7 @@ namespace UnityEngine.FrameRecorder.Timeline
             if (session != null)
             {
                 // does not support multiple starts...
-                session.BeginRecording();
+                session.SessionCreated();
                 m_PlayState = PlayState.Paused;
             }
         }
@@ -54,7 +54,6 @@ namespace UnityEngine.FrameRecorder.Timeline
             }
         }
 
-
         public override void OnBehaviourPlay(Playable playable, FrameData info)
         {
             if (session == null)
@@ -62,6 +61,7 @@ namespace UnityEngine.FrameRecorder.Timeline
 
             // Assumption: OnPlayStateChanged( PlayState.Playing ) ONLY EVER CALLED ONCE for this type of playable.
             m_PlayState = PlayState.Playing;
+            session.BeginRecording();                
         }
 
         public override void OnBehaviourPause(Playable playable, FrameData info)

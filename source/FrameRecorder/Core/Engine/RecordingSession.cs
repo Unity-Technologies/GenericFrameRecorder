@@ -36,6 +36,16 @@ namespace UnityEngine.FrameRecorder
             get { return (float)(m_CurrentFrameStartTS - settings.m_StartTime); }
         }
 
+        public bool SessionCreated()
+        {
+            m_RecordingStartTS = (Time.time / Time.timeScale);
+
+            m_Recorder.SessionCreated(this);
+            m_Recorder.SignalInputsOfStage(ERecordingSessionStage.SessionCreated, this);
+            return true;
+        }
+
+
         public bool BeginRecording()
         {
             m_RecordingStartTS = (Time.time / Time.timeScale);
@@ -45,19 +55,19 @@ namespace UnityEngine.FrameRecorder
             m_InitialFrame = Time.renderedFrameCount;
             m_FPSTimeStart = Time.unscaledTime;
 
-            m_Recorder.SignalSourcesOfStage(ERecordingSessionStage.BeginRecording, this);
+            m_Recorder.SignalInputsOfStage(ERecordingSessionStage.BeginRecording, this);
             return true;
         }
 
         public virtual void EndRecording()
         {
-            m_Recorder.SignalSourcesOfStage(ERecordingSessionStage.EndRecording, this);
+            m_Recorder.SignalInputsOfStage(ERecordingSessionStage.EndRecording, this);
             m_Recorder.EndRecording(this);
         }
 
         public void RecordFrame()
         {
-            m_Recorder.SignalSourcesOfStage(ERecordingSessionStage.NewFrameReady, this);
+            m_Recorder.SignalInputsOfStage(ERecordingSessionStage.NewFrameReady, this);
             if (!m_Recorder.SkipFrame(this))
             {
                 m_Recorder.RecordFrame(this);
@@ -65,7 +75,7 @@ namespace UnityEngine.FrameRecorder
                 if (m_Recorder.recordedFramesCount == 1)
                     m_FirstRecordedFrameCount = Time.renderedFrameCount;
             }
-            m_Recorder.SignalSourcesOfStage(ERecordingSessionStage.FrameDone, this);
+            m_Recorder.SignalInputsOfStage(ERecordingSessionStage.FrameDone, this);
 
             // Note: This is not great when multiple recorders are simultaneously active...
             if (m_Recorder.settings.m_FrameRateMode == FrameRateMode.Variable ||
@@ -108,7 +118,7 @@ namespace UnityEngine.FrameRecorder
         public void PrepareNewFrame()
         {
             m_CurrentFrameStartTS = (Time.time / Time.timeScale) - m_RecordingStartTS;
-            m_Recorder.SignalSourcesOfStage(ERecordingSessionStage.NewFrameStarting, this);
+            m_Recorder.SignalInputsOfStage(ERecordingSessionStage.NewFrameStarting, this);
             m_Recorder.PrepareNewFrame(this);
         }
 
