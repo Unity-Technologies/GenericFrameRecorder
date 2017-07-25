@@ -14,6 +14,7 @@ namespace UnityEditor.FrameRecorder.Input
         SerializedProperty m_RenderSize;
         SerializedProperty m_RenderAspect;
         SerializedProperty m_FlipVertically;
+        SerializedProperty m_Transparency;
 
         protected void OnEnable()
         {
@@ -26,6 +27,7 @@ namespace UnityEditor.FrameRecorder.Input
             m_RenderSize = pf.Find(w => w.m_RenderSize);
             m_RenderAspect = pf.Find(w => w.m_RenderAspect);
             m_FlipVertically = pf.Find(w => w.m_FlipVertical);
+            m_Transparency = pf.Find(w => w.m_AllowTransparency);
         }
 
         public override void OnInspectorGUI()
@@ -58,7 +60,8 @@ namespace UnityEditor.FrameRecorder.Input
                 }
             }
 
-            EditorGUILayout.PropertyField(m_FlipVertically, new GUIContent("Flip image vertically"));
+            EditorGUILayout.PropertyField(m_Transparency, new GUIContent("Preserve transparency"));
+            EditorGUILayout.PropertyField(m_FlipVertically, new GUIContent("Flip vertically"));
            
             serializedObject.ApplyModifiedProperties();
 

@@ -8,6 +8,7 @@
         public string m_CameraTag;
         public bool m_FlipVertical = false;
         public bool m_PadSize = false;
+        public bool m_AllowTransparency = false;
 
         public override bool isValid {
             get { return source != EImageSource.TaggedCamera || !string.IsNullOrEmpty(m_CameraTag); }

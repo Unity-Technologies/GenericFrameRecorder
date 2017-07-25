@@ -50,7 +50,9 @@ half4 copy_framebuffer(v2f I) : SV_Target
     t.y = 1.0 - t.y;
 #endif
     half4 O = tex2D(_TmpFrameBuffer, t);
+#if !defined(TRANSPARENCY_ON)
     O.a = 1.0;
+#endif
     return O;
 }
 

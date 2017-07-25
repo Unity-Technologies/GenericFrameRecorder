@@ -175,6 +175,9 @@ namespace UnityEngine.FrameRecorder.Input
                 if (m_Camera.targetTexture != null || cbSettings.m_FlipVertical )
                     m_mat_copy.EnableKeyword("OFFSCREEN");
 
+                if( cbSettings.m_AllowTransparency )
+                    m_mat_copy.EnableKeyword("TRANSPARENCY_ON");
+
                 var tid = Shader.PropertyToID("_TmpFrameBuffer");
                 m_cbCopyFB = new CommandBuffer { name = "Frame Recorder: copy frame buffer" };
                 m_cbCopyFB.GetTemporaryRT(tid, -1, -1, 0, FilterMode.Bilinear);
