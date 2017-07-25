@@ -60,8 +60,13 @@ namespace UnityEditor.FrameRecorder.Input
 
             EditorGUILayout.PropertyField(m_FlipVertically, new GUIContent("Flip image vertically"));
            
-
             serializedObject.ApplyModifiedProperties();
+
+            if (!(target as CBRenderTextureInputSettings).isValid)
+            {
+                EditorGUILayout.HelpBox("Incomplete/Invalid settings", MessageType.Warning);
+            }
+
         }
     }
 }

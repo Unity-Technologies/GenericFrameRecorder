@@ -10,6 +10,7 @@ namespace UnityEngine.FrameRecorder
     public abstract class  RecorderInputSetting : ScriptableObject
     {
         public abstract Type inputType { get; }
+        public abstract bool isValid { get; }
     }
 
     /// <summary>
@@ -17,7 +18,7 @@ namespace UnityEngine.FrameRecorder
     /// Motivation  : 
     /// Notes: 
     /// </summary>    
-    public class InputSettings<TInput> : RecorderInputSetting
+    public abstract class InputSettings<TInput> : RecorderInputSetting
     {
         public override Type inputType
         {

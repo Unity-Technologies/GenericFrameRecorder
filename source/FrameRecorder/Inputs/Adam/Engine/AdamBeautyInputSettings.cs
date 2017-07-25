@@ -11,5 +11,12 @@
         public float m_SuperKernelScale = 1f;
         public RenderTexture m_RenderTexture;
         public string m_CameraTag;
+
+        public override bool isValid {
+            get
+            {
+                return source == EImageSource.GameDisplay || source == EImageSource.MainCamera; 
+            }
+        }
     }
 }

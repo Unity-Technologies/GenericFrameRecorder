@@ -80,6 +80,12 @@ namespace UnityEditor.FrameRecorder.Input
                 renderSize.intValue = m_FinalSize.intValue;
 
             serializedObject.ApplyModifiedProperties();
+
+            if (!(target as AdamBeautyInputSettings).isValid)
+            {
+                EditorGUILayout.HelpBox("Incomplete/Invalid settings", MessageType.Warning);
+            }
+
         }
     }
 

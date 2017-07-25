@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace UnityEngine.FrameRecorder
 {
@@ -70,7 +71,19 @@ namespace UnityEngine.FrameRecorder
 
         public virtual bool isValid
         {
-            get { return m_FrameRate > 0; }
+            get
+            {
+                if (m_FrameRate == 0)
+                    return false;
+
+                if (m_SourceSettings != null)
+                {
+                    var valid = m_SourceSettings.All(x => x.isValid);
+                    return valid;
+                }
+
+                return true;
+            }
         }
 
         public virtual void OnEnable()

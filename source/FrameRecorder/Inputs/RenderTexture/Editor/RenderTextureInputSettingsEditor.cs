@@ -33,6 +33,11 @@ namespace UnityEditor.FrameRecorder.Input
             }
 
             serializedObject.ApplyModifiedProperties();
+
+            if (!(target as RenderTextureInputSettings).isValid)
+            {
+                EditorGUILayout.HelpBox("Incomplete/Invalid settings", MessageType.Warning);
+            }
         }
     }
 }
