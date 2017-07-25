@@ -79,6 +79,7 @@ namespace UnityEngine.FrameRecorder
                 var input = Activator.CreateInstance(inputSettings.inputType) as RecorderInput;
                 input.settings = inputSettings;
                 m_Inputs.Add(input);
+                SignalInputsOfStage(ERecordingSessionStage.SessionCreated, session);
             }
         }
 

@@ -3,6 +3,12 @@
 Shader "Hidden/BeautyShot/Accumulate" {
 Properties {
 	_MainTex("Diffuse", 2D) = "white" {}
+    _OfsX("OfsX", Float) = 0
+    _OfsY("OfsY", Float) = 0
+    _Width("Width", Float) = 1
+    _Height("Height", Float) = 1
+    _Scale("Scale", Float) = 1
+    _Pass("Pass", int) = 0
 }
 
 CGINCLUDE
@@ -27,12 +33,30 @@ uniform sampler2D _MainTex;
 uniform float4 _MainTex_TexelSize;
 
 uniform sampler2D _PreviousTexture;
+Float _OfsX;
+Float _OfsY;
+Float _Width;
+Float _Height;
+Float _Scale;
+int _Pass;
 
 float4 frag(v2f i) : SV_Target {
 	float4 previous = tex2D(_PreviousTexture, i.uv);
-	float4 current = tex2D(_MainTex, i.uv);
-	
-	return previous + current;
+    float2 tmp = i.uv;
+    float4 current = {0,0,0,0};
+    if(  i.uv.x >= _OfsX && i.uv.x <= (_OfsX+ _Width) && i.uv.y >= _OfsY && i.uv.y <= (_OfsY + _Height))
+    {
+        tmp.x = (tmp.x - _OfsX) / _Scale;
+        tmp.y = (tmp.y - _OfsY) / _Scale;
+        current = tex2D(_MainTex, tmp);
+
+        if (_Pass == 0)
+            return current;
+        else
+            return previous + current;
+    }
+    else
+        return previous;
 }
 
 ENDCG

@@ -41,7 +41,6 @@ namespace UnityEngine.FrameRecorder
             m_RecordingStartTS = (Time.time / Time.timeScale);
 
             m_Recorder.SessionCreated(this);
-            m_Recorder.SignalInputsOfStage(ERecordingSessionStage.SessionCreated, this);
             return true;
         }
 

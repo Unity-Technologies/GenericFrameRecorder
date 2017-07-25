@@ -124,13 +124,12 @@ namespace UnityEngine.FrameRecorder.Input
             m_normalizeMaterial.hideFlags = HideFlags.DontSave;
 
             m_renderRT = new RenderTexture(m_renderWidth, m_renderHeight, 24, RenderTextureFormat.DefaultHDR, RenderTextureReadWrite.Linear);
-            if (adamSettings.m_SuperSampling != ESuperSamplingCount.x1)
+            m_renderRT.wrapMode = TextureWrapMode.Clamp;
+            for (int i = 0; i < 2; ++i)
             {
-                for (int i = 0; i < 2; ++i)
-                {
-                    m_accumulateRTs[i] = new RenderTexture(m_renderWidth, m_renderHeight, 0, RenderTextureFormat.DefaultHDR, RenderTextureReadWrite.Linear);
-                    m_accumulateRTs[i].Create();
-                }
+                m_accumulateRTs[i] = new RenderTexture(m_renderWidth, m_renderHeight, 0, RenderTextureFormat.DefaultHDR, RenderTextureReadWrite.Linear);
+                m_accumulateRTs[i].wrapMode = TextureWrapMode.Clamp;
+                m_accumulateRTs[i].Create();
             }
             var rt = new RenderTexture(m_outputWidth, m_outputHeight, 0, RenderTextureFormat.Default, RenderTextureReadWrite.sRGB);
             rt.Create();
@@ -158,17 +157,19 @@ namespace UnityEngine.FrameRecorder.Input
                             // Should we keep it?
                             if (cam.targetDisplay != 0 || !cam.enabled)
                             {
+                                UnityHelpers.Destroy(cam.targetTexture);
                                 cam.targetTexture = hookedCam.textureBackup;
                                 m_hookedCameras.Remove(hookedCam);
                             }
                             continue;
                         }
 
-                        if (!cam.enabled || cam.targetDisplay != 0)
+                        if (!cam.enabled || !cam.gameObject.active || cam.targetDisplay != 0)
                             continue;
 
                         hookedCam = new HookedCamera() { camera = cam, textureBackup = cam.targetTexture };
-                        cam.targetTexture = m_renderRT;
+                        var camRT = new RenderTexture((int)(m_renderWidth * cam.rect.width), (int)(m_renderHeight * cam.rect.height), 24, RenderTextureFormat.DefaultHDR, RenderTextureReadWrite.Linear);
+                        cam.targetTexture = camRT;
                         m_hookedCameras.Add(hookedCam);
                         sort = true;
                     }
@@ -219,6 +220,8 @@ namespace UnityEngine.FrameRecorder.Input
                     {
                         if (c != null)
                         {
+                            if (c.camera.rect.width == 1f && c.camera.rect.height == 1f)
+                                UnityHelpers.Destroy(c.camera.targetTexture);
                             c.camera.targetTexture = c.textureBackup;
                         }
                     }
@@ -268,79 +271,67 @@ namespace UnityEngine.FrameRecorder.Input
             camera.projectionMatrix = projectionMatrix;
         }
 
-        RenderTexture PerformSubSampling(Camera cam)
+        bool CameraUsingPartialViewport(Camera cam)
         {
-            var src = cam.targetTexture;
-            src.wrapMode = TextureWrapMode.Clamp;
-            src.filterMode = FilterMode.Point;
-
-            RenderTexture dst = null;
-
-            Graphics.SetRenderTarget(m_accumulateRTs[0]);
-            GL.Clear(false, true, Color.black);
-
-            // Render n times the camera and accumulate renders.
-            var oldProjectionMatrix = cam.projectionMatrix;
-            for (int i = 0, n = (int)adamSettings.m_SuperSampling; i < n; i++)
-            {
-                ShiftProjectionMatrix(cam, m_samples[i] - new Vector2(0.5f, 0.5f));
-                cam.Render();
-
-                var accumulateInto = m_accumulateRTs[(i + 1) % 2];
-                var accumulatedWith = m_accumulateRTs[i % 2];
-                m_accumulateMaterial.SetTexture("_PreviousTexture", accumulatedWith);
-                Graphics.Blit(src, accumulateInto, m_accumulateMaterial);
-
-                dst = accumulateInto;
-            }
-            cam.projectionMatrix = oldProjectionMatrix;
-
-            return dst;
+            return cam.rect.width != 1 || cam.rect.height != 1 || cam.rect.x != 0 || cam.rect.y != 0;
         }
 
         void PerformSubSampling()
         {
-            if (adamSettings.m_SuperSampling == ESuperSamplingCount.x1)
-                return;
+            RenderTexture accumulateInto = null;
+            m_renderRT.wrapMode = TextureWrapMode.Clamp;
+            m_renderRT.filterMode = FilterMode.Point;
 
-            if (m_hookedCameras.Count == 1)
-            {
-                Graphics.Blit(PerformSubSampling(m_hookedCameras[0].camera), m_renderRT);
-            }
-            else
-            {
-                RenderTexture accumulateInto = null;
-                m_renderRT.wrapMode = TextureWrapMode.Clamp;
-                m_renderRT.filterMode = FilterMode.Point;
+            int x = 0;
+            Graphics.SetRenderTarget(m_accumulateRTs[0]);
+            GL.Clear(false, true, Color.black);
 
-                Graphics.SetRenderTarget(m_accumulateRTs[0]);
-                GL.Clear(false, true, Color.black);
+            foreach (var hookedCam in m_hookedCameras)
+            {
+                var cam = hookedCam.camera;
 
                 for (int i = 0, n = (int)adamSettings.m_SuperSampling; i < n; i++)
                 {
-                    foreach (var hookedCam in m_hookedCameras)
-                    {
-                        var cam = hookedCam.camera;
+                    var oldProjectionMatrix = cam.projectionMatrix;
+                    var oldRect = cam.rect;
+                    cam.rect  =new Rect(0f,0f,1f,1f);
+                    ShiftProjectionMatrix(cam, m_samples[i] - new Vector2(0.5f, 0.5f));
+                    cam.Render();
+                    cam.projectionMatrix = oldProjectionMatrix;
+                    cam.rect = oldRect;
 
-                        // Render n times the camera and accumulate renders.
-                        var oldProjectionMatrix = cam.projectionMatrix;
-                        ShiftProjectionMatrix(cam, m_samples[i] - new Vector2(0.5f, 0.5f));
-                        cam.Render();
-                        cam.projectionMatrix = oldProjectionMatrix;
-                    }
-
-                    accumulateInto = m_accumulateRTs[(i + 1) % 2];
-                    var accumulatedWith = m_accumulateRTs[i % 2];
+                    accumulateInto = m_accumulateRTs[(x + 1) % 2];
+                    var accumulatedWith = m_accumulateRTs[x % 2];
                     m_accumulateMaterial.SetTexture("_PreviousTexture", accumulatedWith);
-                    Graphics.Blit(m_renderRT, accumulateInto, m_accumulateMaterial);
-                }
 
-                Graphics.Blit(accumulateInto, m_renderRT);
+                    if (CameraUsingPartialViewport(cam))
+                    {
+                        m_accumulateMaterial.SetFloat("_OfsX", cam.rect.x );
+                        m_accumulateMaterial.SetFloat("_OfsY", cam.rect.y );
+                        m_accumulateMaterial.SetFloat("_Width", cam.rect.width );
+                        m_accumulateMaterial.SetFloat("_Height", cam.rect.height );
+                        m_accumulateMaterial.SetFloat("_Scale", cam.targetTexture.width / (float)m_renderRT.width );
+                    }
+                    else
+                    {
+                        m_accumulateMaterial.SetFloat("_OfsX", 0 );
+                        m_accumulateMaterial.SetFloat("_OfsY", 0 );
+                        m_accumulateMaterial.SetFloat("_Width", 1 );
+                        m_accumulateMaterial.SetFloat("_Height", 1 );
+                        m_accumulateMaterial.SetFloat("_Scale", 1 );
+                    }
+                    m_accumulateMaterial.SetInt("_Pass", i);
+                    Graphics.Blit(cam.targetTexture, accumulateInto, m_accumulateMaterial);
+                    x++;
+                }
             }
+
+            Graphics.Blit(accumulateInto, m_renderRT);
         }
 
         void SaveRT(RenderTexture input)
         {
+            if (input == null) return;
 
             var width = input.width;
             var height = input.height;
