@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.FrameRecorder.Core.Engine;
 
 namespace UnityEngine.FrameRecorder
 {
@@ -29,6 +30,7 @@ namespace UnityEngine.FrameRecorder
     }
 
 
+  
     /// <summary>
     /// What is this: 
     /// Motivation  : 
@@ -40,6 +42,7 @@ namespace UnityEngine.FrameRecorder
         public FrameRateMode m_FrameRateMode = FrameRateMode.Constant;
         [Range(1,120)]
         public double m_FrameRate = 30.0;
+        public EFrameRate m_FrameRateExact = EFrameRate.FR_CUSTOM;
         public int m_StartFrame;
         public int m_EndFrame = 10;
         public float m_StartTime = 0.0f;

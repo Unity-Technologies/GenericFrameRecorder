@@ -38,7 +38,21 @@ namespace UnityEditor.FrameRecorder
             return 0;
         }
 
-        public static string[] MaskOutEnumNames<TEnum>(int mask)
+        public delegate string EnumToStringDelegate(int value); 
+        public static string[] MaskOutEnumNames<TEnum>(int mask, EnumToStringDelegate toString )
+        {
+            if (!typeof(TEnum).IsEnum) throw new ArgumentException("Arg not an enum");
+            var values = Enum.GetValues(typeof(TEnum));
+            var result = new List<String>();    
+            for( int i = 0; i < values.Length; i++ )
+            {
+                if( ((int)values.GetValue(i) & mask ) != 0 )
+                    result.Add( toString( (int)values.GetValue(i) ));
+            }
+            return result.ToArray();
+        }
+
+        public static string[] MaskOutEnumNames<TEnum>(int mask )
         {
             if (!typeof(TEnum).IsEnum) throw new ArgumentException("Arg not an enum");
             var names = Enum.GetNames(typeof(TEnum));
@@ -51,6 +65,7 @@ namespace UnityEditor.FrameRecorder
             }
             return result.ToArray();
         }
+
     }
 
 }

@@ -1,4 +1,5 @@
 using System;
+using Assets.FrameRecorder.Core.Engine;
 using UnityEngine;
 using UnityEngine.FrameRecorder;
 
@@ -24,11 +25,16 @@ namespace UnityEditor.FrameRecorder
         SerializedProperty m_EndTime;
         SerializedProperty m_SynchFrameRate;
         SerializedProperty m_CaptureEveryNthFrame;
+        SerializedProperty m_FrameRateExact;
+
+        string[] m_FrameRateLabels;
 
         protected virtual void OnEnable()
         {
             if (target != null)
             {
+                m_FrameRateLabels = EnumHelper.MaskOutEnumNames<EFrameRate>(0xFFFF, (x) => FrameRateHelper.ToLable( (EFrameRate)x) );
+
                 var pf = new PropertyFinder<RecorderSettings>(serializedObject);
                 m_Inputs = pf.Find(x => x.m_SourceSettings);
                 m_Verbose = pf.Find(x => x.m_Verbose);
@@ -41,6 +47,7 @@ namespace UnityEditor.FrameRecorder
                 m_EndTime =  pf.Find(x => x.m_EndTime);
                 m_SynchFrameRate = pf.Find(x => x.m_SynchFrameRate);
                 m_CaptureEveryNthFrame = pf.Find(x => x.m_CaptureEveryNthFrame);
+                m_FrameRateExact = pf.Find(x => x.m_FrameRateExact);
             }
         }
 
@@ -156,12 +163,32 @@ namespace UnityEditor.FrameRecorder
 
             AddProperty( m_FrameRateMode, () => EditorGUILayout.PropertyField(m_FrameRateMode, new GUIContent("Frame rate mode")));
 
-            AddProperty( m_FrameRate, () =>
+            AddProperty( m_FrameRateExact, () =>
             {
-                var label = m_FrameRateMode.intValue == (int)FrameRateMode.Constant ? "Target fps" : "Max fps";
-                EditorGUILayout.PropertyField(m_FrameRate, new GUIContent(label));
+                using (var check = new EditorGUI.ChangeCheckScope())
+                {
+                    var label = m_FrameRateMode.intValue == (int)FrameRateMode.Constant ? "Target fps" : "Max fps";
+                    var index = EnumHelper.GetMaskedIndexFromEnumValue<EFrameRate>(m_FrameRateExact.intValue, 0xFFFF);
+                    index = EditorGUILayout.Popup(label, index, m_FrameRateLabels);
+
+                    if (check.changed)
+                    {
+                        m_FrameRateExact.intValue = EnumHelper.GetEnumValueFromMaskedIndex<EFrameRate>(index, 0xFFFF);
+                        if (m_FrameRateExact.intValue != (int)EFrameRate.FR_CUSTOM)
+                            m_FrameRate.floatValue = FrameRateHelper.ToFloat((EFrameRate)m_FrameRateExact.intValue, m_FrameRate.floatValue);
+                    }
+                }
             });
 
+            AddProperty(m_FrameRate, () =>
+            {
+                if (m_FrameRateExact.intValue == (int)EFrameRate.FR_CUSTOM)
+                {
+                    ++EditorGUI.indentLevel;
+                    EditorGUILayout.PropertyField(m_FrameRate, new GUIContent("Value"));
+                    --EditorGUI.indentLevel;
+                }
+            });
 
             AddProperty(m_FrameRateMode, () =>
             {
