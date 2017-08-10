@@ -60,7 +60,7 @@ namespace UnityEditor.FrameRecorder.Input
                 }
             }
 
-            EditorGUILayout.PropertyField(m_Transparency, new GUIContent("Capture alpha"));
+            EditorGUILayout.PropertyField(m_Transparency, new GUIContent("Preserve alpha"));
             EditorGUILayout.PropertyField(m_FlipVertically, new GUIContent("Flip vertically"));
            
             serializedObject.ApplyModifiedProperties();

@@ -81,7 +81,11 @@ namespace UnityEditor.FrameRecorder
             EditorGUILayout.LabelField("Directory");
             m_DestinationPath.stringValue = EditorGUILayout.TextField(m_DestinationPath.stringValue);
             if (GUILayout.Button("...", GUILayout.Width(30)))
-                m_DestinationPath.stringValue = EditorUtility.OpenFolderPanel( "Select output location", m_DestinationPath.stringValue, "");
+            {
+                var newPath = EditorUtility.OpenFolderPanel("Select output location", m_DestinationPath.stringValue, "");
+                if (!string.IsNullOrEmpty(newPath))
+                    m_DestinationPath.stringValue = newPath;
+            }
             GUILayout.EndHorizontal();
 
             EditorGUILayout.PropertyField(m_BaseFileName, new GUIContent("File name"));
