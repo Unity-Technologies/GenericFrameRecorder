@@ -47,6 +47,14 @@ namespace UnityEditor.FrameRecorder
 
             return obj.FindPropertyRelative(name);
         }
+
+        public static bool TargetsSameField(this SerializedProperty obj, SerializedProperty other)
+        {
+            if (obj.serializedObject.targetObject != other.serializedObject.targetObject)
+                return false;
+
+            return obj.name == other.name;
+        }
     }
 
     public class PropertyFinder<TType> where TType : class

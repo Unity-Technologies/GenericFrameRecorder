@@ -1,8 +1,16 @@
+using System;
 using UnityEngine;
 using UnityEngine.FrameRecorder;
 
 namespace UnityEditor.FrameRecorder
 {
+    public enum EPropertyState
+    {
+        Enabled,
+        Disabled,
+        Hidden
+    }
+
     public abstract class RecorderEditor : Editor
     {
         protected SerializedProperty m_Inputs;
@@ -122,8 +130,12 @@ namespace UnityEditor.FrameRecorder
                 }
                 var arrItem = m_Inputs.GetArrayElementAtIndex(i);
                 var editor = Editor.CreateEditor( arrItem.objectReferenceValue );
-                if( editor != null)
+                if (editor != null)
+                {
+                    if (editor is InputEditor)
+                        (editor as InputEditor).IsFieldAvailableForHost = IsFieldAvailable;
                     editor.OnInspectorGUI();
+                }
 
                 if (multiInputs)
                     EditorGUI.indentLevel--;
@@ -132,7 +144,7 @@ namespace UnityEditor.FrameRecorder
 
         protected virtual void OnOutputGui()
         {
-            EditorGUILayout.PropertyField(m_CaptureEveryNthFrame, new GUIContent("Every n'th frame"));
+            AddProperty( m_CaptureEveryNthFrame, () => EditorGUILayout.PropertyField(m_CaptureEveryNthFrame, new GUIContent("Every n'th frame")));
         }
 
         protected virtual void OnEncodingGui()
@@ -141,13 +153,21 @@ namespace UnityEditor.FrameRecorder
 
         protected virtual void OnTimeGui()
         {
-            EditorGUILayout.PropertyField(m_FrameRateMode, new GUIContent("Frame rate mode"));
-            var label = m_FrameRateMode.intValue == (int) FrameRateMode.Constant ? "Target fps" : "Max fps";
-            EditorGUILayout.PropertyField(m_FrameRate, new GUIContent(label));
-            if (m_FrameRateMode.intValue == (int)FrameRateMode.Constant)
+
+            AddProperty( m_FrameRateMode, () => EditorGUILayout.PropertyField(m_FrameRateMode, new GUIContent("Frame rate mode")));
+
+            AddProperty( m_FrameRate, () =>
             {
-                EditorGUILayout.PropertyField(m_SynchFrameRate, new GUIContent("Sync. framerate"));
-            }
+                var label = m_FrameRateMode.intValue == (int)FrameRateMode.Constant ? "Target fps" : "Max fps";
+                EditorGUILayout.PropertyField(m_FrameRate, new GUIContent(label));
+            });
+
+
+            AddProperty(m_FrameRateMode, () =>
+            {
+                if (m_FrameRateMode.intValue == (int)FrameRateMode.Constant)
+                    EditorGUILayout.PropertyField(m_SynchFrameRate, new GUIContent("Sync. framerate"));
+            });
         }
 
         protected virtual void OnBounds()
@@ -163,20 +183,23 @@ namespace UnityEditor.FrameRecorder
                 }
                 case DurationMode.SingleFrame:
                 {
-                    EditorGUILayout.PropertyField(m_StartFrame, new GUIContent("Frame #"));
-                    m_EndFrame.intValue = m_StartFrame.intValue;
+                    AddProperty(m_StartFrame, () =>
+                    {
+                        EditorGUILayout.PropertyField(m_StartFrame, new GUIContent("Frame #"));
+                        m_EndFrame.intValue = m_StartFrame.intValue;
+                    });
                     break;
                 }
                 case DurationMode.FrameInterval:
                 {
-                    EditorGUILayout.PropertyField(m_StartFrame, new GUIContent("First frame"));
-                    EditorGUILayout.PropertyField(m_EndFrame, new GUIContent("Last frame"));
+                    AddProperty(m_StartFrame, () => EditorGUILayout.PropertyField(m_StartFrame, new GUIContent("First frame")));
+                    AddProperty(m_EndFrame, () => EditorGUILayout.PropertyField(m_EndFrame, new GUIContent("Last frame")));
                     break;
                 }
                 case DurationMode.TimeInterval:
                 {
-                    EditorGUILayout.PropertyField(m_StartTime, new GUIContent("Start (sec)"));
-                    EditorGUILayout.PropertyField(m_EndTime, new GUIContent("End (sec)"));
+                    AddProperty(m_StartTime, () => EditorGUILayout.PropertyField(m_StartTime, new GUIContent("Start (sec)")));
+                    AddProperty(m_EndFrame, () => EditorGUILayout.PropertyField(m_EndTime, new GUIContent("End (sec)")));
                     break;
                 }
             }
@@ -246,5 +269,22 @@ namespace UnityEditor.FrameRecorder
         {
             // nothing. this is for sub classes...
         }
+
+        protected virtual EPropertyState IsFieldAvailable( SerializedProperty property)
+        {
+            return EPropertyState.Enabled;
+        }
+
+        protected void AddProperty(SerializedProperty prop, Action action )
+        {
+            var state = IsFieldAvailable(prop);
+            if (state != EPropertyState.Hidden)
+            {
+                using (new EditorGUI.DisabledScope(state == EPropertyState.Disabled))
+                    action();
+            }
+        }
+
+        
     }
 }

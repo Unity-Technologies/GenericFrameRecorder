@@ -5,7 +5,7 @@ using UnityEngine.FrameRecorder.Input;
 namespace UnityEditor.FrameRecorder.Input
 {
     [CustomEditor(typeof(AdamBeautyInputSettings))]
-    public class AdamBeautySourceEditor : Editor
+    public class AdamBeautySourceEditor : InputEditor
     {
         static EImageSource m_SupportedSources = EImageSource.GameDisplay| EImageSource.MainCamera; // | EImageSource.RenderTexture*/; // not sure what to do with the RT as source here.
         string[] m_MaskedSourceNames;
@@ -33,28 +33,30 @@ namespace UnityEditor.FrameRecorder.Input
 
         public override void OnInspectorGUI()
         {
-            
-            using (var check = new EditorGUI.ChangeCheckScope())
+            AddProperty(m_Source, () =>
             {
-                if (m_MaskedSourceNames == null)
-                    m_MaskedSourceNames = EnumHelper.MaskOutEnumNames<EImageSource>((int)m_SupportedSources);
-                var index = EnumHelper.GetMaskedIndexFromEnumValue<EImageSource>(m_Source.intValue, (int)m_SupportedSources);
-                index = EditorGUILayout.Popup("Object(s) of interest", index, m_MaskedSourceNames);
+                using (var check = new EditorGUI.ChangeCheckScope())
+                {
+                    if (m_MaskedSourceNames == null)
+                        m_MaskedSourceNames = EnumHelper.MaskOutEnumNames<EImageSource>((int)m_SupportedSources);
+                    var index = EnumHelper.GetMaskedIndexFromEnumValue<EImageSource>(m_Source.intValue, (int)m_SupportedSources);
+                    index = EditorGUILayout.Popup("Object(s) of interest", index, m_MaskedSourceNames);
 
-                if (check.changed)
-                    m_Source.intValue = EnumHelper.GetEnumValueFromMaskedIndex<EImageSource>(index, (int)m_SupportedSources);
-            }
+                    if (check.changed)
+                        m_Source.intValue = EnumHelper.GetEnumValueFromMaskedIndex<EImageSource>(index, (int)m_SupportedSources);
+                }
+            });
             
             var inputType = (EImageSource)m_Source.intValue;
 
             if (inputType != EImageSource.RenderTexture)
             {
-                EditorGUILayout.PropertyField(m_AspectRatio, new GUIContent("Aspect Ratio"));
-                EditorGUILayout.PropertyField(m_SuperSampling, new GUIContent("Super sampling"));
+                AddProperty(m_AspectRatio, () => EditorGUILayout.PropertyField(m_AspectRatio, new GUIContent("Aspect Ratio")));
+                AddProperty(m_SuperSampling, () => EditorGUILayout.PropertyField(m_SuperSampling, new GUIContent("Super sampling")));
             }
             else
             {
-                EditorGUILayout.PropertyField(m_RenderTexture, new GUIContent("Render Texture"));
+                AddProperty(m_RenderTexture, () => EditorGUILayout.PropertyField(m_RenderTexture, new GUIContent("Render Texture")));
                 using (new EditorGUI.DisabledScope(true))
                 {
                     var res = "N/A";
@@ -68,14 +70,18 @@ namespace UnityEditor.FrameRecorder.Input
             }
 
             var renderSize = m_RenderSize;
-            if (inputType != EImageSource.RenderTexture)
+            AddProperty(m_RenderSize, () =>
             {
-                EditorGUILayout.PropertyField(m_RenderSize, new GUIContent("Rendering resolution"));
-                if (m_FinalSize.intValue > renderSize.intValue)
-                    m_FinalSize.intValue = renderSize.intValue;
-            }
+                
+                if (inputType != EImageSource.RenderTexture)
+                {
+                    EditorGUILayout.PropertyField(m_RenderSize, new GUIContent("Rendering resolution"));
+                    if (m_FinalSize.intValue > renderSize.intValue)
+                        m_FinalSize.intValue = renderSize.intValue;
+                }
+            });
 
-            EditorGUILayout.PropertyField(m_FinalSize, new GUIContent("Final resolution"));
+            AddProperty(m_FinalSize, () => EditorGUILayout.PropertyField(m_FinalSize, new GUIContent("Final resolution")));
             if (m_FinalSize.intValue > renderSize.intValue)
                 renderSize.intValue = m_FinalSize.intValue;
 

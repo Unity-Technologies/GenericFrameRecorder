@@ -14,7 +14,7 @@ namespace UnityEditor.FrameRecorder
 
         string[] m_Candidates;
         
-        [MenuItem("Window/Recorder/Video...")]
+        [MenuItem( "Window/Recorder/Video")]
         static void ShowRecorderWindow()
         {
             RecorderWindow.ShowAndPreselectCategory("Video");
@@ -75,20 +75,22 @@ namespace UnityEditor.FrameRecorder
 
         protected override void OnOutputGui()
         {
-            EditorGUILayout.PropertyField(m_OutputFormat, new GUIContent("Output format"));
+            AddProperty(m_OutputFormat, () => EditorGUILayout.PropertyField(m_OutputFormat, new GUIContent("Output format")));
 
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Directory");
-            m_DestinationPath.stringValue = EditorGUILayout.TextField(m_DestinationPath.stringValue);
-            if (GUILayout.Button("...", GUILayout.Width(30)))
+            AddProperty(m_DestinationPath, () =>
             {
-                var newPath = EditorUtility.OpenFolderPanel("Select output location", m_DestinationPath.stringValue, "");
-                if (!string.IsNullOrEmpty(newPath))
-                    m_DestinationPath.stringValue = newPath;
-            }
-            GUILayout.EndHorizontal();
-
-            EditorGUILayout.PropertyField(m_BaseFileName, new GUIContent("File name"));
+                GUILayout.BeginHorizontal();
+                EditorGUILayout.LabelField("Directory");
+                m_DestinationPath.stringValue = EditorGUILayout.TextField(m_DestinationPath.stringValue);
+                if (GUILayout.Button("...", GUILayout.Width(30)))
+                {
+                    var newPath = EditorUtility.OpenFolderPanel("Select output location", m_DestinationPath.stringValue, "");
+                    if (!string.IsNullOrEmpty(newPath))
+                        m_DestinationPath.stringValue = newPath;
+                }
+                GUILayout.EndHorizontal();
+            });
+            AddProperty(m_DestinationPath, () => EditorGUILayout.PropertyField(m_BaseFileName, new GUIContent("File name")));
 
             base.OnOutputGui();
         }

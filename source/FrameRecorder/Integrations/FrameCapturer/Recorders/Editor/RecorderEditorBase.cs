@@ -12,7 +12,7 @@ namespace UTJ.FrameCapturer.Recorders
         SerializedProperty m_DestPathProp;
         SerializedProperty m_BaseFileNameProp;
 
-        [MenuItem("Window/Recorder/Video...")]
+        [MenuItem("Window/Recorder/Video")]
         static void ShowRecorderWindow()
         {
             RecorderWindow.ShowAndPreselectCategory("Video");
