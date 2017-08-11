@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using Assets.FrameRecorder.Core.Engine;
 using UnityEngine;
 using UnityEngine.FrameRecorder;
 
@@ -41,7 +40,7 @@ namespace UTJ.FrameCapturer.Recorders
                 settings.width = frame.width;
                 settings.height = frame.height;
                 m_ctx = fcAPI.fcGifCreateContext(ref settings);
-                var fileName = m_Settings.m_BaseFileName.BuildFileName( recordedFramesCount, frame.width, frame.height, "gif");
+                var fileName = m_Settings.m_BaseFileName.BuildFileName( session, recordedFramesCount, frame.width, frame.height, "gif");
                 var path = Path.Combine( m_Settings.m_DestinationPath.GetFullPath(), fileName);
                 m_stream = fcAPI.fcCreateFileStream(path);
                 fcAPI.fcGifAddOutputStream(m_ctx, m_stream);

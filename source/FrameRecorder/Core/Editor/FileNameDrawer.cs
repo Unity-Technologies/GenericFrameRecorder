@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using Assets.FrameRecorder.Core.Engine;
 using UnityEngine;
+using UnityEngine.FrameRecorder;
 
 namespace UnityEditor.FrameRecorder
 {

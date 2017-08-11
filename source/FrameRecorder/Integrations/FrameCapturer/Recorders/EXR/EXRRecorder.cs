@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using Assets.FrameRecorder.Core.Engine;
 using UnityEngine.FrameRecorder;
 
 namespace UTJ.FrameCapturer.Recorders
@@ -34,7 +33,7 @@ namespace UTJ.FrameCapturer.Recorders
 
             var input = (BaseRenderTextureInput)m_Inputs[0];
             var frame = input.outputRT;
-            var fileName = m_Settings.m_BaseFileName.BuildFileName( recordedFramesCount, frame.width, frame.height, "exr");
+            var fileName = m_Settings.m_BaseFileName.BuildFileName( session, recordedFramesCount, frame.width, frame.height, "exr");
             var path = Path.Combine( settings.m_DestinationPath.GetFullPath(), fileName);
 
             fcAPI.fcLock(frame, (data, fmt) =>

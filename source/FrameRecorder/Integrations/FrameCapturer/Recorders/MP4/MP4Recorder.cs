@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using Assets.FrameRecorder.Core.Engine;
 using UnityEngine;
 using UnityEngine.FrameRecorder;
 
@@ -41,8 +40,8 @@ namespace UTJ.FrameCapturer.Recorders
                 settings.audio = false;
                 settings.videoWidth = frame.width;
                 settings.videoHeight = frame.height;
-                settings.videoTargetFramerate = 60; // ?
-                var fileName = m_Settings.m_BaseFileName.BuildFileName( recordedFramesCount, frame.width, frame.height, "mp4");
+                settings.videoTargetFramerate = (int)Math.Ceiling(m_Settings.m_FrameRate);
+                var fileName = m_Settings.m_BaseFileName.BuildFileName( session, recordedFramesCount, frame.width, frame.height, "mp4");
                 var path = Path.Combine( m_Settings.m_DestinationPath.GetFullPath(), fileName);
                 m_ctx = fcAPI.fcMP4OSCreateContext(ref settings, path);
             }

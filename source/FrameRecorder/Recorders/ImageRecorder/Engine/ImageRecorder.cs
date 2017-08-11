@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using Assets.FrameRecorder.Core.Engine;
-using UnityEngine.FrameRecorder.Input;
 
 namespace UnityEngine.FrameRecorder
 {
@@ -58,7 +55,7 @@ namespace UnityEngine.FrameRecorder
 
             UnityHelpers.Destroy(tex);
 
-            var fileName = m_Settings.m_BaseFileName.BuildFileName( recordedFramesCount, width, height, ext);
+            var fileName = m_Settings.m_BaseFileName.BuildFileName( session, recordedFramesCount, width, height, ext);
             var path = Path.Combine( m_Settings.m_DestinationPath.GetFullPath(), fileName);
 
 

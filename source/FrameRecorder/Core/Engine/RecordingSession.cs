@@ -22,6 +22,8 @@ namespace UnityEngine.FrameRecorder
         float   m_FPSNextTimeStart;
         int     m_FPSNextFrameCount;
 
+        public DateTime m_SessionStartTS;
+
         public RecorderSettings settings { get { return m_Recorder.settings; } }
         public bool recording { get { return m_Recorder.recording; } }
         public int frameIndex {get { return m_FrameIndex; }}
@@ -39,7 +41,7 @@ namespace UnityEngine.FrameRecorder
         public bool SessionCreated()
         {
             m_RecordingStartTS = (Time.time / Time.timeScale);
-
+            m_SessionStartTS = DateTime.Now;
             m_Recorder.SessionCreated(this);
             return true;
         }
