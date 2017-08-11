@@ -45,7 +45,7 @@ namespace UTJ.FrameCapturer.Recorders
                 settings.videoHeight = frame.height;
                 settings.videoTargetFramerate = 60; // ?
                 m_ctx = fcAPI.fcWebMCreateContext(ref settings);
-                var fileName = FileNameGenerator.BuildFileName(m_Settings.m_BaseFileName, recordedFramesCount, settings.videoWidth, settings.videoHeight, "webm");
+                var fileName = m_Settings.m_BaseFileName.BuildFileName( recordedFramesCount, settings.videoWidth, settings.videoHeight, "webm");
                 m_stream = fcAPI.fcCreateFileStream(fileName);
                 fcAPI.fcWebMAddOutputStream(m_ctx, m_stream);
             }

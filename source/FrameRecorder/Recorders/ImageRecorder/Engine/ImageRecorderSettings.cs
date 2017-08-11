@@ -18,7 +18,7 @@ namespace UnityEngine.FrameRecorder
 
         ImageRecorderSettings()
         {
-            m_BaseFileName = "image_<0000>.<ext>";
+            m_BaseFileName.pattern = "image_<0000>.<ext>";
         }
 
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()
@@ -32,7 +32,7 @@ namespace UnityEngine.FrameRecorder
         {
             get
             {
-                return base.isValid && !string.IsNullOrEmpty(m_DestinationPath.GetFullPath()) && !string.IsNullOrEmpty(m_BaseFileName);
+                return base.isValid && !string.IsNullOrEmpty(m_DestinationPath.GetFullPath()) && !string.IsNullOrEmpty(m_BaseFileName.pattern);
             }
         }
     }

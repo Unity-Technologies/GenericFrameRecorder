@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using UnityEngine;
 
 
@@ -14,7 +15,7 @@ namespace UnityEngine.FrameRecorder
             PersistentData,
             StreamingAssets,
             TemporaryCache,
-            DataPath,
+            AssetsPath,
         }
 
         [SerializeField] ERoot m_root;
@@ -31,19 +32,56 @@ namespace UnityEngine.FrameRecorder
             set { m_leaf = value; }
         }
 
-        public string GetFullPath()
+        public static OutputPath FromPath(string path)
         {
-            if (m_root == ERoot.Absolute)
+            OutputPath result;
+            if (path.Contains(Application.streamingAssetsPath))
             {
-                return m_leaf;
+                result.m_root = ERoot.StreamingAssets;
+                result.m_leaf = path.Replace(Application.streamingAssetsPath, "");
             }
-            if (m_root == ERoot.Current)
+            else if (path.Contains(Application.dataPath))
             {
-                return string.IsNullOrEmpty(m_leaf) ? "." : "./" + m_leaf;
+                result.m_root = ERoot.AssetsPath;
+                result.m_leaf = path.Replace(Application.dataPath, "");
+            }
+            else if (path.Contains(Application.persistentDataPath))
+            {
+                result.m_root = ERoot.PersistentData;
+                result.m_leaf = path.Replace(Application.persistentDataPath, "");
+            }
+            else if (path.Contains(Application.temporaryCachePath))
+            {
+                result.m_root = ERoot.TemporaryCache;
+                result.m_leaf = path.Replace(Application.temporaryCachePath, "");
+            }
+            else if( path.Contains(Directory.GetCurrentDirectory().Replace(@"\", "/")))
+            {
+                result.m_root = ERoot.Current;
+                result.m_leaf = path.Replace(Directory.GetCurrentDirectory().Replace(@"\", "/"), "");
+            }
+            else
+            {
+                result.m_root = ERoot.Absolute;
+                result.m_leaf = path;
+            }
+
+            return result;
+        }
+
+        public static string GetFullPath(ERoot root, string leaf)
+        {
+            if (root == ERoot.Absolute)
+            {
+                return leaf;
+            }
+            if (root == ERoot.Current)
+            {
+                return string.IsNullOrEmpty(leaf) ? "." : "./" + leaf;
             }
 
             string ret = "";
-            switch (m_root)
+            switch (root)
             {
                 case ERoot.PersistentData:
                     ret = Application.persistentDataPath;
@@ -54,17 +92,22 @@ namespace UnityEngine.FrameRecorder
                 case ERoot.TemporaryCache:
                     ret = Application.temporaryCachePath;
                     break;
-                case ERoot.DataPath:
+                case ERoot.AssetsPath:
                     ret = Application.dataPath;
                     break;
             }
 
-            if (!m_leaf.StartsWith("/"))
+            if (!leaf.StartsWith("/"))
             {
                 ret += "/";
             }
-            ret += m_leaf;
-            return ret;
+            ret += leaf;
+            return ret;            
+        }
+
+        public string GetFullPath()
+        {
+            return GetFullPath(m_root, m_leaf);
         }
 
         public void CreateDirectory()

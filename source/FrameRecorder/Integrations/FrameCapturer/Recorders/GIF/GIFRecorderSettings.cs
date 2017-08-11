@@ -12,15 +12,7 @@ namespace UTJ.FrameCapturer.Recorders
 
         GIFRecorderSettings()
         {
-            m_BaseFileName = "animation.<ext>";
-        }
-
-        public override bool isValid
-        {
-            get
-            {
-                return base.isValid && !string.IsNullOrEmpty(m_DestinationPath.GetFullPath()) && !string.IsNullOrEmpty(m_BaseFileName);
-            }
+            m_BaseFileName.pattern = "animation.<ext>";
         }
 
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()

@@ -30,7 +30,7 @@ namespace UnityEditor.FrameRecorder
         SerializedProperty m_DestinationPath;
         SerializedProperty m_BaseFileName;
 
-        string[] m_FileNameTags;
+        
         string[] m_FrameRateLabels;
 
         protected virtual void OnEnable()
@@ -54,10 +54,6 @@ namespace UnityEditor.FrameRecorder
                 m_FrameRateExact = pf.Find(x => x.m_FrameRateExact);
                 m_DestinationPath = pf.Find(w => w.m_DestinationPath);
                 m_BaseFileName = pf.Find(w => w.m_BaseFileName);
-
-                var temp = FileNameGenerator.tagLabels.ToList();
-                temp.Insert(0, "Add tag...");
-                m_FileNameTags = temp.ToArray();
             }
         }
 
@@ -167,6 +163,8 @@ namespace UnityEditor.FrameRecorder
             });
             AddProperty(m_BaseFileName, () =>
             {
+                EditorGUILayout.PropertyField(m_BaseFileName, new GUIContent("File name")); 
+                /*
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PropertyField(m_BaseFileName, new GUIContent("File name")); 
 
@@ -174,7 +172,8 @@ namespace UnityEditor.FrameRecorder
                 if (value != 0)
                     m_BaseFileName.stringValue = FileNameGenerator.AddTag((FileNameGenerator.ETags)(value - 1), m_BaseFileName.stringValue);
                 
-                EditorGUILayout.EndHorizontal();                
+                EditorGUILayout.EndHorizontal(); 
+                */               
             });
 
             AddProperty( m_CaptureEveryNthFrame, () => EditorGUILayout.PropertyField(m_CaptureEveryNthFrame, new GUIContent("Every n'th frame")));

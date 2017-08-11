@@ -12,7 +12,7 @@ namespace UTJ.FrameCapturer.Recorders
 
         PNGRecorderSettings()
         {
-            m_BaseFileName = "image_<0000>.<ext>";
+            m_BaseFileName.pattern = "image_<0000>.<ext>";
         }
 
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()

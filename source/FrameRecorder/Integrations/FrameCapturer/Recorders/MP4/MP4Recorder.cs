@@ -42,7 +42,7 @@ namespace UTJ.FrameCapturer.Recorders
                 settings.videoWidth = frame.width;
                 settings.videoHeight = frame.height;
                 settings.videoTargetFramerate = 60; // ?
-                var fileName = FileNameGenerator.BuildFileName(m_Settings.m_BaseFileName, recordedFramesCount, frame.width, frame.height, "mp4");
+                var fileName = m_Settings.m_BaseFileName.BuildFileName( recordedFramesCount, frame.width, frame.height, "mp4");
                 var path = Path.Combine( m_Settings.m_DestinationPath.GetFullPath(), fileName);
                 m_ctx = fcAPI.fcMP4OSCreateContext(ref settings, path);
             }

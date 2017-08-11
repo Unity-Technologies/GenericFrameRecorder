@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace Assets.FrameRecorder.Core.Engine
 {
-    public class FileNameGenerator
+    [Serializable]
+    public struct FileNameGenerator
     {
         public static string[] tagLabels { get; private set; }
         public static string[] tags { get; private set; }
@@ -19,6 +21,14 @@ namespace Assets.FrameRecorder.Core.Engine
             Resolution,
             Frame,
             Extension
+        }
+
+        [SerializeField]
+        string m_Pattern;
+
+        public string pattern {
+            get { return m_Pattern;}
+            set { m_Pattern = value;  }
         }
 
         static FileNameGenerator()
@@ -46,7 +56,7 @@ namespace Assets.FrameRecorder.Core.Engine
             };
         }
 
-        public static string AddTag(ETags t, string pattern)
+        public static string AddTag(string pattern, ETags t)
         {
             if (!string.IsNullOrEmpty(pattern))
             {
@@ -71,9 +81,9 @@ namespace Assets.FrameRecorder.Core.Engine
             return pattern;
         }
 
-        public static string BuildFileName(string pattern, int frame, int width, int height, string ext)
+        public string BuildFileName( int frame, int width, int height, string ext )
         {
-            pattern  = pattern.Replace(tags[(int)ETags.Extension], ext)
+            var fileName  = pattern.Replace(tags[(int)ETags.Extension], ext)
                 .Replace(tags[(int)ETags.Resolution], string.Format("{0}x{1}", width, height))
                 .Replace(tags[(int)ETags.Frame], frame.ToString("00000"))
                 .Replace(tags[(int)ETags.Scene], "(scene-NA)")
@@ -81,8 +91,7 @@ namespace Assets.FrameRecorder.Core.Engine
                 .Replace(tags[(int)ETags.Time], "(time-NA)")
                 .Replace(tags[(int)ETags.Date], "(date-NA)");
 
-
-            return pattern;
+            return fileName;
         }
 
     }

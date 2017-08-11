@@ -58,7 +58,7 @@ namespace UnityEngine.FrameRecorder
 
             UnityHelpers.Destroy(tex);
 
-            var fileName = FileNameGenerator.BuildFileName(m_Settings.m_BaseFileName, recordedFramesCount, width, height, ext);
+            var fileName = m_Settings.m_BaseFileName.BuildFileName( recordedFramesCount, width, height, ext);
             var path = Path.Combine( m_Settings.m_DestinationPath.GetFullPath(), fileName);
 
 

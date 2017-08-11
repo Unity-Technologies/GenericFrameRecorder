@@ -9,7 +9,7 @@ namespace UTJ.FrameCapturer.Recorders
         {
             get
             {
-                return base.isValid && !string.IsNullOrEmpty(m_DestinationPath.GetFullPath()) && !string.IsNullOrEmpty(m_BaseFileName);
+                return base.isValid && !string.IsNullOrEmpty(m_DestinationPath.GetFullPath()) && !string.IsNullOrEmpty(m_BaseFileName.pattern);
             }
         }
     }

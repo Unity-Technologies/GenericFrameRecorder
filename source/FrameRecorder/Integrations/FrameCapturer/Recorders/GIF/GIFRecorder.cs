@@ -41,7 +41,7 @@ namespace UTJ.FrameCapturer.Recorders
                 settings.width = frame.width;
                 settings.height = frame.height;
                 m_ctx = fcAPI.fcGifCreateContext(ref settings);
-                var fileName = FileNameGenerator.BuildFileName(m_Settings.m_BaseFileName, recordedFramesCount, frame.width, frame.height, "gif");
+                var fileName = m_Settings.m_BaseFileName.BuildFileName( recordedFramesCount, frame.width, frame.height, "gif");
                 var path = Path.Combine( m_Settings.m_DestinationPath.GetFullPath(), fileName);
                 m_stream = fcAPI.fcCreateFileStream(path);
                 fcAPI.fcGifAddOutputStream(m_ctx, m_stream);

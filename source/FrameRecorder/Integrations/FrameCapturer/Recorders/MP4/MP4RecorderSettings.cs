@@ -12,7 +12,7 @@ namespace UTJ.FrameCapturer.Recorders
 
         MP4RecorderSettings()
         {
-            m_BaseFileName = "movie.<ext>";
+            m_BaseFileName.pattern = "movie.<ext>";
         }
 
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()
