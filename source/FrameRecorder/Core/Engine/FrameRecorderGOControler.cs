@@ -12,21 +12,25 @@ namespace UnityEngine.FrameRecorder
     {
         const string k_HostGoName = "UnityEngine-Recorder-FrameRecorder";
 
-        static GameObject GetGameObject(bool createIfAbsent)
+        static GameObject GetGameObject(bool createIfAbsent, bool hide)
         {
             var go = GameObject.Find(k_HostGoName);
             if (go == null && createIfAbsent)
             {
                 go = new GameObject(k_HostGoName);
+                if (hide)
+                    go.hideFlags = HideFlags.HideInHierarchy;
             }
+
             return go;
         }
 
-        static GameObject GetRecordingSessionsRoot( bool createIfAbsent )
+        static GameObject GetRecordingSessionsRoot(bool createIfAbsent, bool hideGameObjects)
         {
-            var root = GetGameObject(createIfAbsent);
+            var root = GetGameObject(createIfAbsent, hideGameObjects);
             if (root == null)
                 return null;
+
             var settingsTr = root.transform.Find("RecordingSessions");
             GameObject settingsGO;
             if (settingsTr == null)
@@ -40,9 +44,9 @@ namespace UnityEngine.FrameRecorder
             return settingsGO;
         }
 
-        public static GameObject HookupRecorder()
+        public static GameObject HookupRecorder(bool hideGameObjects)
         {
-            var ctrl = GetRecordingSessionsRoot(true);
+            var ctrl = GetRecordingSessionsRoot(true, hideGameObjects);
 
             var recorderGO = new GameObject();
 
@@ -53,7 +57,7 @@ namespace UnityEngine.FrameRecorder
 
         public static GameObject FindRecorder(RecorderSettings settings)
         {
-            var ctrl = GetRecordingSessionsRoot(false);
+            var ctrl = GetRecordingSessionsRoot(false, false);
             if (ctrl == null)
                 return null;
 

@@ -48,13 +48,13 @@ namespace UnityEngine.FrameRecorder
         public bool BeginRecording()
         {
             m_RecordingStartTS = (Time.time / Time.timeScale);
+            m_Recorder.SignalInputsOfStage(ERecordingSessionStage.BeginRecording, this);
 
             if (!m_Recorder.BeginRecording(this))
                 return false;
             m_InitialFrame = Time.renderedFrameCount;
             m_FPSTimeStart = Time.unscaledTime;
 
-            m_Recorder.SignalInputsOfStage(ERecordingSessionStage.BeginRecording, this);
             return true;
         }
 

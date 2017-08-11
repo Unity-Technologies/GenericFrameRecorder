@@ -6,6 +6,7 @@ namespace UnityEditor.FrameRecorder
     public abstract class RecorderEditor : Editor
     {
         protected SerializedProperty m_Inputs;
+        bool[]             m_ShowInputEditor;
         SerializedProperty m_Verbose;
         SerializedProperty m_FrameRateMode;
         SerializedProperty m_FrameRate;
@@ -23,6 +24,9 @@ namespace UnityEditor.FrameRecorder
             {
                 var pf = new PropertyFinder<RecorderSettings>(serializedObject);
                 m_Inputs = pf.Find(x => x.m_SourceSettings);
+                m_ShowInputEditor = new bool[m_Inputs.arraySize];
+                for (int i = 0; i < m_ShowInputEditor.Length; ++i)
+                    m_ShowInputEditor[i] = true;
                 m_Verbose = pf.Find(x => x.m_Verbose);
                 m_FrameRateMode = pf.Find(x => x.m_FrameRateMode);
                 m_FrameRate = pf.Find(x => x.m_FrameRate);
@@ -118,12 +122,16 @@ namespace UnityEditor.FrameRecorder
                 if (multiInputs)
                 {
                     EditorGUI.indentLevel++;
-                    EditorGUILayout.Foldout(true, "Input " + (i + 1));
+                    m_ShowInputEditor[i] =
+                        EditorGUILayout.Foldout(m_ShowInputEditor[i], "Input " + (i + 1));
                 }
                 var arrItem = m_Inputs.GetArrayElementAtIndex(i);
-                var editor = Editor.CreateEditor( arrItem.objectReferenceValue );
-                if( editor != null)
-                    editor.OnInspectorGUI();
+                if (m_ShowInputEditor[i])
+                {
+                    var editor = Editor.CreateEditor( arrItem.objectReferenceValue );
+                    if (editor)
+                        editor.OnInspectorGUI();
+                }
 
                 if (multiInputs)
                     EditorGUI.indentLevel--;

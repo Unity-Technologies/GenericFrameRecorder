@@ -235,7 +235,7 @@ namespace UnityEditor.FrameRecorder
         void StartRecording(bool autoExitPlayMode)
         {
             var settings = (RecorderSettings)m_Editor.target;
-            var go = FrameRecorderGOControler.HookupRecorder();
+            var go = FrameRecorderGOControler.HookupRecorder(!settings.m_Verbose);
             var session = new RecordingSession()
             {
                 m_Recorder = RecordersInventory.GenerateNewRecorder(m_recorderSelector.selectedRecorder, settings),
@@ -246,9 +246,13 @@ namespace UnityEditor.FrameRecorder
             component.session = session;
             component.autoExitPlayMode = autoExitPlayMode;
 
-            session.SessionCreated();
-            session.BeginRecording();
-            m_State = EState.Recording;
+            if (session.SessionCreated() && session.BeginRecording())
+                m_State = EState.Recording;
+            else
+            {
+                m_State = EState.Idle;
+                StopRecording();
+            }
         }
 
         void StopRecording()

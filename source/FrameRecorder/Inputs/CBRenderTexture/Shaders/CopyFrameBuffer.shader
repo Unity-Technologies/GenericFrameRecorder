@@ -4,6 +4,7 @@ CGINCLUDE
 #include "UnityCG.cginc"
 #pragma multi_compile ___ UNITY_HDR_ON
 #pragma multi_compile ___ OFFSCREEN
+#pragma multi_compile ___ TRANSPARENCY_ON
 
 sampler2D _TmpFrameBuffer;
 sampler2D _CameraGBufferTexture0;
