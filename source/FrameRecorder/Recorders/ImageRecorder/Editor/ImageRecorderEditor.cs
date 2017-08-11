@@ -8,8 +8,7 @@ namespace UnityEditor.FrameRecorder
     [CustomEditor(typeof(ImageRecorderSettings))]
     public class ImagRecorderEditor : RecorderEditor
     {
-        SerializedProperty m_DestinationPath;
-        SerializedProperty m_BaseFileName;
+    
         SerializedProperty m_OutputFormat;
 
         string[] m_Candidates;
@@ -30,8 +29,6 @@ namespace UnityEditor.FrameRecorder
             m_Candidates = new [] { "Command Buffered Camera", "Offscreen rendering", "Render Texture" };
             var pf = new PropertyFinder<ImageRecorderSettings>(serializedObject);
             m_Inputs = pf.Find(w => w.m_SourceSettings);
-            m_DestinationPath = pf.Find(w => w.m_DestinationPath);
-            m_BaseFileName = pf.Find(w => w.m_BaseFileName);
             m_OutputFormat = pf.Find(w => w.m_OutputFormat);
         }
 
@@ -76,22 +73,6 @@ namespace UnityEditor.FrameRecorder
         protected override void OnOutputGui()
         {
             AddProperty(m_OutputFormat, () => EditorGUILayout.PropertyField(m_OutputFormat, new GUIContent("Output format")));
-
-            AddProperty(m_DestinationPath, () =>
-            {
-                GUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField("Directory");
-                m_DestinationPath.stringValue = EditorGUILayout.TextField(m_DestinationPath.stringValue);
-                if (GUILayout.Button("...", GUILayout.Width(30)))
-                {
-                    var newPath = EditorUtility.OpenFolderPanel("Select output location", m_DestinationPath.stringValue, "");
-                    if (!string.IsNullOrEmpty(newPath))
-                        m_DestinationPath.stringValue = newPath;
-                }
-                GUILayout.EndHorizontal();
-            });
-            AddProperty(m_DestinationPath, () => EditorGUILayout.PropertyField(m_BaseFileName, new GUIContent("File name")));
-
             base.OnOutputGui();
         }
     }

@@ -14,9 +14,12 @@ namespace UnityEngine.FrameRecorder
     [ExecuteInEditMode]
     public class ImageRecorderSettings : RecorderSettings
     {
-        public string m_BaseFileName  = "image";
-        public string m_DestinationPath = "Recorder";
         public PNGRecordeOutputFormat m_OutputFormat = PNGRecordeOutputFormat.JPEG;
+
+        ImageRecorderSettings()
+        {
+            m_BaseFileName = "image_<0000>.<ext>";
+        }
 
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()
         {
@@ -29,7 +32,7 @@ namespace UnityEngine.FrameRecorder
         {
             get
             {
-                return base.isValid && !string.IsNullOrEmpty(m_DestinationPath) && !string.IsNullOrEmpty(m_BaseFileName);
+                return base.isValid && !string.IsNullOrEmpty(m_DestinationPath.GetFullPath()) && !string.IsNullOrEmpty(m_BaseFileName);
             }
         }
     }

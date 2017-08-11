@@ -10,6 +10,11 @@ namespace UTJ.FrameCapturer.Recorders
     {
         public fcAPI.fcPngConfig m_PngEncoderSettings = fcAPI.fcPngConfig.default_value;
 
+        PNGRecorderSettings()
+        {
+            m_BaseFileName = "image_<0000>.<ext>";
+        }
+
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()
         {
             return new List<RecorderInputSetting>() { ScriptableObject.CreateInstance<CBRenderTextureInputSettings>() };

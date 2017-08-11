@@ -50,11 +50,19 @@ namespace UnityEngine.FrameRecorder
         public DurationMode m_DurationMode;
         public bool m_Verbose = false;
         public bool m_SynchFrameRate = true;
+        public string m_BaseFileName  = "file.<ext>";
+        public OutputPath m_DestinationPath;   
 
         public RecorderInputSetting[] m_SourceSettings = new RecorderInputSetting[0];
             
         [SerializeField]
         string m_RecorderTypeName;
+
+        public RecorderSettings()
+        {
+            m_DestinationPath.root = OutputPath.ERoot.Current;
+            m_DestinationPath.leaf = "Recordings";
+        }
 
         public Type recorderType
         {

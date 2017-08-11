@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Assets.FrameRecorder.Core.Engine;
 using UnityEngine;
 using UnityEngine.FrameRecorder;
 
@@ -15,8 +16,7 @@ namespace UTJ.FrameCapturer.Recorders
         {
             if (!base.BeginRecording(session)) { return false; }
 
-            if (!Directory.Exists(m_Settings.m_DestinationPath))
-                Directory.CreateDirectory(m_Settings.m_DestinationPath);
+            m_Settings.m_DestinationPath.CreateDirectory();
 
             return true;
         } 
@@ -45,7 +45,8 @@ namespace UTJ.FrameCapturer.Recorders
                 settings.videoHeight = frame.height;
                 settings.videoTargetFramerate = 60; // ?
                 m_ctx = fcAPI.fcWebMCreateContext(ref settings);
-                m_stream = fcAPI.fcCreateFileStream(BuildOutputPath(session));
+                var fileName = FileNameGenerator.BuildFileName(m_Settings.m_BaseFileName, recordedFramesCount, settings.videoWidth, settings.videoHeight, "webm");
+                m_stream = fcAPI.fcCreateFileStream(fileName);
                 fcAPI.fcWebMAddOutputStream(m_ctx, m_stream);
             }
 
@@ -55,13 +56,5 @@ namespace UTJ.FrameCapturer.Recorders
             });
         }
 
-        string BuildOutputPath(RecordingSession session)
-        {
-            var outputPath = m_Settings.m_DestinationPath;
-            if (outputPath.Length > 0 && !outputPath.EndsWith("/"))
-                outputPath += "/";
-            outputPath += (settings as WEBMRecorderSettings).m_BaseFileName + ".webm";
-            return outputPath;
-        }
     }
 }

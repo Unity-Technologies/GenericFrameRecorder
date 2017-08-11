@@ -10,6 +10,11 @@ namespace UTJ.FrameCapturer.Recorders
     {
         public fcAPI.fcMP4Config m_MP4EncoderSettings = fcAPI.fcMP4Config.default_value;
 
+        MP4RecorderSettings()
+        {
+            m_BaseFileName = "movie.<ext>";
+        }
+
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()
         {
             var settings = ScriptableObject.CreateInstance<CBRenderTextureInputSettings>();

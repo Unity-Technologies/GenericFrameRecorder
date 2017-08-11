@@ -10,6 +10,11 @@ namespace UTJ.FrameCapturer.Recorders
     {
         public fcAPI.fcWebMConfig m_WebmEncoderSettings = fcAPI.fcWebMConfig.default_value;
 
+        WEBMRecorderSettings()
+        {
+            m_BaseFileName = "movie.<ext>";
+        }
+
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()
         {
             var settings = ScriptableObject.CreateInstance<CBRenderTextureInputSettings>();

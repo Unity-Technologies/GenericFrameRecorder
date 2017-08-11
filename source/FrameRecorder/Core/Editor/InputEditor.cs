@@ -7,25 +7,25 @@ namespace UnityEditor.FrameRecorder
 {
     public abstract class InputEditor : Editor
     {
-        public delegate EPropertyState IsFieldAvailableDelegate(SerializedProperty property);
+        public delegate EFieldDisplayState IsFieldAvailableDelegate(SerializedProperty property);
 
         public IsFieldAvailableDelegate IsFieldAvailableForHost { get; set; }
 
         protected virtual void AddProperty(SerializedProperty prop, Action action )
         {
             var state = IsFieldAvailableForHost(prop);
-            if (state == EPropertyState.Enabled)
+            if (state == EFieldDisplayState.Enabled)
                 state = IsFieldAvailable(prop);
-            if (state != EPropertyState.Hidden)
+            if (state != EFieldDisplayState.Hidden)
             {
-                using (new EditorGUI.DisabledScope(state == EPropertyState.Disabled))
+                using (new EditorGUI.DisabledScope(state == EFieldDisplayState.Disabled))
                     action();
             }
         }
 
-        protected virtual EPropertyState IsFieldAvailable( SerializedProperty property)
+        protected virtual EFieldDisplayState IsFieldAvailable( SerializedProperty property)
         {
-            return EPropertyState.Enabled;
+            return EFieldDisplayState.Enabled;
         }
     }
 }

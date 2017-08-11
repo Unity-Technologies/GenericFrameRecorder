@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Assets.FrameRecorder.Core.Engine;
 using UnityEngine;
 using UnityEngine.FrameRecorder;
 
@@ -14,8 +15,7 @@ namespace UTJ.FrameCapturer.Recorders
         {
             if (!base.BeginRecording(session)) { return false; }
 
-            if (!Directory.Exists(m_Settings.m_DestinationPath))
-                Directory.CreateDirectory(m_Settings.m_DestinationPath);
+            m_Settings.m_DestinationPath.CreateDirectory();
 
             return true;
         }
@@ -42,22 +42,15 @@ namespace UTJ.FrameCapturer.Recorders
                 settings.videoWidth = frame.width;
                 settings.videoHeight = frame.height;
                 settings.videoTargetFramerate = 60; // ?
-                m_ctx = fcAPI.fcMP4OSCreateContext(ref settings, BuildOutputPath(session));
+                var fileName = FileNameGenerator.BuildFileName(m_Settings.m_BaseFileName, recordedFramesCount, frame.width, frame.height, "mp4");
+                var path = Path.Combine( m_Settings.m_DestinationPath.GetFullPath(), fileName);
+                m_ctx = fcAPI.fcMP4OSCreateContext(ref settings, path);
             }
 
             fcAPI.fcLock(frame, TextureFormat.RGB24, (data, fmt) =>
             {
                 fcAPI.fcMP4AddVideoFramePixels(m_ctx, data, fmt, session.RecorderTime);
             });
-        }
-
-        string BuildOutputPath(RecordingSession session)
-        {
-            var outputPath = m_Settings.m_DestinationPath;
-            if (outputPath.Length > 0 && !outputPath.EndsWith("/"))
-                outputPath += "/";
-            outputPath += (settings as MP4RecorderSettings).m_BaseFileName + ".mp4";
-            return outputPath;
         }
 
     }

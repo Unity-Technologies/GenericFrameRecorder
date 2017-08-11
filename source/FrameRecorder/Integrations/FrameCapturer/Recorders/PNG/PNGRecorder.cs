@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Assets.FrameRecorder.Core.Engine;
 using UnityEngine;
 using UnityEngine.FrameRecorder;
 
@@ -14,8 +15,7 @@ namespace UTJ.FrameCapturer.Recorders
         {
             if (!base.BeginRecording(session)) { return false; }
 
-            if (!Directory.Exists(m_Settings.m_DestinationPath))
-                Directory.CreateDirectory(m_Settings.m_DestinationPath);
+            m_Settings.m_DestinationPath.CreateDirectory();
 
             m_ctx = fcAPI.fcPngCreateContext(ref m_Settings.m_PngEncoderSettings);
             return m_ctx;
@@ -32,9 +32,10 @@ namespace UTJ.FrameCapturer.Recorders
             if (m_Inputs.Count != 1)
                 throw new Exception("Unsupported number of sources");
 
-            var path = BuildOutputPath(session);
             var input = (BaseRenderTextureInput)m_Inputs[0];
             var frame = input.outputRT;
+            var fileName = FileNameGenerator.BuildFileName(m_Settings.m_BaseFileName, recordedFramesCount, frame.width, frame.height, "mp4");
+            var path = Path.Combine(m_Settings.m_DestinationPath.GetFullPath(), fileName);
 
             fcAPI.fcLock(frame, (data, fmt) =>
             {
@@ -42,13 +43,5 @@ namespace UTJ.FrameCapturer.Recorders
             });
         }
 
-        string BuildOutputPath(RecordingSession session)
-        {
-            var outputPath = m_Settings.m_DestinationPath;
-            if (outputPath.Length > 0 && !outputPath.EndsWith("/"))
-                outputPath += "/";
-            outputPath +=  (settings as PNGRecorderSettings).m_BaseFileName + recordedFramesCount.ToString("0000") + ".png";
-            return outputPath;
-        }
     }
 }

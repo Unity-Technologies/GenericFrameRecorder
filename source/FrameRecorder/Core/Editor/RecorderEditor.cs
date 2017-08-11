@@ -1,11 +1,12 @@
 using System;
+using System.Linq;
 using Assets.FrameRecorder.Core.Engine;
 using UnityEngine;
 using UnityEngine.FrameRecorder;
 
 namespace UnityEditor.FrameRecorder
 {
-    public enum EPropertyState
+    public enum EFieldDisplayState
     {
         Enabled,
         Disabled,
@@ -26,7 +27,10 @@ namespace UnityEditor.FrameRecorder
         SerializedProperty m_SynchFrameRate;
         SerializedProperty m_CaptureEveryNthFrame;
         SerializedProperty m_FrameRateExact;
+        SerializedProperty m_DestinationPath;
+        SerializedProperty m_BaseFileName;
 
+        string[] m_FileNameTags;
         string[] m_FrameRateLabels;
 
         protected virtual void OnEnable()
@@ -48,6 +52,12 @@ namespace UnityEditor.FrameRecorder
                 m_SynchFrameRate = pf.Find(x => x.m_SynchFrameRate);
                 m_CaptureEveryNthFrame = pf.Find(x => x.m_CaptureEveryNthFrame);
                 m_FrameRateExact = pf.Find(x => x.m_FrameRateExact);
+                m_DestinationPath = pf.Find(w => w.m_DestinationPath);
+                m_BaseFileName = pf.Find(w => w.m_BaseFileName);
+
+                var temp = FileNameGenerator.tagLabels.ToList();
+                temp.Insert(0, "Add tag...");
+                m_FileNameTags = temp.ToArray();
             }
         }
 
@@ -140,7 +150,7 @@ namespace UnityEditor.FrameRecorder
                 if (editor != null)
                 {
                     if (editor is InputEditor)
-                        (editor as InputEditor).IsFieldAvailableForHost = IsFieldAvailable;
+                        (editor as InputEditor).IsFieldAvailableForHost = GetFieldDisplayState;
                     editor.OnInspectorGUI();
                 }
 
@@ -151,6 +161,22 @@ namespace UnityEditor.FrameRecorder
 
         protected virtual void OnOutputGui()
         {
+            AddProperty(m_DestinationPath, () =>
+            {
+                EditorGUILayout.PropertyField(m_DestinationPath, new GUIContent("Output path")); 
+            });
+            AddProperty(m_BaseFileName, () =>
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.PropertyField(m_BaseFileName, new GUIContent("File name")); 
+
+                int value = EditorGUILayout.Popup( 0, m_FileNameTags);
+                if (value != 0)
+                    m_BaseFileName.stringValue = FileNameGenerator.AddTag((FileNameGenerator.ETags)(value - 1), m_BaseFileName.stringValue);
+                
+                EditorGUILayout.EndHorizontal();                
+            });
+
             AddProperty( m_CaptureEveryNthFrame, () => EditorGUILayout.PropertyField(m_CaptureEveryNthFrame, new GUIContent("Every n'th frame")));
         }
 
@@ -297,17 +323,17 @@ namespace UnityEditor.FrameRecorder
             // nothing. this is for sub classes...
         }
 
-        protected virtual EPropertyState IsFieldAvailable( SerializedProperty property)
+        protected virtual EFieldDisplayState GetFieldDisplayState( SerializedProperty property)
         {
-            return EPropertyState.Enabled;
+            return EFieldDisplayState.Enabled;
         }
 
         protected void AddProperty(SerializedProperty prop, Action action )
         {
-            var state = IsFieldAvailable(prop);
-            if (state != EPropertyState.Hidden)
+            var state = GetFieldDisplayState(prop);
+            if (state != EFieldDisplayState.Hidden)
             {
-                using (new EditorGUI.DisabledScope(state == EPropertyState.Disabled))
+                using (new EditorGUI.DisabledScope(state == EFieldDisplayState.Disabled))
                     action();
             }
         }

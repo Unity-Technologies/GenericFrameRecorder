@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Assets.FrameRecorder.Core.Engine;
 using UnityEngine.FrameRecorder;
 
 namespace UTJ.FrameCapturer.Recorders
@@ -14,8 +15,7 @@ namespace UTJ.FrameCapturer.Recorders
         {
             if (!base.BeginRecording(session)) { return false; }
 
-            if (!Directory.Exists(m_Settings.m_DestinationPath))
-                Directory.CreateDirectory(m_Settings.m_DestinationPath);
+            m_Settings.m_DestinationPath.CreateDirectory();
 
             m_ctx = fcAPI.fcExrCreateContext(ref m_Settings.m_ExrEncoderSettings);
             return m_ctx;
@@ -32,9 +32,10 @@ namespace UTJ.FrameCapturer.Recorders
             if (m_Inputs.Count != 1)
                 throw new Exception("Unsupported number of sources");
 
-            var path = BuildOutputPath(session);
             var input = (BaseRenderTextureInput)m_Inputs[0];
             var frame = input.outputRT;
+            var fileName = FileNameGenerator.BuildFileName(m_Settings.m_BaseFileName, recordedFramesCount, frame.width, frame.height, "exr");
+            var path = Path.Combine( settings.m_DestinationPath.GetFullPath(), fileName);
 
             fcAPI.fcLock(frame, (data, fmt) =>
             {
@@ -48,13 +49,5 @@ namespace UTJ.FrameCapturer.Recorders
             });
         }
 
-        string BuildOutputPath(RecordingSession session)
-        {
-            var outputPath = m_Settings.m_DestinationPath;
-            if (outputPath.Length > 0 && !outputPath.EndsWith("/"))
-                outputPath += "/";
-            outputPath += (settings as EXRRecorderSettings).m_BaseFileName + recordedFramesCount.ToString("0000") + ".exr";
-            return outputPath;
-        }
     }
 }

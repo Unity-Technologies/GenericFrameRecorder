@@ -11,6 +11,11 @@ namespace UTJ.FrameCapturer.Recorders
 
         public fcAPI.fcExrConfig m_ExrEncoderSettings = fcAPI.fcExrConfig.default_value;
 
+        EXRRecorderSettings()
+        {
+            m_BaseFileName = "image_<0000>.<ext>";
+        }
+
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()
         {
             return new List<RecorderInputSetting>() { ScriptableObject.CreateInstance<CBRenderTextureInputSettings>() };

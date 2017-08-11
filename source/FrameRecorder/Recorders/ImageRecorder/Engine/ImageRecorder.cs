@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Assets.FrameRecorder.Core.Engine;
 using UnityEngine.FrameRecorder.Input;
 
 namespace UnityEngine.FrameRecorder
@@ -8,13 +9,14 @@ namespace UnityEngine.FrameRecorder
     [FrameRecorder(typeof(ImageRecorderSettings),"Video", "Unity/Image sequence" )]
     public class ImageRecorder : GenericRecorder<ImageRecorderSettings>
     {
-        string MakeFileName(RecordingSession session)
+
+        public override bool BeginRecording(RecordingSession session)
         {
-            var fileName = m_Settings.m_DestinationPath;
-            if (fileName.Length > 0 && !fileName.EndsWith("/"))
-                fileName += "/";
-            fileName += m_Settings.m_BaseFileName + recordedFramesCount + "." + m_Settings.m_OutputFormat;
-            return fileName;
+            if (!base.BeginRecording(session)) { return false; }
+
+            m_Settings.m_DestinationPath.CreateDirectory();
+
+            return true;
         }
 
         public override void RecordFrame(RecordingSession session)
@@ -35,16 +37,20 @@ namespace UnityEngine.FrameRecorder
             RenderTexture.active = backupActive;
 
             byte[] bytes;
+            string ext;
             switch (m_Settings.m_OutputFormat)
             {
                 case PNGRecordeOutputFormat.PNG:
                     bytes = tex.EncodeToPNG();
+                    ext = "png";
                     break;
                 case PNGRecordeOutputFormat.JPEG:
                     bytes = tex.EncodeToJPG();
+                    ext = "jpg";
                     break;
                 case PNGRecordeOutputFormat.EXR:
                     bytes = tex.EncodeToEXR();
+                    ext = "exr";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -52,10 +58,11 @@ namespace UnityEngine.FrameRecorder
 
             UnityHelpers.Destroy(tex);
 
-            if (!Directory.Exists(m_Settings.m_DestinationPath))
-                Directory.CreateDirectory(m_Settings.m_DestinationPath);
+            var fileName = FileNameGenerator.BuildFileName(m_Settings.m_BaseFileName, recordedFramesCount, width, height, ext);
+            var path = Path.Combine( m_Settings.m_DestinationPath.GetFullPath(), fileName);
 
-            File.WriteAllBytes(MakeFileName(session), bytes);
+
+            File.WriteAllBytes( path, bytes);
         }
     }
 }

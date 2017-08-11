@@ -10,11 +10,16 @@ namespace UTJ.FrameCapturer.Recorders
     {
         public fcAPI.fcGifConfig m_GifEncoderSettings = fcAPI.fcGifConfig.default_value;
 
+        GIFRecorderSettings()
+        {
+            m_BaseFileName = "animation.<ext>";
+        }
+
         public override bool isValid
         {
             get
             {
-                return base.isValid && !string.IsNullOrEmpty(m_DestinationPath) && !string.IsNullOrEmpty(m_BaseFileName);
+                return base.isValid && !string.IsNullOrEmpty(m_DestinationPath.GetFullPath()) && !string.IsNullOrEmpty(m_BaseFileName);
             }
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Assets.FrameRecorder.Core.Engine;
 
 namespace UnityEngine.FrameRecorder
 {
