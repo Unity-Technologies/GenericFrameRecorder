@@ -46,7 +46,7 @@ namespace UnityEngine.FrameRecorder.Input
             {
                 if (m_shCopy == null)
                 {
-                    m_shCopy = Shader.Find("Hidden/UTJ/FrameCapturer/CopyFrameBuffer");
+                    m_shCopy = Shader.Find("Hidden/FrameRecorder/CopyFrameBuffer");
                 }
                 return m_shCopy;
             }

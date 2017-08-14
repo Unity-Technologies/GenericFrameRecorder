@@ -1,4 +1,4 @@
-Shader "Hidden/UTJ/FrameCapturer/CopyFrameBuffer" {
+Shader "Hidden/FrameRecorder/CopyFrameBuffer" {
 
 CGINCLUDE
 #include "UnityCG.cginc"
