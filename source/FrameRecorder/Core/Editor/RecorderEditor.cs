@@ -40,9 +40,6 @@ namespace UnityEditor.FrameRecorder
 
                 var pf = new PropertyFinder<RecorderSettings>(serializedObject);
                 m_Inputs = pf.Find(x => x.m_SourceSettings);
-                m_ShowInputEditor = new bool[m_Inputs.arraySize];
-                for (int i = 0; i < m_ShowInputEditor.Length; ++i)
-                    m_ShowInputEditor[i] = true;
                 m_Verbose = pf.Find(x => x.m_Verbose);
                 m_FrameRateMode = pf.Find(x => x.m_FrameRateMode);
                 m_FrameRate = pf.Find(x => x.m_FrameRate);
@@ -130,6 +127,14 @@ namespace UnityEditor.FrameRecorder
                 {
                     AddSourceSettings(newSetting);
                 }
+            }       
+
+            if (m_ShowInputEditor == null || m_ShowInputEditor.Length != m_Inputs.arraySize)
+            {
+                var oldLength = m_ShowInputEditor == null ? 0 : m_ShowInputEditor.Length;
+                m_ShowInputEditor = new bool[m_Inputs.arraySize];
+                for (int i = oldLength; i < m_ShowInputEditor.Length; ++i)
+                    m_ShowInputEditor[i] = true;
             }
         }
 

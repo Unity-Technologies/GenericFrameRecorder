@@ -115,7 +115,7 @@ namespace UnityEditor.FrameRecorder
                 if (m_State == EState.Recording)
                     try
                     {
-                        Debug.LogError("Aborting recording due to an exception!");
+                        Debug.LogError("Aborting recording due to an exception!\n" + ex.ToString());
                         StopRecording();
                     }
                     catch (Exception)
