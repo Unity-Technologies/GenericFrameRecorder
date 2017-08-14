@@ -20,7 +20,7 @@ namespace UnityEngine.FrameRecorder.Input
         Camera          m_Camera;
         bool            m_cameraChanged;
 
-        CBRenderTextureInputSettings cbSettings
+        public CBRenderTextureInputSettings cbSettings
         {
             get { return (CBRenderTextureInputSettings)settings; }
         }

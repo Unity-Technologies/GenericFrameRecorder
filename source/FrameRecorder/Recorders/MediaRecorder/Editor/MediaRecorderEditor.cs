@@ -5,11 +5,13 @@ using UnityEngine.FrameRecorder.Input;
 
 namespace UnityEditor.FrameRecorder
 {
-    [CustomEditor(typeof(ImageRecorderSettings))]
-    public class ImagRecorderEditor : RecorderEditor
+    [CustomEditor(typeof(MediaRecorderSettings))]
+    public class MediaRecorderEditor : RecorderEditor
     {
-    
+        SerializedProperty m_DestinationPath;
+        SerializedProperty m_BaseFileName;
         SerializedProperty m_OutputFormat;
+        SerializedProperty m_AppendSuffix;
 
         string[] m_Candidates;
         
@@ -27,9 +29,12 @@ namespace UnityEditor.FrameRecorder
                 return;
 
             m_Candidates = new [] { "Command Buffered Camera", "Offscreen rendering", "Render Texture" };
-            var pf = new PropertyFinder<ImageRecorderSettings>(serializedObject);
+            var pf = new PropertyFinder<MediaRecorderSettings>(serializedObject);
             m_Inputs = pf.Find(w => w.m_SourceSettings);
+            m_DestinationPath = pf.Find(w => w.m_DestinationPath);
+            m_BaseFileName = pf.Find(w => w.m_BaseFileName);
             m_OutputFormat = pf.Find(w => w.m_OutputFormat);
+            m_AppendSuffix = pf.Find(w => w.m_AppendSuffix);
         }
 
         protected override void OnEncodingGroupGui()
@@ -61,7 +66,7 @@ namespace UnityEditor.FrameRecorder
                         break;
                 }
                 var newSettings = ScriptableObject.CreateInstance(newType) as RecorderInputSetting;
-                if( newIndex == 0 )
+                if (newIndex == 0)
                     (newSettings as CBRenderTextureInputSettings).m_FlipVertical = true;
 
                 ChangeInputSettings(0, newSettings);
@@ -72,7 +77,18 @@ namespace UnityEditor.FrameRecorder
 
         protected override void OnOutputGui()
         {
-            AddProperty(m_OutputFormat, () => EditorGUILayout.PropertyField(m_OutputFormat, new GUIContent("Output format")));
+            EditorGUILayout.PropertyField(m_OutputFormat, new GUIContent("Output format"));
+
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Directory");
+            m_DestinationPath.stringValue = EditorGUILayout.TextField(m_DestinationPath.stringValue);
+            if (GUILayout.Button("...", GUILayout.Width(30)))
+                m_DestinationPath.stringValue = EditorUtility.OpenFolderPanel( "Select output location", m_DestinationPath.stringValue, "");
+            GUILayout.EndHorizontal();
+
+            EditorGUILayout.PropertyField(m_BaseFileName, new GUIContent("File name"));
+            EditorGUILayout.PropertyField(m_AppendSuffix, new GUIContent("Append timestamp"));
+
             base.OnOutputGui();
         }
     }

@@ -14,6 +14,7 @@ namespace UnityEditor.FrameRecorder
     public abstract class RecorderEditor : Editor
     {
         protected SerializedProperty m_Inputs;
+        bool[]             m_ShowInputEditor;
         SerializedProperty m_Verbose;
         SerializedProperty m_FrameRateMode;
         SerializedProperty m_FrameRate;
@@ -39,6 +40,9 @@ namespace UnityEditor.FrameRecorder
 
                 var pf = new PropertyFinder<RecorderSettings>(serializedObject);
                 m_Inputs = pf.Find(x => x.m_SourceSettings);
+                m_ShowInputEditor = new bool[m_Inputs.arraySize];
+                for (int i = 0; i < m_ShowInputEditor.Length; ++i)
+                    m_ShowInputEditor[i] = true;
                 m_Verbose = pf.Find(x => x.m_Verbose);
                 m_FrameRateMode = pf.Find(x => x.m_FrameRateMode);
                 m_FrameRate = pf.Find(x => x.m_FrameRate);
@@ -137,17 +141,20 @@ namespace UnityEditor.FrameRecorder
                 if (multiInputs)
                 {
                     EditorGUI.indentLevel++;
-                    EditorGUILayout.Foldout(true, "Input " + (i + 1));
+                    m_ShowInputEditor[i] =
+                        EditorGUILayout.Foldout(m_ShowInputEditor[i], "Input " + (i + 1));
                 }
                 var arrItem = m_Inputs.GetArrayElementAtIndex(i);
-                var editor = Editor.CreateEditor( arrItem.objectReferenceValue );
-                if (editor != null)
+                if (m_ShowInputEditor[i])
                 {
-                    if (editor is InputEditor)
-                        (editor as InputEditor).IsFieldAvailableForHost = GetFieldDisplayState;
-                    editor.OnInspectorGUI();
+                    var editor = Editor.CreateEditor(arrItem.objectReferenceValue);
+                    if (editor != null)
+                    {
+                        if (editor is InputEditor)
+                            (editor as InputEditor).IsFieldAvailableForHost = GetFieldDisplayState;
+                        editor.OnInspectorGUI();
+                    }
                 }
-
                 if (multiInputs)
                     EditorGUI.indentLevel--;
             }
@@ -155,25 +162,8 @@ namespace UnityEditor.FrameRecorder
 
         protected virtual void OnOutputGui()
         {
-            AddProperty(m_DestinationPath, () =>
-            {
-                EditorGUILayout.PropertyField(m_DestinationPath, new GUIContent("Output path")); 
-            });
-            AddProperty(m_BaseFileName, () =>
-            {
-                EditorGUILayout.PropertyField(m_BaseFileName, new GUIContent("File name")); 
-                /*
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PropertyField(m_BaseFileName, new GUIContent("File name")); 
-
-                int value = EditorGUILayout.Popup( 0, m_FileNameTags);
-                if (value != 0)
-                    m_BaseFileName.stringValue = FileNameGenerator.AddTag((FileNameGenerator.ETags)(value - 1), m_BaseFileName.stringValue);
-                
-                EditorGUILayout.EndHorizontal(); 
-                */               
-            });
-
+            AddProperty(m_DestinationPath, () => { EditorGUILayout.PropertyField(m_DestinationPath, new GUIContent("Output path"));  });
+            AddProperty(m_BaseFileName, () => { EditorGUILayout.PropertyField(m_BaseFileName, new GUIContent("File name")); });
             AddProperty( m_CaptureEveryNthFrame, () => EditorGUILayout.PropertyField(m_CaptureEveryNthFrame, new GUIContent("Every n'th frame")));
         }
 
