@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using UnityEngine;
-using UTJ.FrameCapturer.Recorders;
 
 namespace UnityEditor.FrameRecorder
 {
@@ -12,7 +11,6 @@ namespace UnityEditor.FrameRecorder
         static void GeneratePackage()
         {
             var rootPath = FRPackagerPaths.GetFrameRecorderRootPath();
-            FrameCapturerPackagerInternal.GeneratePackage();
 
             string[] files = new string[]
             {

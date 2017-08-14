@@ -112,16 +112,10 @@ namespace UnityEngine.FrameRecorder
 
         public void CreateDirectory()
         {
-            try
+            var path = GetFullPath();
+            if(path.Length > 0 && !System.IO.Directory.Exists(path) )
             {
-                var path = GetFullPath();
-                if(path.Length > 0 && !System.IO.Directory.Exists(path) )
-                {
-                    System.IO.Directory.CreateDirectory(path);
-                }
-            }
-            catch(Exception)
-            {
+                System.IO.Directory.CreateDirectory(path);
             }
         }
     }

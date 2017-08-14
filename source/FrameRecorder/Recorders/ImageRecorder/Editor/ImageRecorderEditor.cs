@@ -6,7 +6,7 @@ using UnityEngine.FrameRecorder.Input;
 namespace UnityEditor.FrameRecorder
 {
     [CustomEditor(typeof(ImageRecorderSettings))]
-    public class ImagRecorderEditor : RecorderEditor
+    public class ImageRecorderEditor : RecorderEditor
     {
     
         SerializedProperty m_OutputFormat;
