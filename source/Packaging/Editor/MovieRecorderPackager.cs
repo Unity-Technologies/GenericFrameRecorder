@@ -20,7 +20,7 @@ namespace UnityEditor.FrameRecorder
                 Path.Combine(rootPath, "Extensions/MovieRecorder/Recorder" ),
                 Path.Combine(rootPath, "Extensions/MovieRecorder/Packaging/Editor" ),
             };
-            var destFile = Path.Combine(rootPath, "MovieRecorder.unitypackage");
+            var destFile = Path.Combine(rootPath, "Extensions/MovieRecorder/Packaging/MovieRecorder.unitypackage");
             AssetDatabase.ExportPackage(files, destFile, ExportPackageOptions.Recurse);
             Debug.Log("Generated package: " + destFile);            
         }        
@@ -29,8 +29,6 @@ namespace UnityEditor.FrameRecorder
     [InitializeOnLoad]
     class MovieRecorderPackagerInternal : ScriptableObject
     {
-        const string k_WitnessClass = "fcAPI";
-        const string k_WitnessNamespace = "UTJ.FrameCapturer";
         const string k_PackageName = "MovieRecorder.unitypackage";
 
         static string m_PkgFile;
@@ -43,19 +41,19 @@ namespace UnityEditor.FrameRecorder
 
         static bool AudioRecordingAvailable
         {
-            get { return Type.GetType("UnityEditor.AudioRecorder") != null; }
+            get { return AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetTypes().Any(y => y.Name == "AudioRecorder" && y.Namespace == "UnityEngine")); }
         }
 
         static bool MovieRecordingAvailable
         {
-            get { return Type.GetType("UnityEditor.Media.MediaEncoder") != null; }
+            get { return AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetTypes().Any(y => y.Name == "MediaEncoder" && y.Namespace == "UnityEditor.Media")); }
         }
 
         static MovieRecorderPackagerInternal() // auto extracts
         {
             if(AutoExtractAllowed && AudioRecordingAvailable && MovieRecordingAvailable )
             {
-                m_PkgFile = Path.Combine(FRPackagerPaths.GetFrameRecorderRootPath(), k_PackageName);
+                m_PkgFile = Path.Combine(FRPackagerPaths.GetFrameRecorderRootPath(), "Extensions/MovieRecorder/Packaging/" + k_PackageName);
                 m_ScriptFile = Path.Combine(FRPackagerPaths.GetFrameRecorderRootPath(), "Extensions/MovieRecorder/Recorder/Engine/MediaRecorder.cs");
                 if ( File.Exists(m_PkgFile) && 
                     (!File.Exists(m_ScriptFile) || File.GetLastWriteTime(m_PkgFile) > File.GetLastWriteTime(m_ScriptFile)))

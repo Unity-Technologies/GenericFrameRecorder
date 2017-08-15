@@ -50,7 +50,7 @@ namespace UnityEditor.FrameRecorder.Input
 
         public override void OnInspectorGUI()
         {
-            EditorGUILayout.PropertyField(m_PreserveAudio, new GUIContent("Preserve audio"));
+            EditorGUILayout.PropertyField(m_PreserveAudio, new GUIContent("Capture audio"));
 
 #if RECORD_AUDIO_MIXERS
             if (m_AudioMixerGroups != null)
