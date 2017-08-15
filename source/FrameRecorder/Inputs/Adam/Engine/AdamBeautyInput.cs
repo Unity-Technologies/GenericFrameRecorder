@@ -112,7 +112,12 @@ namespace UnityEngine.FrameRecorder.Input
             m_renderHeight = (int)adamSettings.m_RenderSize;
             m_renderWidth = Mathf.Min(16 * 1024, Mathf.RoundToInt(m_renderHeight * aspect));
             m_outputHeight = (int)adamSettings.m_FinalSize;
-            m_outputWidth = Mathf.Min(16 * 1024, Mathf.RoundToInt(m_outputHeight * aspect)) & ~1;
+            m_outputWidth = Mathf.Min(16 * 1024, Mathf.RoundToInt(m_outputHeight * aspect));
+            if (adamSettings.m_ForceEvenSize)
+            {
+                m_outputWidth &= ~1;
+                m_outputHeight &= ~1;
+            }
 
             m_superMaterial = new Material(superShader);
             m_superMaterial.hideFlags = HideFlags.DontSave;

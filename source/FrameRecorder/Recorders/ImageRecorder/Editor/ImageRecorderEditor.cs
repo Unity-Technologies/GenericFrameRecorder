@@ -24,7 +24,7 @@ namespace UnityEditor.FrameRecorder
             if (target == null)
                 return;
 
-            m_RTInputSelector = new RTInputSelector("Pixels");
+            m_RTInputSelector = new RTInputSelector("Pixels", false);
 
             var pf = new PropertyFinder<ImageRecorderSettings>(serializedObject);
             m_Inputs = pf.Find(w => w.m_SourceSettings);

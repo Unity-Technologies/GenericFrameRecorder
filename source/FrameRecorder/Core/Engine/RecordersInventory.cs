@@ -188,7 +188,7 @@ namespace UnityEngine.FrameRecorder
                 settings.recorderType = recorderType;
 
                 AssetDatabase.AddObjectToAsset(settings, parentAsset);
-                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
                 return settings;
             }
             else

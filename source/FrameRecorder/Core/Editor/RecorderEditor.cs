@@ -135,7 +135,7 @@ namespace UnityEditor.FrameRecorder
             sourceSettings.name = GUID.Generate().ToString();
 
             AssetDatabase.AddObjectToAsset(sourceSettings, serializedObject.targetObject);
-            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
 
             m_Inputs.InsertArrayElementAtIndex(m_Inputs.arraySize);
             var arryItem = m_Inputs.GetArrayElementAtIndex(m_Inputs.arraySize-1);
@@ -153,7 +153,7 @@ namespace UnityEditor.FrameRecorder
                 newSettings.name = GUID.Generate().ToString();
 
                 AssetDatabase.AddObjectToAsset(newSettings, serializedObject.targetObject);
-                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
 
                 var arryItem = m_Inputs.GetArrayElementAtIndex(atIndex);
                 UnityHelpers.Destroy(arryItem.objectReferenceValue, true);

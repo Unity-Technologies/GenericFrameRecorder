@@ -11,6 +11,7 @@
         public float m_SuperKernelScale = 1f;
         public RenderTexture m_RenderTexture;
         public string m_CameraTag;
+        public bool m_ForceEvenSize = false;
 
         public AdamBeautyInputSettings()
         {

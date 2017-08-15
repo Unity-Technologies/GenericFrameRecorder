@@ -7,12 +7,14 @@ namespace UnityEditor.FrameRecorder
 {
     public class RTInputSelector
     {
-        public string title { get; set; }
+        string title { get; set; }
+        bool enforceEvenSize { get; set; }
         string[] candidates = { "Camera output", "Offscreen rendering", "Render Texture" };
 
-        public RTInputSelector(string title)
+        public RTInputSelector(string title, bool enforceEvenSize )
         {
             this.title = title;
+            this.enforceEvenSize = enforceEvenSize;
         }
 
         public bool OnInputGui( ref RecorderInputSetting input)
@@ -39,6 +41,12 @@ namespace UnityEditor.FrameRecorder
                 var newSettings = ScriptableObject.CreateInstance(newType) as RecorderInputSetting;
                 newSettings.m_DisplayName = title;
                 input = newSettings;
+
+                if (newSettings is CBRenderTextureInputSettings)
+                    (newSettings as CBRenderTextureInputSettings).m_PadSize = enforceEvenSize;
+                if (newSettings is AdamBeautyInputSettings)
+                    (newSettings as AdamBeautyInputSettings).m_ForceEvenSize = enforceEvenSize;
+
                 return true;
             }
 

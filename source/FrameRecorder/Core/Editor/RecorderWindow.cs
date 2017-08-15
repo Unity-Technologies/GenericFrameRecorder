@@ -78,7 +78,7 @@ namespace UnityEditor.FrameRecorder
                             {
                                 m_WindowSettingsAsset = ScriptableObject.CreateInstance<RecorderWindowSettings>();
                                 AssetDatabase.CreateAsset(m_WindowSettingsAsset, "Assets/FrameRecordingSettings.asset");
-                                AssetDatabase.SaveAssets();
+                                AssetDatabase.Refresh();
                             }
                         }
 
@@ -291,7 +291,7 @@ namespace UnityEditor.FrameRecorder
             if( m_WindowSettingsAsset.m_Settings == null )
                 m_WindowSettingsAsset.m_Settings = RecordersInventory.GenerateNewSettingsAsset(m_WindowSettingsAsset, m_recorderSelector.selectedRecorder );
             m_Editor = Editor.CreateEditor( m_WindowSettingsAsset.m_Settings ) as RecorderEditor;
-            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
 
         }
 

@@ -81,7 +81,7 @@ namespace UnityEditor.FrameRecorder.Timeline
             if(clip.m_Settings == null)
                 clip.m_Settings = RecordersInventory.GenerateNewSettingsAsset(clip, m_recorderSelector.selectedRecorder );
             m_Editor = Editor.CreateEditor(clip.m_Settings) as RecorderEditor;
-            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
         }
 
         TimelineAsset FindTimelineAsset()
