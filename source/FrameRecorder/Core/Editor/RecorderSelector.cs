@@ -130,14 +130,14 @@ namespace UnityEditor.FrameRecorder
             if (!m_CategoryIsReadonly)
             {
                 EditorGUILayout.BeginHorizontal();
-                SetCategoryFromIndex(EditorGUILayout.Popup("Record what:", GetCategoryIndex(), m_Categories));
+                SetCategoryFromIndex(EditorGUILayout.Popup("Recorder category:", GetCategoryIndex(), m_Categories));
                 EditorGUILayout.EndHorizontal();
             }
 
             // Recorder in group selection
             EditorGUILayout.BeginHorizontal();
             var oldIndex = GetRecorderIndex();
-            var newIndex = EditorGUILayout.Popup("Output type:", oldIndex, m_RecorderNames);
+            var newIndex = EditorGUILayout.Popup("Selected recorder:", oldIndex, m_RecorderNames);
             SelectRecorder(GetRecorderFromIndex(newIndex));
 
             EditorGUILayout.EndHorizontal();

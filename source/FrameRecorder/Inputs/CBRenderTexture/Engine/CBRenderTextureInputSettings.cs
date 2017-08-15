@@ -10,6 +10,11 @@
         public bool m_PadSize = false;
         public bool m_AllowTransparency = false;
 
+        public CBRenderTextureInputSettings()
+        {
+            m_DisplayName = "Pixels";
+        }
+
         public override bool isValid {
             get { return source != EImageSource.TaggedCamera || !string.IsNullOrEmpty(m_CameraTag); }
         }

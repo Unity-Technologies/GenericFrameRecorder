@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.FrameRecorder;
 
@@ -13,8 +14,38 @@ namespace UnityEditor.FrameRecorder
 
     public abstract class RecorderEditor : Editor
     {
+        protected class InputEditorState
+        {
+            InputEditor.IsFieldAvailableDelegate m_Validator;
+            public bool visible;
+            public Editor editor { get; private set; }
+
+            RecorderInputSetting m_SettingsObj;
+            public RecorderInputSetting settingsObj
+            {
+                get { return m_SettingsObj; }
+                set
+                {
+                    m_SettingsObj = value;
+                    if( editor != null )   
+                        UnityHelpers.Destroy(editor);
+
+                    editor = Editor.CreateEditor(m_SettingsObj);
+                    if (editor is InputEditor)
+                        (editor as InputEditor).IsFieldAvailableForHost = m_Validator;                
+                }
+            }
+
+            public InputEditorState(InputEditor.IsFieldAvailableDelegate validator, RecorderInputSetting settings)
+            {
+                m_Validator = validator;
+                settingsObj = settings;
+            }
+        }
+        protected List<InputEditorState> m_InputEditors;
+
         protected SerializedProperty m_Inputs;
-        bool[]             m_ShowInputEditor;
+
         SerializedProperty m_Verbose;
         SerializedProperty m_FrameRateMode;
         SerializedProperty m_FrameRate;
@@ -36,6 +67,7 @@ namespace UnityEditor.FrameRecorder
         {
             if (target != null)
             {
+                m_InputEditors = new List<InputEditorState>();
                 m_FrameRateLabels = EnumHelper.MaskOutEnumNames<EFrameRate>(0xFFFF, (x) => FrameRateHelper.ToLable( (EFrameRate)x) );
 
                 var pf = new PropertyFinder<RecorderSettings>(serializedObject);
@@ -53,6 +85,11 @@ namespace UnityEditor.FrameRecorder
                 m_FrameRateExact = pf.Find(x => x.m_FrameRateExact);
                 m_DestinationPath = pf.Find(w => w.m_DestinationPath);
                 m_BaseFileName = pf.Find(w => w.m_BaseFileName);
+
+                foreach (var input in (target as RecorderSettings).m_SourceSettings)
+                {
+                    m_InputEditors.Add( new InputEditorState(GetFieldDisplayState, input) { visible = true} );
+                }
             }
         }
 
@@ -103,18 +140,31 @@ namespace UnityEditor.FrameRecorder
             m_Inputs.InsertArrayElementAtIndex(m_Inputs.arraySize);
             var arryItem = m_Inputs.GetArrayElementAtIndex(m_Inputs.arraySize-1);
             arryItem.objectReferenceValue = sourceSettings;
+
+            m_InputEditors.Add( new InputEditorState(GetFieldDisplayState, sourceSettings) { visible = true} );
+
+            serializedObject.ApplyModifiedProperties();
         }
 
-        protected void ChangeInputSettings(int atIndex, RecorderInputSetting newSettings)
+        public void ChangeInputSettings(int atIndex, RecorderInputSetting newSettings)
         {
-            newSettings.name = GUID.Generate().ToString();
+            if (newSettings != null)
+            {
+                newSettings.name = GUID.Generate().ToString();
 
-            AssetDatabase.AddObjectToAsset(newSettings, serializedObject.targetObject);
-            AssetDatabase.SaveAssets();
+                AssetDatabase.AddObjectToAsset(newSettings, serializedObject.targetObject);
+                AssetDatabase.SaveAssets();
 
-            var arryItem = m_Inputs.GetArrayElementAtIndex(atIndex);
-            UnityHelpers.Destroy(arryItem.objectReferenceValue, true);
-            arryItem.objectReferenceValue = newSettings;
+                var arryItem = m_Inputs.GetArrayElementAtIndex(atIndex);
+                UnityHelpers.Destroy(arryItem.objectReferenceValue, true);
+                arryItem.objectReferenceValue = newSettings;
+
+                m_InputEditors[atIndex].settingsObj = newSettings;
+            }
+            else if(m_InputEditors.Count == 0)
+            {
+                throw new Exception("Source removal not implemented");
+            }
         }
 
         protected void PrepareInitialSources()
@@ -127,14 +177,6 @@ namespace UnityEditor.FrameRecorder
                 {
                     AddSourceSettings(newSetting);
                 }
-            }       
-
-            if (m_ShowInputEditor == null || m_ShowInputEditor.Length != m_Inputs.arraySize)
-            {
-                var oldLength = m_ShowInputEditor == null ? 0 : m_ShowInputEditor.Length;
-                m_ShowInputEditor = new bool[m_Inputs.arraySize];
-                for (int i = oldLength; i < m_ShowInputEditor.Length; ++i)
-                    m_ShowInputEditor[i] = true;
             }
         }
 
@@ -146,23 +188,20 @@ namespace UnityEditor.FrameRecorder
                 if (multiInputs)
                 {
                     EditorGUI.indentLevel++;
-                    m_ShowInputEditor[i] =
-                        EditorGUILayout.Foldout(m_ShowInputEditor[i], "Input " + (i + 1));
+                    m_InputEditors[i].visible = EditorGUILayout.Foldout( m_InputEditors[i].visible, m_InputEditors[i].settingsObj.m_DisplayName ?? "Input " + (i+1));
                 }
-                var arrItem = m_Inputs.GetArrayElementAtIndex(i);
-                if (m_ShowInputEditor[i])
-                {
-                    var editor = Editor.CreateEditor(arrItem.objectReferenceValue);
-                    if (editor != null)
-                    {
-                        if (editor is InputEditor)
-                            (editor as InputEditor).IsFieldAvailableForHost = GetFieldDisplayState;
-                        editor.OnInspectorGUI();
-                    }
-                }
+
+                if( m_InputEditors[i].visible )
+                    OnInputGui(i);
+
                 if (multiInputs)
                     EditorGUI.indentLevel--;
             }
+        }
+
+        protected virtual void OnInputGui( int inputIndex )
+        {
+           m_InputEditors[inputIndex].editor.OnInspectorGUI();
         }
 
         protected virtual void OnOutputGui()

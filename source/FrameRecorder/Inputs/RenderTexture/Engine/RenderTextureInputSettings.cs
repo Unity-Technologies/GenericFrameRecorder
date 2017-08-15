@@ -4,6 +4,11 @@
     {
         public RenderTexture m_SourceRTxtr;
 
+        public RenderTextureInputSettings()
+        {
+            m_DisplayName = "Pixels";
+        }
+
         public override bool isValid {
             get
             {

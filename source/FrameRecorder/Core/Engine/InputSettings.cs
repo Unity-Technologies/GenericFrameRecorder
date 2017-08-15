@@ -11,6 +11,7 @@ namespace UnityEngine.FrameRecorder
     {
         public abstract Type inputType { get; }
         public abstract bool isValid { get; }
+        public string m_DisplayName;
     }
 
     /// <summary>

@@ -12,6 +12,11 @@
         public RenderTexture m_RenderTexture;
         public string m_CameraTag;
 
+        public AdamBeautyInputSettings()
+        {
+            m_DisplayName = "Pixels";
+        }
+
         public override bool isValid {
             get
             {
