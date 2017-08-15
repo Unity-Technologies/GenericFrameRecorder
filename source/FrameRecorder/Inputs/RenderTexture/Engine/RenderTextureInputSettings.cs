@@ -4,12 +4,8 @@
     {
         public RenderTexture m_SourceRTxtr;
 
-        public RenderTextureInputSettings()
+        public override bool isValid
         {
-            m_DisplayName = "Pixels";
-        }
-
-        public override bool isValid {
             get
             {
                 return m_SourceRTxtr != null; 

@@ -115,8 +115,8 @@ namespace UnityEngine.FrameRecorder.Input
             m_outputWidth = Mathf.Min(16 * 1024, Mathf.RoundToInt(m_outputHeight * aspect));
             if (adamSettings.m_ForceEvenSize)
             {
-                m_outputWidth &= ~1;
-                m_outputHeight &= ~1;
+                m_outputWidth = (m_outputWidth + 1) & ~1;
+                m_outputHeight = (m_outputHeight + 1) & ~1;
             }
 
             m_superMaterial = new Material(superShader);

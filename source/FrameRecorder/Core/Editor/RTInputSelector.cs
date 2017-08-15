@@ -8,13 +8,13 @@ namespace UnityEditor.FrameRecorder
     public class RTInputSelector
     {
         string title { get; set; }
-        bool enforceEvenSize { get; set; }
         string[] candidates = { "Camera output", "Offscreen rendering", "Render Texture" };
+        RecorderSettings recSettings;
 
-        public RTInputSelector(string title, bool enforceEvenSize )
+        public RTInputSelector( RecorderSettings recSettings, string title )
         {
+            this.recSettings = recSettings;
             this.title = title;
-            this.enforceEvenSize = enforceEvenSize;
         }
 
         public bool OnInputGui( ref RecorderInputSetting input)
@@ -25,28 +25,18 @@ namespace UnityEditor.FrameRecorder
 
             if (index != newIndex)
             {
-                Type newType = null;
                 switch (newIndex)
                 {
                     case 0:
-                        newType = typeof(CBRenderTextureInputSettings);
+                        input = recSettings.NewInputSettingsObj<CBRenderTextureInputSettings>( title );
                         break;
                     case 1:
-                        newType = typeof(AdamBeautyInputSettings);
+                        input = recSettings.NewInputSettingsObj<AdamBeautyInputSettings>( title );
                         break;
                     case 2:
-                        newType = typeof(RenderTextureInputSettings);
+                        input = recSettings.NewInputSettingsObj<RenderTextureInputSettings>( title );
                         break;
                 }
-                var newSettings = ScriptableObject.CreateInstance(newType) as RecorderInputSetting;
-                newSettings.m_DisplayName = title;
-                input = newSettings;
-
-                if (newSettings is CBRenderTextureInputSettings)
-                    (newSettings as CBRenderTextureInputSettings).m_PadSize = enforceEvenSize;
-                if (newSettings is AdamBeautyInputSettings)
-                    (newSettings as AdamBeautyInputSettings).m_ForceEvenSize = enforceEvenSize;
-
                 return true;
             }
 

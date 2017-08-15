@@ -24,7 +24,7 @@ namespace UnityEditor.FrameRecorder
             if (target == null)
                 return;
 
-            m_RTInputSelector = new RTInputSelector("Pixels", false);
+            m_RTInputSelector = new RTInputSelector( target as RecorderSettings, "Pixels");
 
             var pf = new PropertyFinder<ImageRecorderSettings>(serializedObject);
             m_Inputs = pf.Find(w => w.m_SourceSettings);
@@ -40,12 +40,7 @@ namespace UnityEditor.FrameRecorder
         {
             var input = m_Inputs.GetArrayElementAtIndex(inputIndex).objectReferenceValue as RecorderInputSetting;
             if (m_RTInputSelector.OnInputGui(ref input))
-            {
-                if( input is CBRenderTextureInputSettings )
-                    (input as CBRenderTextureInputSettings).m_FlipVertical = true;
-
                 ChangeInputSettings(inputIndex, input);                
-            }
 
             base.OnInputGui(inputIndex);
         }

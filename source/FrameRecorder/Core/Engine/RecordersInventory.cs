@@ -186,9 +186,13 @@ namespace UnityEngine.FrameRecorder
                 settings = ScriptableObject.CreateInstance(recorderinfo.settings) as RecorderSettings;
                 settings.name = "Frame Recorder Settings";
                 settings.recorderType = recorderType;
-
+                settings.m_SourceSettings = settings.GetDefaultSourcesSettings().ToArray();
                 AssetDatabase.AddObjectToAsset(settings, parentAsset);
+                foreach (var obj in settings.m_SourceSettings)
+                    AssetDatabase.AddObjectToAsset(obj, parentAsset);
+
                 AssetDatabase.Refresh();
+
                 return settings;
             }
             else

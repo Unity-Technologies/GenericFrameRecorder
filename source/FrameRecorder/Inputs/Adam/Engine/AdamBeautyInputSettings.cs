@@ -13,11 +13,6 @@
         public string m_CameraTag;
         public bool m_ForceEvenSize = false;
 
-        public AdamBeautyInputSettings()
-        {
-            m_DisplayName = "Pixels";
-        }
-
         public override bool isValid {
             get
             {

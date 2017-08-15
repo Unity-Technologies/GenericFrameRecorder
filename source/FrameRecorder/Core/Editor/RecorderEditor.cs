@@ -132,11 +132,6 @@ namespace UnityEditor.FrameRecorder
 
         protected void AddSourceSettings(RecorderInputSetting sourceSettings)
         {
-            sourceSettings.name = GUID.Generate().ToString();
-
-            AssetDatabase.AddObjectToAsset(sourceSettings, serializedObject.targetObject);
-            AssetDatabase.Refresh();
-
             m_Inputs.InsertArrayElementAtIndex(m_Inputs.arraySize);
             var arryItem = m_Inputs.GetArrayElementAtIndex(m_Inputs.arraySize-1);
             arryItem.objectReferenceValue = sourceSettings;
@@ -150,8 +145,6 @@ namespace UnityEditor.FrameRecorder
         {
             if (newSettings != null)
             {
-                newSettings.name = GUID.Generate().ToString();
-
                 AssetDatabase.AddObjectToAsset(newSettings, serializedObject.targetObject);
                 AssetDatabase.Refresh();
 
@@ -164,19 +157,6 @@ namespace UnityEditor.FrameRecorder
             else if(m_InputEditors.Count == 0)
             {
                 throw new Exception("Source removal not implemented");
-            }
-        }
-
-        protected void PrepareInitialSources()
-        {
-            var recSettings = (RecorderSettings)target;
-            if (recSettings.m_SourceSettings == null || recSettings.m_SourceSettings.Length == 0)
-            {
-                var newSettings = recSettings.GetDefaultSourcesSettings();
-                foreach (var newSetting in newSettings)
-                {
-                    AddSourceSettings(newSetting);
-                }
             }
         }
 
@@ -213,6 +193,7 @@ namespace UnityEditor.FrameRecorder
 
         protected virtual void OnEncodingGui()
         {
+            // place holder
         }
 
         protected virtual void OnTimeGui()
@@ -295,7 +276,6 @@ namespace UnityEditor.FrameRecorder
             m_FoldoutInput = EditorGUILayout.Foldout(m_FoldoutInput, "Input(s)");
             if (m_FoldoutInput)
             {
-                PrepareInitialSources();
                 ++EditorGUI.indentLevel;
                 OnInputGui();
                 --EditorGUI.indentLevel;

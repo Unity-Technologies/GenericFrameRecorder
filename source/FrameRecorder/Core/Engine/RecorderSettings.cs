@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 
 namespace UnityEngine.FrameRecorder
 {
@@ -111,6 +112,19 @@ namespace UnityEngine.FrameRecorder
         }
 
         public abstract List<RecorderInputSetting> GetDefaultSourcesSettings();
+
+        public T NewInputSettingsObj<T>( string title ) where T: class
+        {
+            return NewInputSettingsObj(typeof(T), title) as T;
+        }
+
+        public virtual RecorderInputSetting NewInputSettingsObj(Type type,string title )
+        {
+            var obj = (RecorderInputSetting)ScriptableObject.CreateInstance(type) ;
+            obj.m_DisplayName = title;
+            obj.name = GUID.Generate().ToString();
+            return obj;
+        }
         
     }
 }

@@ -73,7 +73,7 @@ namespace UnityEngine.FrameRecorder.Input
                             outputWidth = screenWidth;
                             outputHeight = screenHeight;
 
-                            if (cbSettings.m_PadSize)
+                            if (cbSettings.m_ForceEvenSize)
                             {
                                 outputWidth = (outputWidth + 1) & ~1;
                                 outputHeight = (outputHeight + 1) & ~1;
@@ -87,7 +87,7 @@ namespace UnityEngine.FrameRecorder.Input
                             outputHeight = (int)cbSettings.m_RenderSize;
                             outputWidth = (int)(outputHeight * AspectRatioHelper.GetRealAR(cbSettings.m_RenderAspect));
 
-                            if (cbSettings.m_PadSize)
+                            if (cbSettings.m_ForceEvenSize)
                             {
                                 outputWidth = (outputWidth + 1) & ~1;
                                 outputHeight = (outputHeight + 1) & ~1;
