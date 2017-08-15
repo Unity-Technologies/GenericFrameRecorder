@@ -1,24 +1,25 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
 
 namespace UnityEditor.FrameRecorder
 {
-
     class MovieRecorderPackager : ScriptableObject
     {
         public static void GeneratePackage()
         {
             var rootPath = FRPackagerPaths.GetFrameRecorderRootPath();
 
+            File.WriteAllText( Path.Combine(rootPath, "Extensions/MovieRecorder/Packaging/TS.txt" ), DateTime.Now.ToString() );
+
             var files = new []
             {
+                Path.Combine(rootPath, "Extensions/MovieRecorder/Recorder" ),
                 Path.Combine(rootPath, "Extensions/MovieRecorder/Audio" ),
                 Path.Combine(rootPath, "Extensions/MovieRecorder/Recorder" ),
                 Path.Combine(rootPath, "Extensions/MovieRecorder/Packaging/Editor" ),
+                Path.Combine(rootPath, "Extensions/MovieRecorder/Packaging/TS.txt" ),
             };
             var destFile = Path.Combine(rootPath, "Extensions/MovieRecorder/Packaging/MovieRecorder.unitypackage");
             AssetDatabase.ExportPackage(files, destFile, ExportPackageOptions.Recurse);
@@ -30,9 +31,6 @@ namespace UnityEditor.FrameRecorder
     class MovieRecorderPackagerInternal : ScriptableObject
     {
         const string k_PackageName = "MovieRecorder.unitypackage";
-
-        static string m_PkgFile;
-        static string m_ScriptFile;
 
         static bool AutoExtractAllowed
         {
@@ -53,45 +51,18 @@ namespace UnityEditor.FrameRecorder
         {
             if(AutoExtractAllowed && AudioRecordingAvailable && MovieRecordingAvailable )
             {
-                m_PkgFile = Path.Combine(FRPackagerPaths.GetFrameRecorderRootPath(), "Extensions/MovieRecorder/Packaging/" + k_PackageName);
-                m_ScriptFile = Path.Combine(FRPackagerPaths.GetFrameRecorderRootPath(), "Extensions/MovieRecorder/Recorder/Engine/MediaRecorder.cs");
-                if ( File.Exists(m_PkgFile) && 
-                    (!File.Exists(m_ScriptFile) || File.GetLastWriteTime(m_PkgFile) > File.GetLastWriteTime(m_ScriptFile)))
+                var pkgFile = Path.Combine(FRPackagerPaths.GetFrameRecorderRootPath(), "Extensions/MovieRecorder/Packaging/" + k_PackageName);
+                var tsFile = Path.Combine(FRPackagerPaths.GetFrameRecorderRootPath(), "Extensions/MovieRecorder/Packaging/TS.txt");
+                var recDir = Path.Combine(FRPackagerPaths.GetFrameRecorderRootPath(), "Extensions/MovieRecorder/Recorder");
+                if ( File.Exists(pkgFile) && 
+                    (!Directory.Exists(recDir) || File.GetLastWriteTime(pkgFile) > File.GetLastWriteTime(tsFile).AddMinutes(5))) // extra 5min to compensate for package write duration
                 {
-                    Debug.Log("Importing MovieRecorder: Processing...");
-                    AssetDatabase.importPackageCompleted += AssetDatabase_importPackageCompleted;
-                    AssetDatabase.importPackageFailed += AssetDatabase_importPackageFailed;
-                    AssetDatabase.importPackageCancelled += RemovePackageImportCallbacks;
-                    AssetDatabase.ImportPackage(m_PkgFile, false);
+                    Debug.Log("Importing MovieRecorder...");
+                    AssetDatabase.ImportPackage(pkgFile, false);
                 }
             }
         }
-        
-        static void AssetDatabase_importPackageCompleted(string packageName)
-        {
-            if (packageName == k_PackageName)
-            {
-                File.SetLastWriteTime(m_ScriptFile, File.GetLastWriteTime(m_PkgFile));
-                RemovePackageImportCallbacks(k_PackageName);
-                Debug.Log("Importing FrameCapturer's Recorders: Done.");
-            }
-        }
 
-        static void AssetDatabase_importPackageFailed(string packageName, string errorMessage)
-        {
-            if (packageName == k_PackageName)
-            {
-                Debug.LogError("Failed to import " + k_PackageName + ": " + errorMessage);
-                RemovePackageImportCallbacks(k_PackageName);
-            }
-        }
-
-        static void RemovePackageImportCallbacks(string packageName)
-        {
-            AssetDatabase.importPackageCompleted -= AssetDatabase_importPackageCompleted;
-            AssetDatabase.importPackageCancelled -= RemovePackageImportCallbacks;
-            AssetDatabase.importPackageFailed -= AssetDatabase_importPackageFailed;
-        }
       
     }
 }

@@ -177,7 +177,10 @@ namespace UnityEngine.FrameRecorder
 
             try
             {
-                m_Encoder = new UnityEditor.Media.MediaEncoder( m_Settings.m_DestinationPath.GetFullPath(), videoAttrs, audioAttrsList.ToArray() );
+                var fileName = m_Settings.m_BaseFileName.BuildFileName( session, recordedFramesCount, width, height, m_Settings.m_OutputFormat.ToString().ToLower());
+                var path =  m_Settings.m_DestinationPath.GetFullPath() + "/" + fileName;
+
+                m_Encoder = new UnityEditor.Media.MediaEncoder( path, videoAttrs, audioAttrsList.ToArray() );
                 return true;
             }
             catch

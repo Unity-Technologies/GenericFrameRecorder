@@ -43,8 +43,12 @@ namespace UnityEditor.FrameRecorder
                 var input = m_Inputs.GetArrayElementAtIndex(inputIndex).objectReferenceValue as RecorderInputSetting;
                 if (m_RTInputSelector.OnInputGui(ref input))
                 {
-                    if( input is CBRenderTextureInputSettings )
-                        (input as CBRenderTextureInputSettings).m_FlipVertical = true;
+                    var cbInput = input as CBRenderTextureInputSettings;
+                    if (cbInput != null)
+                    {
+                        cbInput.m_FlipVertical = true;
+                        cbInput.m_PadSize = true;
+                    }
 
                     ChangeInputSettings(inputIndex, input);                
                 }
@@ -62,8 +66,10 @@ namespace UnityEditor.FrameRecorder
 
         protected override EFieldDisplayState GetFieldDisplayState(SerializedProperty property)
         {
-            if (property.name == "m_FlipVertical")
+            if (property.name == "m_FlipVertical" || property.name == "m_CaptureEveryNthFrame" )
                 return EFieldDisplayState.Hidden;
+            if (property.name == "m_FrameRateMode"  )
+                return EFieldDisplayState.Disabled;
             return EFieldDisplayState.Enabled;
         }
     }
