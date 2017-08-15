@@ -36,7 +36,9 @@ namespace UnityEditor.FrameRecorder
         static void GeneratePackageFull()
         {
             var rootPath = FRPackagerPaths.GetFrameRecorderRootPath();
-            System.Type.GetType("MovieRecorderPackager").GetMethod("GeneratePackage").Invoke(null, null);
+            var type = System.Type.GetType("UnityEditor.FrameRecorder.MovieRecorderPackager");
+            var method = type.GetMethod("GeneratePackage");
+            method.Invoke(null, null);
             AssetDatabase.Refresh();
 
             var files = new []
