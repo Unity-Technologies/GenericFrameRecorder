@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEditor.FrameRecorder;
 using UnityEngine;
+using UnityEngine.FrameRecorder;
 
 namespace UTJ.FrameCapturer.Recorders
 {
@@ -13,7 +14,7 @@ namespace UTJ.FrameCapturer.Recorders
 
             if (target == null)
                 return;
-            m_RTInputSelector = new RTInputSelector("Pixels", false);
+
             var pf = new PropertyFinder<GIFRecorderSettings>(serializedObject);
             m_Inputs = pf.Find(w => w.m_SourceSettings);
         }

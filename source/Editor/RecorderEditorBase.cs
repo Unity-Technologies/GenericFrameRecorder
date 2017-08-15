@@ -18,6 +18,17 @@ namespace UTJ.FrameCapturer.Recorders
         {
             RecorderWindow.ShowAndPreselectCategory("Video");
         }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            if (target == null)
+                return;
+
+            m_RTInputSelector = new RTInputSelector(target as RecorderSettings, "Pixels");
+        }
+
         /* can't use this at the moment as the FC flips the image horizontally, but the offscreen input does not offer that option.
         protected override void OnInputGui( int inputIndex )
         {

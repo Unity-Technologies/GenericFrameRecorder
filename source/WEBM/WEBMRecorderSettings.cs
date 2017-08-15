@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.FrameRecorder;
@@ -17,9 +18,19 @@ namespace UTJ.FrameCapturer.Recorders
 
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()
         {
-            var settings = ScriptableObject.CreateInstance<CBRenderTextureInputSettings>();
-            settings.m_PadSize = true;
-            return new List<RecorderInputSetting>() { settings };
+            return new List<RecorderInputSetting>()
+            {
+                NewInputSettingsObj<CBRenderTextureInputSettings>("Pixels") 
+            };
+        }
+
+        public override RecorderInputSetting NewInputSettingsObj(Type type, string title )
+        {
+            var obj = base.NewInputSettingsObj(type, title);
+            if (type == typeof(CBRenderTextureInputSettings))
+                (obj as CBRenderTextureInputSettings).m_ForceEvenSize = true;
+
+            return obj ;
         }
     }
 }
