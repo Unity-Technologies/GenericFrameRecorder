@@ -19,7 +19,7 @@ namespace UnityEngine.FrameRecorder
 
         MediaRecorderSettings()
         {
-            m_BaseFileName.pattern = "movie_<0000>.<ext>";
+            m_BaseFileName.pattern = "movie.<ext>";
         }
 
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()

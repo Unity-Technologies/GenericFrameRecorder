@@ -24,7 +24,7 @@ namespace UnityEditor.FrameRecorder
 
             if (target == null)
                 return;
-            m_RTInputSelector = new RTInputSelector("Pixels");
+            m_RTInputSelector = new RTInputSelector("Pixels", true);
 
             var pf = new PropertyFinder<MediaRecorderSettings>(serializedObject);
             m_Inputs = pf.Find(w => w.m_SourceSettings);
@@ -47,7 +47,6 @@ namespace UnityEditor.FrameRecorder
                     if (cbInput != null)
                     {
                         cbInput.m_FlipVertical = true;
-                        cbInput.m_PadSize = true;
                     }
 
                     ChangeInputSettings(inputIndex, input);                
