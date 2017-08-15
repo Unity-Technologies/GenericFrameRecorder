@@ -1,18 +1,47 @@
 ﻿using UnityEditor;
 using UnityEditor.FrameRecorder;
 using UnityEngine;
+using UnityEngine.FrameRecorder;
+using UnityEngine.FrameRecorder.Input;
 
 namespace UTJ.FrameCapturer.Recorders
 {
-    public class RecorderEditorBase : RecorderEditor
+    public class RecorderEditorBase: RecorderEditor
     {
         public string m_BaseFileName;
         public string m_DestinationPath;
+
+        protected SerializedProperty m_Inputs;
+        protected RTInputSelector m_RTInputSelector;
 
         [MenuItem("Window/Recorder/Video")]
         static void ShowRecorderWindow()
         {
             RecorderWindow.ShowAndPreselectCategory("Video");
+        }
+        /* can't use this at the moment as the FC flips the image horizontally, but the offscreen input does not offer that option.
+        protected override void OnInputGui( int inputIndex )
+        {
+            
+            var input = m_Inputs.GetArrayElementAtIndex(inputIndex).objectReferenceValue as RecorderInputSetting;
+            if (m_RTInputSelector.OnInputGui(ref input))
+            {
+                if( input is CBRenderTextureInputSettings )
+                    (input as CBRenderTextureInputSettings).m_FlipVertical = false;
+
+                ChangeInputSettings(inputIndex, input);                
+            }
+
+
+            base.OnInputGui(inputIndex);
+        }
+        */
+        protected override EFieldDisplayState GetFieldDisplayState( SerializedProperty property)
+        {
+            if( property.name == "m_FlipVertical" )
+                return EFieldDisplayState.Hidden;
+
+            return base.GetFieldDisplayState(property);
         }
 
     }
