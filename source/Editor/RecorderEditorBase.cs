@@ -11,7 +11,6 @@ namespace UTJ.FrameCapturer.Recorders
         public string m_BaseFileName;
         public string m_DestinationPath;
 
-        protected SerializedProperty m_Inputs;
         protected RTInputSelector m_RTInputSelector;
 
         [MenuItem("Window/Recorder/Video")]
