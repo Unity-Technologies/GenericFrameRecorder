@@ -18,13 +18,6 @@ namespace UnityEngine.FrameRecorder.Input
         }
         public MixerGroupRecorderListItem[] m_AudioMixerGroups;
 #endif
-
-        public AudioInputSettings()
-        {
-            m_DisplayName = "Sound";
-        }
-
-
         public override bool isValid { get { return true; } }
     }
 }

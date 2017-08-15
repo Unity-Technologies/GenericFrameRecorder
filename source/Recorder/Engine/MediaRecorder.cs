@@ -73,7 +73,6 @@ namespace UnityEngine.FrameRecorder
 	private WavWriter[]  m_WavWriters;
 #endif
         private Texture2D m_ReadBackTexture;
-        private bool m_OriginalFlipVertical;
 
         public override bool BeginRecording(RecordingSession session)
         {
@@ -109,13 +108,6 @@ namespace UnityEngine.FrameRecorder
             }
 
             var cbRenderTextureInput = input as CBRenderTextureInput;
-            if (cbRenderTextureInput != null)
-            {
-                m_OriginalFlipVertical = cbRenderTextureInput.cbSettings.m_FlipVertical;
-
-                // Video recording expects first line to be the topmost.
-                cbRenderTextureInput.cbSettings.m_FlipVertical = true;
-            }
 
             bool includeAlphaFromTexture = cbRenderTextureInput != null && cbRenderTextureInput.cbSettings.m_AllowTransparency;
             if (includeAlphaFromTexture && m_Settings.m_OutputFormat == MediaRecorderOutputFormat.MP4)
@@ -240,16 +232,6 @@ namespace UnityEngine.FrameRecorder
             // When adding a file to Unity's assets directory, trigger a refresh so it is detected.
             if (m_Settings.m_DestinationPath.root == OutputPath.ERoot.AssetsPath )
                 AssetDatabase.Refresh();
-
-            var input = (BaseRenderTextureInput)m_Inputs[0];
-            if (input == null)
-                return;
-
-            var cbRenderTextureInput = input as CBRenderTextureInput;
-            if (cbRenderTextureInput == null)
-                return;
-
-            cbRenderTextureInput.cbSettings.m_FlipVertical = m_OriginalFlipVertical;
         }
 
         // https://stackoverflow.com/questions/26643695/converting-decimal-to-fraction-c

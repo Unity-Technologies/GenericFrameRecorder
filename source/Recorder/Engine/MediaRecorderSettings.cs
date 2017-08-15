@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine.Audio;
 using UnityEngine.FrameRecorder.Input;
@@ -24,15 +25,32 @@ namespace UnityEngine.FrameRecorder
 
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()
         {
-            var defaultTextureSettings = ScriptableObject.CreateInstance<CBRenderTextureInputSettings>();
-            defaultTextureSettings.m_FlipVertical = true;
-            var defaultAudioSettings = ScriptableObject.CreateInstance<AudioInputSettings>();
-            return new List<RecorderInputSetting>() { defaultTextureSettings, defaultAudioSettings };
+            return new List<RecorderInputSetting>()
+            {
+                NewInputSettingsObj<CBRenderTextureInputSettings>("Pixels"),
+                NewInputSettingsObj<AudioInputSettings>("Audio")
+            };
         }
 
         public override bool isValid
         {
             get { return base.isValid && !string.IsNullOrEmpty(m_DestinationPath.GetFullPath()); }
+        }
+
+        public override RecorderInputSetting NewInputSettingsObj(Type type, string title)
+        {
+            var obj = base.NewInputSettingsObj(type, title);
+            if (type == typeof(CBRenderTextureInputSettings))
+            {
+                (obj as CBRenderTextureInputSettings).m_ForceEvenSize = true;
+                (obj as CBRenderTextureInputSettings).m_FlipVertical = true;
+            }
+            if (type == typeof(AdamBeautyInputSettings))
+            {
+                (obj as AdamBeautyInputSettings).m_ForceEvenSize = true;
+            }
+
+            return obj ;
         }
 
     }
