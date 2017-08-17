@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 
 namespace UnityEngine.FrameRecorder
 {
@@ -122,7 +121,7 @@ namespace UnityEngine.FrameRecorder
         {
             var obj = (RecorderInputSetting)ScriptableObject.CreateInstance(type) ;
             obj.m_DisplayName = title;
-            obj.name = GUID.Generate().ToString();
+            obj.name = Guid.NewGuid().ToString();
             return obj;
         }
         
