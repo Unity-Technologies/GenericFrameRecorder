@@ -93,7 +93,7 @@ namespace UnityEngine.FrameRecorder.Input
                                 outputHeight = (outputHeight + 1) & ~1;
                             }
 
-                            var size = GameViewSize.FindSize(outputWidth, outputHeight);
+                            var size = GameViewSize.SetCustomSize(outputWidth, outputHeight);
                             if (size == null)
                                 size = GameViewSize.AddSize(outputWidth, outputHeight);
 

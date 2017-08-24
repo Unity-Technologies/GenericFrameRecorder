@@ -83,7 +83,7 @@ namespace UnityEngine.FrameRecorder
         {
             get
             {
-                if (m_FrameRate == 0)
+                if (m_FrameRate == 0 || m_CaptureEveryNthFrame <= 0)
                     return false;
 
                 if (m_SourceSettings != null)

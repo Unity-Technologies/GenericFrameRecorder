@@ -128,6 +128,12 @@ namespace UnityEditor.FrameRecorder
 
             serializedObject.ApplyModifiedProperties();
             EditorGUI.EndChangeCheck();
+
+
+            if (!(target as RecorderSettings).isValid)
+            {
+                EditorGUILayout.HelpBox("Incomplete/Invalid settings", MessageType.Warning);
+            }
         }
 
         protected void AddSourceSettings(RecorderInputSetting sourceSettings)
