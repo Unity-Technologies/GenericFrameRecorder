@@ -110,18 +110,21 @@ namespace UnityEditor.FrameRecorder
                     EditorGUILayout.EndScrollView();
                 }
             }
+            catch (ExitGUIException)
+            {
+                
+            }
             catch (Exception ex)
             {
                 if (m_State == EState.Recording)
+                {
                     try
                     {
                         Debug.LogError("Aborting recording due to an exception!\n" + ex.ToString());
                         StopRecording();
                     }
-                    catch (Exception)
-                    {
-
-                    }
+                    catch (Exception) {}
+                }
                 Debug.LogException(ex);
             }
         }
