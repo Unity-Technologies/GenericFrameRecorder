@@ -21,11 +21,10 @@ namespace UnityEditor.FrameRecorder
             string[] files = new string[]
             {
                 Path.Combine(rootPath, "Framework.meta"),
-                Path.Combine(rootPath, "Framework/FrameRecorder.meta"),
-                Path.Combine(rootPath, "Framework/FrameRecorder/Core"),
-                Path.Combine(rootPath, "Framework/FrameRecorder/Inputs"),
-                Path.Combine(rootPath, "Framework/FrameRecorder/Recorders"),
-                Path.Combine(rootPath, "Framework/FrameRecorder/Packager/Editor"),
+                Path.Combine(rootPath, "Framework/Core"),
+                Path.Combine(rootPath, "Framework/Inputs"),
+                Path.Combine(rootPath, "Framework/Recorders"),
+                Path.Combine(rootPath, "Framework/Packager/Editor"),
             };
             var destFile = k_PackageName + ".unitypackage";
             AssetDatabase.ExportPackage(files, destFile, ExportPackageOptions.Recurse);
@@ -37,20 +36,22 @@ namespace UnityEditor.FrameRecorder
         {
             var rootPath = FRPackagerPaths.GetFrameRecorderRootPath();
             var type = System.Type.GetType("UnityEditor.FrameRecorder.MovieRecorderPackager");
-            var method = type.GetMethod("GeneratePackage");
-            method.Invoke(null, null);
-            AssetDatabase.Refresh();
+            if (type != null)
+            {
+                var method = type.GetMethod("GeneratePackage");
+                method.Invoke(null, null);
+                AssetDatabase.Refresh();
+            }
 
             var files = new []
             {
                 Path.Combine(rootPath, "Framework.meta" ),
-                Path.Combine(rootPath, "Framework/FrameRecorder.meta" ),
-                Path.Combine(rootPath, "Framework/FrameRecorder/Core" ),
-                Path.Combine(rootPath, "Framework/FrameRecorder/Inputs" ),
-                Path.Combine(rootPath, "Framework/FrameRecorder/Recorders" ),
-                Path.Combine(rootPath, "Framework/FrameRecorder/Packager/Editor" ),
+                Path.Combine(rootPath, "Framework/Core" ),
+                Path.Combine(rootPath, "Framework/Inputs" ),
+                Path.Combine(rootPath, "Framework/Recorders" ),
+                Path.Combine(rootPath, "Framework/Packager/Editor" ),
                 Path.Combine(rootPath, "Extensions/UTJ" ),
-                Path.Combine(rootPath, "Extensions/FrameCapturerRecorder" ),
+                Path.Combine(rootPath, "Extensions/FCIntegration" ),
                 Path.Combine(rootPath, "Extensions/MovieRecorder/Packaging" ),
             };
             var destFile = k_PackageName + "(full).unitypackage";

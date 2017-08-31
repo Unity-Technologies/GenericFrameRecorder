@@ -169,7 +169,7 @@ namespace UnityEngine.FrameRecorder.Input
                             continue;
                         }
 
-                        if (!cam.enabled || !cam.gameObject.active || cam.targetDisplay != 0)
+                        if (!cam.enabled || !cam.gameObject.activeInHierarchy || cam.targetDisplay != 0)
                             continue;
 
                         hookedCam = new HookedCamera() { camera = cam, textureBackup = cam.targetTexture };

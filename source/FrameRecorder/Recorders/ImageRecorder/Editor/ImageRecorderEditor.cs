@@ -11,7 +11,7 @@ namespace UnityEditor.FrameRecorder
         SerializedProperty m_OutputFormat;
         RTInputSelector m_RTInputSelector;
         
-        [MenuItem("Window/Recorder/Video")]
+        [MenuItem("Tools/Recorder/Video")]
         static void ShowRecorderWindow()
         {
             RecorderWindow.ShowAndPreselectCategory("Video");

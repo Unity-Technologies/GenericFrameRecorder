@@ -38,8 +38,18 @@ namespace UnityEngine.FrameRecorder
             get { return (float)(m_CurrentFrameStartTS - settings.m_StartTime); }
         }
 
+        void AllowInBackgroundMode()
+        {
+            if (!Application.runInBackground)
+            {
+                Application.runInBackground = true;
+                Debug.Log("Recording sessions is enabling Application.runInBackground!");
+            }
+        }
+
         public bool SessionCreated()
         {
+            AllowInBackgroundMode();
             m_RecordingStartTS = (Time.time / Time.timeScale);
             m_SessionStartTS = DateTime.Now;
             m_Recorder.SessionCreated(this);
@@ -49,6 +59,8 @@ namespace UnityEngine.FrameRecorder
 
         public bool BeginRecording()
         {
+            AllowInBackgroundMode();
+
             m_RecordingStartTS = (Time.time / Time.timeScale);
             m_Recorder.SignalInputsOfStage(ERecordingSessionStage.BeginRecording, this);
 
@@ -93,7 +105,7 @@ namespace UnityEngine.FrameRecorder
                 {
                     if(settings.m_Verbose)
                         Debug.Log( string.Format("Recording session info => dT: {0:F1}s, Target dT: {1:F1}s, Retarding: {2}ms, fps: {3:F1}", elapsed, target, sleep, frameCount / elapsed ));
-                    System.Threading.Thread.Sleep(sleep);
+                    System.Threading.Thread.Sleep( Math.Min(sleep,1000));
                 }
                 else if (sleep < -frameLen)
                     m_InitialFrame--;
@@ -118,6 +130,8 @@ namespace UnityEngine.FrameRecorder
 
         public void PrepareNewFrame()
         {
+            AllowInBackgroundMode();
+
             m_CurrentFrameStartTS = (Time.time / Time.timeScale) - m_RecordingStartTS;
             m_Recorder.SignalInputsOfStage(ERecordingSessionStage.NewFrameStarting, this);
             m_Recorder.PrepareNewFrame(this);

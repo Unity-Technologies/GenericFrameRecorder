@@ -136,13 +136,13 @@ namespace UnityEditor.FrameRecorder
             }
         }
 
-        protected void AddSourceSettings(RecorderInputSetting sourceSettings)
+        protected void AddInputSettings(RecorderInputSetting inputSettings)
         {
             m_Inputs.InsertArrayElementAtIndex(m_Inputs.arraySize);
             var arryItem = m_Inputs.GetArrayElementAtIndex(m_Inputs.arraySize-1);
-            arryItem.objectReferenceValue = sourceSettings;
+            arryItem.objectReferenceValue = inputSettings;
 
-            m_InputEditors.Add( new InputEditorState(GetFieldDisplayState, sourceSettings) { visible = true} );
+            m_InputEditors.Add( new InputEditorState(GetFieldDisplayState, inputSettings) { visible = true} );
 
             serializedObject.ApplyModifiedProperties();
         }

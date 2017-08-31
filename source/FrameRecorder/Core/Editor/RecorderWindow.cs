@@ -26,7 +26,10 @@ namespace UnityEditor.FrameRecorder
             var window = GetWindow(typeof(RecorderWindow), false, "Recorder") as RecorderWindow;
 
             if (RecordersInventory.recordersByCategory.ContainsKey(category))
+            {
                 window.m_StartingCategory = category;
+                window.m_recorderSelector = null;
+            }
         }
 
         public void OnEnable()
@@ -43,7 +46,6 @@ namespace UnityEditor.FrameRecorder
                 Repaint();
             }
         }
-
 
         Vector2 m_ScrollPos;
 
