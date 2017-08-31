@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using UnityEngine;
 using UnityEngine.FrameRecorder;
 
@@ -44,7 +45,8 @@ namespace UTJ.FrameCapturer.Recorders
                 settings.videoTargetFramerate = (int)Math.Ceiling(m_Settings.m_FrameRate);
                 m_ctx = fcAPI.fcWebMCreateContext(ref settings);
                 var fileName = m_Settings.m_BaseFileName.BuildFileName( session, recordedFramesCount, settings.videoWidth, settings.videoHeight, "webm");
-                m_stream = fcAPI.fcCreateFileStream(fileName);
+                var path = Path.Combine( m_Settings.m_DestinationPath.GetFullPath(), fileName);
+                m_stream = fcAPI.fcCreateFileStream(path);
                 fcAPI.fcWebMAddOutputStream(m_ctx, m_stream);
             }
 

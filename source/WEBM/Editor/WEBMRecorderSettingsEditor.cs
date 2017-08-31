@@ -7,6 +7,7 @@ namespace UTJ.FrameCapturer.Recorders
     [CustomEditor(typeof(WEBMRecorderSettings))]
     public class WEBMRecorderSettingsEditor : RecorderEditorBase
     {
+
         protected override void OnEnable()
         {
             base.OnEnable();
