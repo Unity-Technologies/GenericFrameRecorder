@@ -51,6 +51,8 @@ namespace UnityEditor.FrameRecorder
                     return;
                 }
             }
+            else
+                SetCategory(startingCategory);
         }
 
         int GetCategoryIndex()
