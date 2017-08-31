@@ -32,7 +32,7 @@ namespace UnityEditor.FrameRecorder
 
                     editor = Editor.CreateEditor(m_SettingsObj);
                     if (editor is InputEditor)
-                        (editor as InputEditor).IsFieldAvailableForHost = m_Validator;                
+                        (editor as InputEditor).isFieldAvailableForHost = m_Validator;                
                 }
             }
 

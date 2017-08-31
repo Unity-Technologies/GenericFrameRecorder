@@ -6,11 +6,12 @@ namespace UnityEditor.FrameRecorder
     {
         public delegate EFieldDisplayState IsFieldAvailableDelegate(SerializedProperty property);
 
-        public IsFieldAvailableDelegate IsFieldAvailableForHost { get; set; }
+        public IsFieldAvailableDelegate isFieldAvailableForHost { get; set; }
 
         protected virtual void AddProperty(SerializedProperty prop, Action action )
         {
-            var state = IsFieldAvailableForHost(prop);
+            var state = isFieldAvailableForHost == null ? EFieldDisplayState.Disabled : isFieldAvailableForHost(prop);
+
             if (state == EFieldDisplayState.Enabled)
                 state = IsFieldAvailable(prop);
             if (state != EFieldDisplayState.Hidden)
