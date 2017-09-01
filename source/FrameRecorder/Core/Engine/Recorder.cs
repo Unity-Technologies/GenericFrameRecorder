@@ -47,7 +47,7 @@ namespace UnityEngine.FrameRecorder
                 {
                     Time.captureFramerate = 0;
                     if (settings.m_Verbose)
-                        Debug.Log("Frame recorder resetting 'CaptureFrameRate' to zero");
+                        Debug.Log("Recorder resetting 'CaptureFrameRate' to zero");
                 }
             }
         }
@@ -63,7 +63,7 @@ namespace UnityEngine.FrameRecorder
             if (fixedRate > 0)
             {
                 if (Time.captureFramerate != 0 && fixedRate != Time.captureFramerate )
-                    Debug.LogError(string.Format("Frame Recorder {0} is set to record at a fixed rate and another component has already set a conflicting value for [Time.captureFramerate], new value being applied : {1}!", GetType().Name, fixedRate));
+                    Debug.LogError(string.Format("Recorder {0} is set to record at a fixed rate and another component has already set a conflicting value for [Time.captureFramerate], new value being applied : {1}!", GetType().Name, fixedRate));
                 else if( Time.captureFramerate == 0 && settings.m_Verbose )
                     Debug.Log("Frame recorder set fixed frame rate to " + fixedRate);
 
@@ -74,7 +74,7 @@ namespace UnityEngine.FrameRecorder
             }
 
             m_Inputs = new List<RecorderInput>();
-            foreach (var inputSettings in settings.m_SourceSettings)
+            foreach (var inputSettings in settings.m_InputsSettings)
             {
                 var input = Activator.CreateInstance(inputSettings.inputType) as RecorderInput;
                 input.settings = inputSettings;
@@ -108,7 +108,7 @@ namespace UnityEngine.FrameRecorder
                 {
                     Time.captureFramerate = 0;
                     if (settings.m_Verbose)
-                        Debug.Log("Frame recorder resetting 'CaptureFrameRate' to zero");
+                        Debug.Log("Recorder resetting 'CaptureFrameRate' to zero");
                 }
             }
 

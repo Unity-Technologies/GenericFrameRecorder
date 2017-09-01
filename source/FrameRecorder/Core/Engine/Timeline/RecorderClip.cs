@@ -10,7 +10,7 @@ namespace UnityEngine.FrameRecorder.Timeline
     /// 
     /// Note: Instances of this call Own their associated Settings asset's lifetime.
     /// </summary>
-    public class FrameRecorderClip : PlayableAsset, ITimelineClipAsset
+    public class RecorderClip : PlayableAsset, ITimelineClipAsset
     {
         [SerializeField]
         public RecorderSettings m_Settings;

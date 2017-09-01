@@ -52,7 +52,7 @@ namespace UnityEngine.FrameRecorder
         public FileNameGenerator m_BaseFileName;
         public OutputPath m_DestinationPath;   
 
-        public RecorderInputSetting[] m_SourceSettings = new RecorderInputSetting[0];
+        public RecorderInputSetting[] m_InputsSettings = new RecorderInputSetting[0];
             
         [SerializeField]
         string m_RecorderTypeName;
@@ -86,15 +86,17 @@ namespace UnityEngine.FrameRecorder
                 if (m_FrameRate == 0 || m_CaptureEveryNthFrame <= 0)
                     return false;
 
-                if (m_SourceSettings != null)
+                if (m_InputsSettings != null)
                 {
-                    var valid = m_SourceSettings.All(x => x.isValid);
+                    var valid = m_InputsSettings.All(x => x.isValid);
                     return valid;
                 }
 
                 return true;
             }
         }
+
+        public virtual bool isPlatformSupported {get { return true; }}
 
         public virtual void OnEnable()
         {
@@ -103,9 +105,9 @@ namespace UnityEngine.FrameRecorder
 
         public virtual void OnDestroy()
         {
-            if (m_SourceSettings != null)
+            if (m_InputsSettings != null)
             {
-                foreach( var settings in m_SourceSettings)
+                foreach( var settings in m_InputsSettings)
                     UnityHelpers.Destroy(settings, true);
             }
         }

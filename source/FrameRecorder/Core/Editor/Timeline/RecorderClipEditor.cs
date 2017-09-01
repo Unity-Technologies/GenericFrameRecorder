@@ -4,7 +4,7 @@ using UnityEngine.Timeline;
 
 namespace UnityEditor.FrameRecorder.Timeline
 {
-    [CustomEditor(typeof(FrameRecorderClip), true)]
+    [CustomEditor(typeof(RecorderClip), true)]
     public class RecorderClipEditor : Editor
     {
         RecorderEditor m_Editor;
@@ -32,7 +32,7 @@ namespace UnityEditor.FrameRecorder.Timeline
             if (m_recorderSelector == null)
             {
                 m_recorderSelector = new RecorderSelector( OnRecorderSelected, false );
-                m_recorderSelector.Init((target as FrameRecorderClip).m_Settings);
+                m_recorderSelector.Init((target as RecorderClip).m_Settings);
             }
 
             m_recorderSelector.OnGui();
@@ -61,7 +61,7 @@ namespace UnityEditor.FrameRecorder.Timeline
 
         public void OnRecorderSelected()
         {
-            var clip = this.target as FrameRecorderClip;
+            var clip = this.target as RecorderClip;
 
             if (m_Editor != null)
             {

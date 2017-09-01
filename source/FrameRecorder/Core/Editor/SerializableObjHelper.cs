@@ -57,6 +57,31 @@ namespace UnityEditor.FrameRecorder
         }
     }
 
+    public class StructPropertyFinder<TType> where TType : struct
+    {
+        SerializedObject m_Obj;
+        public StructPropertyFinder(SerializedObject obj)
+        {
+            m_Obj = obj;
+        }
+
+        public delegate TResult FuncX<TResult>(TType x);
+        public SerializedProperty Find( Expression<FuncX<object>> exp)
+        {
+            var body = exp.Body as MemberExpression;
+            if (body == null)
+            {
+                var ubody = (UnaryExpression)exp.Body;
+                body = ubody.Operand as MemberExpression;
+            }
+
+            var name = body.Member.Name;
+
+            return m_Obj.FindProperty(name);
+        }
+
+    }
+
     public class PropertyFinder<TType> where TType : class
     {
         SerializedObject m_Obj;

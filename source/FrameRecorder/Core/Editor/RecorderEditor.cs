@@ -71,7 +71,7 @@ namespace UnityEditor.FrameRecorder
                 m_FrameRateLabels = EnumHelper.MaskOutEnumNames<EFrameRate>(0xFFFF, (x) => FrameRateHelper.ToLable( (EFrameRate)x) );
 
                 var pf = new PropertyFinder<RecorderSettings>(serializedObject);
-                m_Inputs = pf.Find(x => x.m_SourceSettings);
+                m_Inputs = pf.Find(x => x.m_InputsSettings);
                 m_Verbose = pf.Find(x => x.m_Verbose);
                 m_FrameRateMode = pf.Find(x => x.m_FrameRateMode);
                 m_FrameRate = pf.Find(x => x.m_FrameRate);
@@ -86,7 +86,7 @@ namespace UnityEditor.FrameRecorder
                 m_DestinationPath = pf.Find(w => w.m_DestinationPath);
                 m_BaseFileName = pf.Find(w => w.m_BaseFileName);
 
-                foreach (var input in (target as RecorderSettings).m_SourceSettings)
+                foreach (var input in (target as RecorderSettings).m_InputsSettings)
                 {
                     m_InputEditors.Add( new InputEditorState(GetFieldDisplayState, input) { visible = true} );
                 }
@@ -99,7 +99,7 @@ namespace UnityEditor.FrameRecorder
 
         public bool isValid
         {
-            get { return (target as RecorderSettings).isValid; }
+            get { return (target as RecorderSettings).isValid && (target as RecorderSettings).isPlatformSupported; }
         }
 
         public bool showBounds { get; set; }
@@ -120,7 +120,7 @@ namespace UnityEditor.FrameRecorder
             OnInputGroupGui();
             OnOutputGroupGui();
             OnEncodingGroupGui();
-            OnTimeGroupGui();
+            OnFrameRateGroupGui();
             OnBoundsGroupGui();
             OnExtraGroupsGui();
 
@@ -133,6 +133,11 @@ namespace UnityEditor.FrameRecorder
             if (!(target as RecorderSettings).isValid)
             {
                 EditorGUILayout.HelpBox("Incomplete/Invalid settings", MessageType.Warning);
+            }
+
+            if (!(target as RecorderSettings).isPlatformSupported)
+            {
+                EditorGUILayout.HelpBox("Current platform is not supported", MessageType.Warning);
             }
         }
 
@@ -202,10 +207,10 @@ namespace UnityEditor.FrameRecorder
             // place holder
         }
 
-        protected virtual void OnTimeGui()
+        protected virtual void OnFrameRateGui()
         {
 
-            AddProperty( m_FrameRateMode, () => EditorGUILayout.PropertyField(m_FrameRateMode, new GUIContent("Frame rate mode")));
+            AddProperty( m_FrameRateMode, () => EditorGUILayout.PropertyField(m_FrameRateMode, new GUIContent("Constraint Type")));
 
             AddProperty( m_FrameRateExact, () =>
             {
@@ -241,9 +246,9 @@ namespace UnityEditor.FrameRecorder
             });
         }
 
-        protected virtual void OnBounds()
+        protected virtual void OnBoundsGui()
         {
-            EditorGUILayout.PropertyField(m_DurationMode, new GUIContent("Recording Duration"));
+            EditorGUILayout.PropertyField(m_DurationMode, new GUIContent("Mode"));
 
             ++EditorGUI.indentLevel;
             switch ((DurationMode)m_DurationMode.intValue)
@@ -310,13 +315,13 @@ namespace UnityEditor.FrameRecorder
             }        
         }
 
-        protected virtual void OnTimeGroupGui()
+        protected virtual void OnFrameRateGroupGui()
         {
-            m_FoldoutTime = EditorGUILayout.Foldout(m_FoldoutTime, "Time");
+            m_FoldoutTime = EditorGUILayout.Foldout(m_FoldoutTime, "Frame rate");
             if (m_FoldoutTime)
             {
                 ++EditorGUI.indentLevel;
-                OnTimeGui();
+                OnFrameRateGui();
                 --EditorGUI.indentLevel;
             }     
         }
@@ -329,7 +334,7 @@ namespace UnityEditor.FrameRecorder
                 if (m_FoldoutBounds)
                 {
                     ++EditorGUI.indentLevel;
-                    OnBounds();
+                    OnBoundsGui();
                     --EditorGUI.indentLevel;
                 }
             }  

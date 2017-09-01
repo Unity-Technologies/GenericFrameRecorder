@@ -1,6 +1,6 @@
-# Frame Recorder
+# Unity Recorder
 ### Brief
-The *Frame Recorder* is a project that facilitates recording of Unity artifacts from Unity. The framework does not define what can be recorded, but defines a standard way of how to implement and setup a recorder and takes care of aspects common to all recorders (time managenent, Timeline integration, record windows, etc). 
+The *Recorder* is a project that facilitates recording of Unity artifacts from Unity. The framework does not define what can be recorded, but defines a standard way of how to implement and setup a recorder and takes care of aspects common to all recorders (time managenent, Timeline integration, record windows, etc). 
 
 Extensibility is a prim concideration and since not all use cases can be thought of in advance, whenever relevant, the framework's base classes strive to offer an easy way to override the default beahviour of the system. 
 
@@ -9,6 +9,9 @@ Recorder types are detected at run time and made available to the recording fram
 A key consideration is providing a uniform UX. By defining a standard pattern and basic classes, the framework can treat all recorders equally and display them consistently. This allows for a generic “recorder window” that is provided and takes care of configuring and starting a “recording session” from edit mode.
 
 Code reusability and easy of use for developers is also a prime consideration. As much as possible, modularization in a Lego mentality is promoted so that work done for one specific recorder, say MP4 recording, can be reused by an other type of recorder, say PNG or WAV recorders.
+
+###
+Found a bug? Let us know and [post an issue](https://github.com/Unity-Technologies/GenericFrameRecorder/issues).
 
 ### Current limitations
 * Recorders are Player standalone friendly, but not the editors.
@@ -32,8 +35,8 @@ Note that this can be done  from edit mode and from game mode...
 
 ### From a timeline track
 1. Create a timeline asset and add it to the scene.
-2. Add a "Frame Recorder track" to the timeline.
-3. Add a "Frame Recorder clip" to the track.
+2. Add a "Recorder track" to the timeline.
+3. Add a "Recorder clip" to the track.
 4. Select the newly added slip
 ![](docs/images/TimelineTrack.png)
 

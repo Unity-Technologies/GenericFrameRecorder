@@ -59,6 +59,12 @@ namespace UnityEngine.FrameRecorder
 
         public bool BeginRecording()
         {
+            if (!settings.isPlatformSupported)
+            {
+                Debug.LogError( string.Format("Recorder {0} does not support current platform", m_Recorder.GetType().Name));
+                return false;
+            }
+
             AllowInBackgroundMode();
 
             m_RecordingStartTS = (Time.time / Time.timeScale);
