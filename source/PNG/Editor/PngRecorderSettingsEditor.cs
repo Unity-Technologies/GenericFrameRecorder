@@ -16,7 +16,7 @@ namespace UTJ.FrameCapturer.Recorders
                 return;
 
             var pf = new PropertyFinder<PNGRecorderSettings>(serializedObject);
-            m_Inputs = pf.Find(w => w.m_SourceSettings);
+            m_Inputs = pf.Find(w => w.m_InputsSettings);
         }
 
         protected override void OnEncodingGroupGui()

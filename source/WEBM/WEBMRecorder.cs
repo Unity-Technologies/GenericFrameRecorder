@@ -42,6 +42,11 @@ namespace UTJ.FrameCapturer.Recorders
                 settings.audio = false;
                 settings.videoWidth = frame.width;
                 settings.videoHeight = frame.height;
+                if (m_Settings.m_AutoSelectBR)
+                {
+                    settings.videoTargetBitrate = (int)(( (frame.width * frame.height/1000.0) / 245 + 1.16) * (settings.videoTargetFramerate / 48.0 + 0.5) * 1000000);
+                }
+
                 settings.videoTargetFramerate = (int)Math.Ceiling(m_Settings.m_FrameRate);
                 m_ctx = fcAPI.fcWebMCreateContext(ref settings);
                 var fileName = m_Settings.m_BaseFileName.BuildFileName( session, recordedFramesCount, settings.videoWidth, settings.videoHeight, "webm");

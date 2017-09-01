@@ -10,10 +10,12 @@ namespace UTJ.FrameCapturer.Recorders
     public class WEBMRecorderSettings : BaseFCRecorderSettings
     {
         public fcAPI.fcWebMConfig m_WebmEncoderSettings = fcAPI.fcWebMConfig.default_value;
+        public bool m_AutoSelectBR;
 
         WEBMRecorderSettings()
         {
             m_BaseFileName.pattern = "movie.<ext>";
+            m_AutoSelectBR = true;
         }
 
         public override List<RecorderInputSetting> GetDefaultSourcesSettings()
@@ -32,5 +34,6 @@ namespace UTJ.FrameCapturer.Recorders
 
             return obj ;
         }
+
     }
 }
