@@ -10,12 +10,7 @@ namespace UnityEditor.FrameRecorder
         {
             EditorWindow.GetWindowWithRect<AboutBox>(new Rect(100, 100, 550, 310), true, "About Recorder");
         }
-        /*
-        [MenuItem("Tools/Recorder/---------", false, Int32.MinValue+1)]
-        public static void MenuSeperator()
-        {
-        }
-        */
+
         GUIContent s_Header;
 
         void OnEnable()
