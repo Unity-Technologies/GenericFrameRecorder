@@ -12,6 +12,11 @@ namespace UnityEngine.FrameRecorder
         public abstract Type inputType { get; }
         public abstract bool isValid { get; }
         public string m_DisplayName;
+
+        public bool storeInScene
+        {
+            get { return Attribute.GetCustomAttribute(GetType(), typeof(StoreInSceneAttribute)) != null; }
+        }
     }
 
     /// <summary>

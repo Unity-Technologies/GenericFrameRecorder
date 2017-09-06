@@ -109,13 +109,13 @@ namespace UnityEngine.FrameRecorder
 
                 if (sleep > 2)
                 {
-                    if(settings.m_Verbose)
+                    if(RecorderSettings.m_Verbose)
                         Debug.Log( string.Format("Recording session info => dT: {0:F1}s, Target dT: {1:F1}s, Retarding: {2}ms, fps: {3:F1}", elapsed, target, sleep, frameCount / elapsed ));
                     System.Threading.Thread.Sleep( Math.Min(sleep,1000));
                 }
                 else if (sleep < -frameLen)
                     m_InitialFrame--;
-                else if(settings.m_Verbose)
+                else if(RecorderSettings.m_Verbose)
                     Debug.Log( string.Format("Recording session info => fps: {0:F1}", frameCount / elapsed ));
 
                 // reset every 30 frames

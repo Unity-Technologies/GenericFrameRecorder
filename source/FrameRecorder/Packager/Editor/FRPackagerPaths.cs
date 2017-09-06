@@ -1,5 +1,6 @@
 using System.IO;
 using UnityEngine;
+using UnityEngine.FrameRecorder;
 
 namespace UnityEditor.FrameRecorder
 {
@@ -16,6 +17,7 @@ namespace UnityEditor.FrameRecorder
         {
             var dummy = ScriptableObject.CreateInstance<RecorderVersion>();
             var path = Application.dataPath + AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(dummy)).Substring("Assets".Length);
+            UnityHelpers.Destroy(dummy);
             return path;
         }
 
@@ -23,7 +25,8 @@ namespace UnityEditor.FrameRecorder
         {
             var dummy = ScriptableObject.CreateInstance<FRPackagerPaths>();
             var path = Application.dataPath + AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(dummy)).Substring("Assets".Length);
-            
+            UnityHelpers.Destroy(dummy);
+
             return path.Replace("/Framework/Packager/Editor/FRPackagerPaths.cs", "");
         }
 

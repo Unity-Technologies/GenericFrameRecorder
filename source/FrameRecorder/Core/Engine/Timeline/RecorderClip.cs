@@ -34,7 +34,7 @@ namespace UnityEngine.FrameRecorder.Timeline
                 behaviour.session = new RecordingSession()
                 {
                     m_Recorder = RecordersInventory.GenerateNewRecorder(recorderType, m_Settings),
-                    m_RecorderGO = FrameRecorderGOControler.HookupRecorder(!m_Settings.m_Verbose),
+                    m_RecorderGO = SceneHook.HookupRecorder(),
                 };
             }
             return playable;

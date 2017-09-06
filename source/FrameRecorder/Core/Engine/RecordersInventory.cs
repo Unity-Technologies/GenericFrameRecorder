@@ -175,8 +175,9 @@ namespace UnityEngine.FrameRecorder
             else
                 throw new ArgumentException("No factory was registered for " + recorderType.Name);
         }
+
 #if UNITY_EDITOR
-        public static RecorderSettings GenerateNewSettingsAsset(UnityEngine.Object parentAsset, Type recorderType)
+        public static RecorderSettings GenerateRecorderInitialSettings(UnityEngine.Object parent, Type recorderType)
         {
             Init();
             var recorderinfo = GetRecorderInfo(recorderType);
@@ -186,12 +187,12 @@ namespace UnityEngine.FrameRecorder
                 settings = ScriptableObject.CreateInstance(recorderinfo.settings) as RecorderSettings;
                 settings.name = "Recorder Settings";
                 settings.recorderType = recorderType;
-                settings.m_InputsSettings = settings.GetDefaultSourcesSettings().ToArray();
-                AssetDatabase.AddObjectToAsset(settings, parentAsset);
-                foreach (var obj in settings.m_InputsSettings)
-                    AssetDatabase.AddObjectToAsset(obj, parentAsset);
 
+                AssetDatabase.AddObjectToAsset(settings, parent);
+                AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
+                settings.assetID = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(settings));
+                settings.inputsSettings.AddRange( settings.GetDefaultInputSettings() );
 
                 return settings;
             }
@@ -199,5 +200,6 @@ namespace UnityEngine.FrameRecorder
                 throw new ArgumentException("No factory was registered for " + recorderType.Name);            
         }
 #endif
+
     }
 }
