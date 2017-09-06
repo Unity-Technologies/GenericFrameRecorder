@@ -15,7 +15,7 @@ namespace UTJ.FrameCapturer.Recorders
             m_BaseFileName.pattern = "image_<0000>.<ext>";
         }
 
-        public override List<RecorderInputSetting> GetDefaultSourcesSettings()
+        public override List<RecorderInputSetting> GetDefaultInputSettings()
         {
             return new List<RecorderInputSetting>() { NewInputSettingsObj<CBRenderTextureInputSettings>("Pixels") };
         }

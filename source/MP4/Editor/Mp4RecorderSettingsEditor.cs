@@ -21,7 +21,6 @@ namespace UTJ.FrameCapturer.Recorders
                 return;
             
             var pf = new PropertyFinder<MP4RecorderSettings>(serializedObject);
-            m_Inputs = pf.Find(w => w.m_InputsSettings);
             var encoding = pf.Find(w => w.m_MP4EncoderSettings);
             var settings = target as MP4RecorderSettings;
             m_VideoBitRateMode = encoding.FindPropertyRelative(() => settings.m_MP4EncoderSettings.videoBitrateMode);

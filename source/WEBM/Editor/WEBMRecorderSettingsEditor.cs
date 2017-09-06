@@ -21,7 +21,6 @@ namespace UTJ.FrameCapturer.Recorders
                 return;
 
             var pf = new PropertyFinder<WEBMRecorderSettings>(serializedObject);
-            m_Inputs = pf.Find(w => w.m_InputsSettings);
             var encoding = pf.Find(w => w.m_WebmEncoderSettings);
             var settings = target as WEBMRecorderSettings;
             m_VideoBitRateMode = encoding.FindPropertyRelative(() => settings.m_WebmEncoderSettings.videoBitrateMode);
