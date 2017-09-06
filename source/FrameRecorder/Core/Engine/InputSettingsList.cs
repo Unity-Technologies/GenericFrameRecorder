@@ -109,6 +109,19 @@ namespace UnityEngine.FrameRecorder
             }
         }
 
+        public void Remove(RecorderInputSetting input)
+        {
+            for (int i = 0; i < m_InputsSettings.Count; i++)
+            {
+                if (m_InputsSettings[i] == input)
+                {
+                    ReleaseAt(i);
+                    m_InputsSettings.RemoveAt(i);
+                    m_InputsSettingsAssets.RemoveAt(i);
+                }
+            }
+        }
+
         public void ReplaceAt(int index, RecorderInputSetting input)
         {
             if (m_InputsSettingsAssets == null || m_InputsSettings.Count <= index)
