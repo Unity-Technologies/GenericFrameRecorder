@@ -20,7 +20,7 @@ namespace UnityEngine.FrameRecorder
             if (go == null && createIfAbsent)
             {
                 go = new GameObject(k_HostGoName);
-                if (!RecorderSettings.m_Verbose && false)
+                if (!RecorderSettings.m_Verbose)
                     go.hideFlags = HideFlags.HideInHierarchy;
             }
 
