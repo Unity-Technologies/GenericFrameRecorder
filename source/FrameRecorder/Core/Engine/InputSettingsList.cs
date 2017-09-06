@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 
 namespace UnityEngine.FrameRecorder
@@ -34,7 +33,10 @@ namespace UnityEngine.FrameRecorder
         {
             get
             {
-                return m_InputsSettings.All(x => x.isValid); 
+                foreach( var x in m_InputsSettings )
+                    if (!x.isValid)
+                        return false;
+                return true;
             }
         }
 
@@ -42,7 +44,10 @@ namespace UnityEngine.FrameRecorder
         {
             get
             {
-                return m_InputsSettings.Any((x) => x == null || x is InputBinder); 
+                foreach( var x in m_InputsSettings )
+                    if (x == null || x is InputBinder)
+                        return true;
+                return false;
             }
         }
 
