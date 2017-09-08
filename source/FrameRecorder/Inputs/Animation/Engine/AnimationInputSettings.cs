@@ -13,6 +13,7 @@ namespace UnityEngine.FrameRecorder.Input
         public bool enabled;
                    
         [SerializeField]
+        [HideInInspector]
         public string bindingTypeName;
         
 

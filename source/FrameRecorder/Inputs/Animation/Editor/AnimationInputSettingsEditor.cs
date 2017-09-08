@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.FrameRecorder;
 using UnityEngine.FrameRecorder.Input;
 
 namespace UnityEditor.FrameRecorder.Input
 {
-
     [CustomEditor(typeof(AnimationInputSettings))]
     public class AnimationInputSettingsEditor : Editor
     {
@@ -36,4 +34,7 @@ namespace UnityEditor.FrameRecorder.Input
             EditorGUILayout.EndHorizontal();
         }
     }
+    
+
+    
 }

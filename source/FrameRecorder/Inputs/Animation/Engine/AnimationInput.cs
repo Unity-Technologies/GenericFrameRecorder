@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Experimental.Animations;
-using UnityEngine;
-using UnityEngine.FrameRecorder;
-using UnityEngine.FrameRecorder.Input;
-using UnityEngine.Rendering;
+﻿using UnityEditor.Experimental.Animations;
 
 namespace UnityEngine.FrameRecorder.Input
 {

@@ -1,28 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.FrameRecorder;
 using UnityEngine.FrameRecorder.Input;
-using UnityEngine.SceneManagement;
-using Component = System.ComponentModel.Component;
 
 namespace UnityEditor.FrameRecorder
 {
     [Serializable]
     [CustomEditor(typeof(AnimationRecorderSettings))]
-    public class AnimationRecorderEditor: RecorderEditor
+    public class AnimationRecorderSettingsEditor: RecorderEditor
     {
         [MenuItem("Tools/Recorder/Animation")]
         static void ShowRecorderWindow()
         {
             RecorderWindow.ShowAndPreselectCategory("Animation");
         }
-
         
         protected override void OnEncodingGroupGui()
         {}
-
 
         protected override void OnInputGui()
         {

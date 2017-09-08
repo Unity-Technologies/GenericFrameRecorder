@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using UnityEditor.Experimental.Animations;
+﻿using System.IO;
 using UnityEditor;
 using UnityEngine.FrameRecorder.Input;
-using UnityEngine.Playables;
-using UnityEngine.SceneManagement;
-using UnityEngine.Timeline;
 
 namespace UnityEngine.FrameRecorder
 {
