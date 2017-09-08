@@ -38,7 +38,8 @@ namespace UnityEditor.FrameRecorder
                     if (string.Compare(recInfo.category, startingCategory, StringComparison.InvariantCultureIgnoreCase) != 0)
                     {
                         // forced another category, flush existing settings obj.
-                        SelectRecorder(null);
+                        SetCategory(startingCategory);
+                        SelectRecorder( GetRecorderFromIndex(0) );
                     }
                 }
 
@@ -50,8 +51,8 @@ namespace UnityEditor.FrameRecorder
                     return;
                 }
             }
-
-            SetCategory(string.Empty);
+            else
+                SetCategory(startingCategory);
         }
 
         int GetCategoryIndex()

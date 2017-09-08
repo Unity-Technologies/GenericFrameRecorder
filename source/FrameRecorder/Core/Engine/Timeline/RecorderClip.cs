@@ -10,7 +10,7 @@ namespace UnityEngine.FrameRecorder.Timeline
     /// 
     /// Note: Instances of this call Own their associated Settings asset's lifetime.
     /// </summary>
-    public class FrameRecorderClip : PlayableAsset, ITimelineClipAsset
+    public class RecorderClip : PlayableAsset, ITimelineClipAsset
     {
         [SerializeField]
         public RecorderSettings m_Settings;
@@ -34,7 +34,7 @@ namespace UnityEngine.FrameRecorder.Timeline
                 behaviour.session = new RecordingSession()
                 {
                     m_Recorder = RecordersInventory.GenerateNewRecorder(recorderType, m_Settings),
-                    m_RecorderGO = FrameRecorderGOControler.HookupRecorder(!m_Settings.m_Verbose),
+                    m_RecorderGO = SceneHook.HookupRecorder(),
                 };
             }
             return playable;

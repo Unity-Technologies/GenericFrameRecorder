@@ -1,4 +1,5 @@
 using System;
+using UnityEditor;
 
 namespace UnityEngine.FrameRecorder
 {
@@ -12,6 +13,18 @@ namespace UnityEngine.FrameRecorder
         public abstract Type inputType { get; }
         public abstract bool isValid { get; }
         public string m_DisplayName;
+        public string m_Id;
+
+        protected virtual void OnEnable()
+        {
+            if (string.IsNullOrEmpty(m_Id))
+                m_Id = Guid.NewGuid().ToString();
+        }
+
+        public bool storeInScene
+        {
+            get { return Attribute.GetCustomAttribute(GetType(), typeof(StoreInSceneAttribute)) != null; }
+        }
     }
 
     /// <summary>

@@ -93,7 +93,7 @@ namespace UnityEngine.FrameRecorder.Input
                                 outputHeight = (outputHeight + 1) & ~1;
                             }
 
-                            var size = GameViewSize.FindSize(outputWidth, outputHeight);
+                            var size = GameViewSize.SetCustomSize(outputWidth, outputHeight);
                             if (size == null)
                                 size = GameViewSize.AddSize(outputWidth, outputHeight);
 
@@ -179,7 +179,7 @@ namespace UnityEngine.FrameRecorder.Input
                     m_mat_copy.EnableKeyword("TRANSPARENCY_ON");
 
                 var tid = Shader.PropertyToID("_TmpFrameBuffer");
-                m_cbCopyFB = new CommandBuffer { name = "Frame Recorder: copy frame buffer" };
+                m_cbCopyFB = new CommandBuffer { name = "Recorder: copy frame buffer" };
                 m_cbCopyFB.GetTemporaryRT(tid, -1, -1, 0, FilterMode.Bilinear);
                 m_cbCopyFB.Blit(BuiltinRenderTextureType.CurrentActive, tid);
                 m_cbCopyFB.SetRenderTarget(outputRT);

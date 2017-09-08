@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace UnityEngine.FrameRecorder.Input
 {
@@ -169,7 +168,7 @@ namespace UnityEngine.FrameRecorder.Input
                             continue;
                         }
 
-                        if (!cam.enabled || !cam.gameObject.active || cam.targetDisplay != 0)
+                        if (!cam.enabled || !cam.gameObject.activeInHierarchy || cam.targetDisplay != 0)
                             continue;
 
                         hookedCam = new HookedCamera() { camera = cam, textureBackup = cam.targetTexture };
@@ -181,7 +180,7 @@ namespace UnityEngine.FrameRecorder.Input
 
                     if (sort)
                     {
-                        m_hookedCameras = m_hookedCameras.OrderBy(x => x.camera.depth).ToList();
+                        m_hookedCameras.Sort((x, y) => x.camera.depth < y.camera.depth ? -1 : x.camera.depth > y.camera.depth ? 1 : 0 );
                     }
                     break;
                 }

@@ -11,7 +11,7 @@ namespace UnityEditor.FrameRecorder
         SerializedProperty m_OutputFormat;
         RTInputSelector m_RTInputSelector;
         
-        [MenuItem("Window/Recorder/Video")]
+        [MenuItem("Tools/Recorder/Video")]
         static void ShowRecorderWindow()
         {
             RecorderWindow.ShowAndPreselectCategory("Video");
@@ -27,7 +27,6 @@ namespace UnityEditor.FrameRecorder
             m_RTInputSelector = new RTInputSelector( target as RecorderSettings, "Pixels");
 
             var pf = new PropertyFinder<ImageRecorderSettings>(serializedObject);
-            m_Inputs = pf.Find(w => w.m_SourceSettings);
             m_OutputFormat = pf.Find(w => w.m_OutputFormat);
         }
 
@@ -38,7 +37,8 @@ namespace UnityEditor.FrameRecorder
 
         protected override void OnInputGui( int inputIndex)
         {
-            var input = m_Inputs.GetArrayElementAtIndex(inputIndex).objectReferenceValue as RecorderInputSetting;
+            var inputs = (target as RecorderSettings).inputsSettings;
+            var input = inputs[inputIndex];
             if (m_RTInputSelector.OnInputGui(ref input))
                 ChangeInputSettings(inputIndex, input);                
 
