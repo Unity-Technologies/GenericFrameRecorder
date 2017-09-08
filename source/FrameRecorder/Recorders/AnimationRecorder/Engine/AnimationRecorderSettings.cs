@@ -7,11 +7,11 @@ namespace UnityEngine.FrameRecorder
     [Serializable]
     public class AnimationRecorderSettings : RecorderSettings
     {
-        public string outputPath = "AnimRecorder/"+goToken+"_"+bindingToken+"_"+takeToken;
+        public string outputPath = "AnimRecorder/"+goToken+"_"+inputToken+"_"+takeToken;
         public int take = 1;
         public static string goToken = "<goName>";
         public static string takeToken = "<take>";
-        public static string bindingToken = "<binding>";
+        public static string inputToken = "<input>";
         public override List<RecorderInputSetting> GetDefaultInputSettings()
         {
             return  new List<RecorderInputSetting>();

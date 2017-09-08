@@ -32,7 +32,7 @@ namespace UnityEngine.FrameRecorder
                     AnimationClip clip = new AnimationClip();
                     var clipName = "Assets/" + ars.outputPath
                                        .Replace(AnimationRecorderSettings.goToken, set.gameObject.name)
-                                       .Replace(AnimationRecorderSettings.bindingToken,set.bindingType.Name)
+                                       .Replace(AnimationRecorderSettings.inputToken,(i+1).ToString("000"))
                                        .Replace(AnimationRecorderSettings.takeToken, ars.take.ToString("000"))+".anim";
                     AssetDatabase.CreateAsset(clip, clipName);
                     aInput.m_gameObjectRecorder.SaveToClip(clip);

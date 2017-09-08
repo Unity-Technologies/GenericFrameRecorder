@@ -11,7 +11,10 @@ namespace UnityEngine.FrameRecorder.Input
             var aniSettings = (settings as AnimationInputSettings);
             var srcGO= aniSettings.gameObject;
             m_gameObjectRecorder = new GameObjectRecorder {root = srcGO};
-            m_gameObjectRecorder.BindComponent(srcGO, aniSettings.bindingType, true); 
+            foreach (var binding in aniSettings.bindingType)
+            {
+                m_gameObjectRecorder.BindComponent(srcGO, binding, aniSettings.recursive); 
+            }
             m_time = 0;
         }
 

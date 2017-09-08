@@ -20,24 +20,23 @@ namespace UnityEditor.FrameRecorder
 
         protected override void OnInputGui()
         {
-            var inputs = (target as RecorderSettings).inputsSettings;
+            var aRecorderSettings = target as AnimationRecorderSettings;
+            var inputs = aRecorderSettings.inputsSettings;
 
             for (int i = 0; i < inputs.Count; i++)
-            {
+            {              
                 OnInputGui(i);
+                if (GUILayout.Button("Remove",GUILayout.MaxWidth(100)))
+                {
+                    aRecorderSettings.inputsSettings.Remove(inputs[i]);
+                }
             }
 
-            var aRecorderSettings = target as AnimationRecorderSettings;
-
-            EditorGUI.BeginChangeCheck();
-            GameObject newgo = EditorGUILayout.ObjectField(null, typeof(GameObject), true) as GameObject;
-            if (EditorGUI.EndChangeCheck() && newgo !=null)
+            if (GUILayout.Button("Add", GUILayout.MaxWidth(100)))
             {
-                var newSettings = aRecorderSettings.NewInputSettingsObj<AnimationInputSettings>(newgo.name);
-                newSettings.gameObject = newgo;
-                newSettings.enabled = true;
+                var newSettings = aRecorderSettings.NewInputSettingsObj<AnimationInputSettings>("Animation");
                 aRecorderSettings.inputsSettings.Add(newSettings);
-            }
+            }           
         }
 
         protected override void OnOutputGui()

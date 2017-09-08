@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace UnityEngine.FrameRecorder.Input
 {
@@ -6,27 +7,30 @@ namespace UnityEngine.FrameRecorder.Input
     [StoreInScene]
     public class AnimationInputSettings : InputSettings<AnimationInput>
     {
-
-        [SerializeField]
         public GameObject gameObject;
-        [SerializeField]
-        public bool enabled;
+        public bool enabled = false;
+        public bool recursive = true;
                    
-        [SerializeField]
         [HideInInspector]
-        public string bindingTypeName;
-        
-
-        public Type bindingType
+        public List<string> bindingTypeName = new List<string>();       
+        public List<Type> bindingType
         {
-            get { return string.IsNullOrEmpty( bindingTypeName) ? null : Type.GetType(bindingTypeName); }
+            get
+            {
+                var ret = new List<Type>(bindingTypeName.Count);
+                foreach (var t in bindingTypeName)
+                {
+                    ret.Add( Type.GetType(t));
+                }
+                return ret;
+            }
         }
 
         public override bool isValid
         {
             get
             {
-                return !enabled || gameObject != null && bindingType !=null; 
+                return !enabled || gameObject != null && bindingType.Count !=0; 
             }
         }
     }
