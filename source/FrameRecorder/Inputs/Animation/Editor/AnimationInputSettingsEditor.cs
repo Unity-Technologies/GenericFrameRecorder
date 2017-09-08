@@ -31,7 +31,7 @@ namespace UnityEditor.FrameRecorder.Input
                 i = EditorGUILayout.Popup(i, compos.Select(x=>x.Name).ToArray());
                 animImputSetting.bindingTypeName = compos[i].AssemblyQualifiedName;
             }
-                
+               
             animImputSetting.enabled = EditorGUILayout.Toggle(animImputSetting.enabled);
             EditorGUILayout.EndHorizontal();
         }

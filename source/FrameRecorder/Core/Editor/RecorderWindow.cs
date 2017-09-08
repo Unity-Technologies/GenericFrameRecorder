@@ -79,8 +79,7 @@ namespace UnityEditor.FrameRecorder
                             else
                             {
                                 m_WindowSettingsAsset = ScriptableObject.CreateInstance<RecorderWindowSettings>();
-                                //System.IO.Directory.CreateDirectory(FRPackagerPaths.GetFrameRecorderRootPath());
-                                AssetDatabase.CreateAsset(m_WindowSettingsAsset, FRPackagerPaths.GetFrameRecorderRootPath() +  "/RecorderWindowSettings.asset");
+                                AssetDatabase.CreateAsset(m_WindowSettingsAsset, "Assets/FrameRecordingSettings.asset");
                                 AssetDatabase.Refresh();
                             }
                         }
@@ -127,7 +126,7 @@ namespace UnityEditor.FrameRecorder
                         StopRecording();
                     }
                     catch (Exception) {}
-                }
+                    }
                 Debug.LogException(ex);
             }
         }
@@ -148,7 +147,7 @@ namespace UnityEditor.FrameRecorder
             {
                 case EState.Idle:
                 {
-                    using (new EditorGUI.DisabledScope(!m_Editor.isValid ))
+                    using (new EditorGUI.DisabledScope(!m_Editor.isValid))
                     {
                         if (GUILayout.Button("Start Recording"))
                             StartRecording();

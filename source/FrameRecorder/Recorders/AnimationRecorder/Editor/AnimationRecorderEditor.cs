@@ -35,7 +35,6 @@ namespace UnityEditor.FrameRecorder
 
             var aRecorderSettings = target as AnimationRecorderSettings;
 
-
             EditorGUI.BeginChangeCheck();
             GameObject newgo = EditorGUILayout.ObjectField(null, typeof(GameObject), true) as GameObject;
             if (EditorGUI.EndChangeCheck() && newgo !=null)
@@ -45,6 +44,13 @@ namespace UnityEditor.FrameRecorder
                 newSettings.enabled = true;
                 aRecorderSettings.inputsSettings.Add(newSettings);
             }
+        }
+
+        protected override void OnOutputGui()
+        {
+            var aRecorderSettings = target as AnimationRecorderSettings;
+            aRecorderSettings.outputPath = EditorGUILayout.TextField("Output Path", aRecorderSettings.outputPath);
+            aRecorderSettings.take = EditorGUILayout.IntField("Take", aRecorderSettings.take);
         }
         
     }
