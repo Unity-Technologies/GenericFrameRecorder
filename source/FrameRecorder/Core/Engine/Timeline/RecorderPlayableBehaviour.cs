@@ -1,6 +1,6 @@
 using UnityEngine.Playables;
 
-namespace UnityEngine.FrameRecorder.Timeline
+namespace UnityEngine.Recorder.Timeline
 {
     /// <summary>
     /// What is it: Implements a playable that records something triggered by a Timeline Recorder Clip.

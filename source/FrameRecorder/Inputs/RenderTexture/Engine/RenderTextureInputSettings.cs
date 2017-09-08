@@ -1,4 +1,4 @@
-﻿namespace UnityEngine.FrameRecorder.Input
+﻿namespace UnityEngine.Recorder.Input
 {
     public class RenderTextureInputSettings : InputSettings<RenderTextureInput>
     {

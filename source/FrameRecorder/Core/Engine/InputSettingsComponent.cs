@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
     public class InputSettingsComponent : MonoBehaviour
     {

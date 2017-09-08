@@ -1,6 +1,6 @@
 using System;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
 
     /// <summary>

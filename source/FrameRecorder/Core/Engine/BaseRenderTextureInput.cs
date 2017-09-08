@@ -1,10 +1,9 @@
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
-
     /// <summary>
-    /// What is this: 
-    /// Motivation  : 
-    /// Notes: 
+    /// What is this: Base class for inputs that provide a RenderRexture as output to Recorders
+    /// Motivation  : Having a base class for render texture Inputs greatly simplifies Recorders job of supporting
+    ///               multiple input implementations for fetching images.
     /// </summary>    
     public abstract class BaseRenderTextureInput : RecorderInput
     {

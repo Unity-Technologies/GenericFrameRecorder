@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
 
     /// <summary>

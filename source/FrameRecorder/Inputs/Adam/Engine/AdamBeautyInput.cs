@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace UnityEngine.FrameRecorder.Input
+namespace UnityEngine.Recorder.Input
 {
     public class AdamBeautyInput : BaseRenderTextureInput
     {
@@ -251,6 +251,7 @@ namespace UnityEngine.FrameRecorder.Input
             {
                 // Blit with normalization if sizes match.
                 m_normalizeMaterial.SetFloat("_NormalizationFactor", 1.0f / (float)adamSettings.m_SuperSampling);
+                m_normalizeMaterial.SetInt("_ApplyGammaCorrection", QualitySettings.activeColorSpace == ColorSpace.Linear && adamSettings.m_ColorSpace == ColorSpace.Gamma ? 1 : 0);
                 Graphics.Blit(m_renderRT, outputRT, m_normalizeMaterial);
             }
             else
@@ -260,6 +261,7 @@ namespace UnityEngine.FrameRecorder.Input
                 m_superMaterial.SetFloat("_KernelCosPower", adamSettings.m_SuperKernelPower);
                 m_superMaterial.SetFloat("_KernelScale", adamSettings.m_SuperKernelScale);
                 m_superMaterial.SetFloat("_NormalizationFactor", 1.0f / (float)adamSettings.m_SuperSampling);
+                m_superMaterial.SetInt("_ApplyGammaCorrection", QualitySettings.activeColorSpace == ColorSpace.Linear && adamSettings.m_ColorSpace == ColorSpace.Gamma ? 1 : 0);
                 Graphics.Blit(m_renderRT, outputRT, m_superMaterial);
             }
         }

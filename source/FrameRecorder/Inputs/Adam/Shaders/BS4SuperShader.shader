@@ -31,6 +31,33 @@ uniform float4 _Target_TexelSize;
 uniform float _KernelCosPower;
 uniform float _KernelScale;
 uniform float _NormalizationFactor;
+int _ApplyGammaCorrection;
+
+float floatToGammaSpace(float value)
+{
+    if (value <= 0.0)
+        return 0.0F;
+    else if (value <= 0.0031308)
+        return 12.92 * value;
+    else if (value < 1.0)
+        return 1.055 * pow(value, 0.4166667) - 0.055;
+    else if (value == 1.0)
+        return 1.0;
+    else
+        return pow(value, 0.45454545454545);
+}
+
+float4 float4ToGammaSpace(float4 value)
+{
+    float4 gammaValue;
+
+    gammaValue[0] = floatToGammaSpace(value[0]);
+    gammaValue[1] = floatToGammaSpace(value[1]);
+    gammaValue[2] = floatToGammaSpace(value[2]);
+    gammaValue[3] = value[3];
+
+    return gammaValue;
+}
 
 float4 frag(v2f i) : SV_Target {
 	const int width = ceil(_MainTex_TexelSize.z / _Target_TexelSize.z / 2.f);
@@ -52,8 +79,11 @@ float4 frag(v2f i) : SV_Target {
 			weight += w;
 		}
 	}
-	
-	return _NormalizationFactor * color.rgbb / weight;
+
+    if (_ApplyGammaCorrection == 0)
+        return _NormalizationFactor * color.rgbb / weight;
+    else
+        return float4ToGammaSpace(_NormalizationFactor * color.rgbb / weight);
 }
 
 ENDCG

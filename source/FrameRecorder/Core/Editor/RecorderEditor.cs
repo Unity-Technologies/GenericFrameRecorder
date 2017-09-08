@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.FrameRecorder;
+using UnityEngine.Recorder;
 using UnityEngine.SceneManagement;
 
 namespace UnityEditor.FrameRecorder
@@ -45,8 +45,6 @@ namespace UnityEditor.FrameRecorder
             }
         }
         protected List<InputEditorState> m_InputEditors;
-
-        //protected SerializedProperty m_Inputs;
 
         SerializedProperty m_FrameRateMode;
         SerializedProperty m_FrameRate;
@@ -142,7 +140,13 @@ namespace UnityEditor.FrameRecorder
             RecorderSettings.m_Verbose = EditorGUILayout.Toggle(  "Verbose logging", RecorderSettings.m_Verbose );
 
             serializedObject.ApplyModifiedProperties();
+            //if (settingsTarget.SelfAdjustSettings())
+                //EditorUtility.SetDirty(settingsTarget);
+
             EditorGUI.EndChangeCheck();
+
+            Debug.Log("sdfs");
+            settingsTarget.SelfAdjustSettings();
 
 
             if (!(target as RecorderSettings).isValid)

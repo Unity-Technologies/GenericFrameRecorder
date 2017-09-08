@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.FrameRecorder;
-using UnityEngine.FrameRecorder.Input;
+using UnityEngine.Recorder;
+using UnityEngine.Recorder.Input;
 
 namespace UnityEditor.FrameRecorder.Input
 {

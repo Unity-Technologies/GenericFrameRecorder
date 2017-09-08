@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
     [Serializable]
     public class InputSettingsList : IEnumerable<RecorderInputSetting>

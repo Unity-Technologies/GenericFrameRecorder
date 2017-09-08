@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
     [Flags]
     public enum EImageSource
@@ -168,6 +168,15 @@ namespace UnityEngine.FrameRecorder
             obj.m_DisplayName = title;
             obj.name = Guid.NewGuid().ToString();
             return obj;
+        }
+
+        /// <summary>
+        /// Allows for recorder specific settings logic to correct/adjust settings that might be missed by it's editor.
+        /// </summary>
+        /// <returns>true if setting where changed</returns>
+        public virtual bool SelfAdjustSettings()
+        {
+            return false; 
         }
         
     }

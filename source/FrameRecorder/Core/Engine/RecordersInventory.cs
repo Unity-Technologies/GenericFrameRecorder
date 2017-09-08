@@ -5,7 +5,7 @@ using UnityEditor;
 using System.Linq;
 #endif
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
     public class RecorderInfo
     {

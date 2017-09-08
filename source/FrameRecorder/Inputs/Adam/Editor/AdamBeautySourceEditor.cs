@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.FrameRecorder;
-using UnityEngine.FrameRecorder.Input;
+using UnityEngine.Recorder;
+using UnityEngine.Recorder.Input;
 
 namespace UnityEditor.FrameRecorder.Input
 {
@@ -84,6 +84,14 @@ namespace UnityEditor.FrameRecorder.Input
             AddProperty(m_FinalSize, () => EditorGUILayout.PropertyField(m_FinalSize, new GUIContent("Final resolution")));
             if (m_FinalSize.intValue > renderSize.intValue)
                 renderSize.intValue = m_FinalSize.intValue;
+
+            if (RecorderSettings.m_Verbose)
+            {
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUILayout.TextField("Color Space", (target as AdamBeautyInputSettings).m_ColorSpace.ToString());
+                }
+            }
 
             serializedObject.ApplyModifiedProperties();
 

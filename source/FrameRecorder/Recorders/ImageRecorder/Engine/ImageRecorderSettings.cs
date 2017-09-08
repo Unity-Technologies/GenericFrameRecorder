@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine.FrameRecorder.Input;
+using UnityEngine.Recorder.Input;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
 
     public enum PNGRecordeOutputFormat
@@ -45,6 +45,23 @@ namespace UnityEngine.FrameRecorder
                 (obj as CBRenderTextureInputSettings).m_FlipVertical = true;
 
             return obj ;
+        }
+
+        public override bool SelfAdjustSettings()
+        {
+            if (inputsSettings.Count == 0 || !(inputsSettings[0] is AdamBeautyInputSettings))
+                return false;
+
+            var input = (AdamBeautyInputSettings)inputsSettings[0];
+
+            var colorSpace = m_OutputFormat == PNGRecordeOutputFormat.EXR ? ColorSpace.Linear : ColorSpace.Gamma;
+            if (input.m_ColorSpace != colorSpace)
+            {
+                input.m_ColorSpace = colorSpace;
+                return true;
+            }
+
+            return false;
         }
     }
 }

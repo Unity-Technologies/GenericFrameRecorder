@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
     public enum ERecordingSessionStage
     {
@@ -58,6 +58,8 @@ namespace UnityEngine.FrameRecorder
         {
             if (RecorderSettings.m_Verbose)
                 Debug.Log(string.Format("Recorder {0} session created", GetType().Name));
+
+            settings.SelfAdjustSettings(); // ignore return value.
 
             var fixedRate = settings.m_FrameRateMode == FrameRateMode.Constant ? (int)settings.m_FrameRate : 0;
             if (fixedRate > 0)

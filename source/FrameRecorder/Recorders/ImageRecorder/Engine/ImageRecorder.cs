@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
     [FrameRecorder(typeof(ImageRecorderSettings),"Video", "Unity/Image sequence" )]
     public class ImageRecorder : GenericRecorder<ImageRecorderSettings>
