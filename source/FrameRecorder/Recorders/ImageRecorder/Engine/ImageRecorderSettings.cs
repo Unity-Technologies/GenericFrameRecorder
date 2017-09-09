@@ -41,18 +41,15 @@ namespace UnityEngine.Recorder
         public override RecorderInputSetting NewInputSettingsObj(Type type, string title )
         {
             var obj = base.NewInputSettingsObj(type, title);
-            if (type == typeof(CBRenderTextureInputSettings))
-                (obj as CBRenderTextureInputSettings).m_FlipVertical = true;
-
             return obj ;
         }
 
         public override bool SelfAdjustSettings()
         {
-            if (inputsSettings.Count == 0 || !(inputsSettings[0] is AdamBeautyInputSettings))
+            if (inputsSettings.Count == 0 || !(inputsSettings[0] is RenderTextureSamplerSettings))
                 return false;
 
-            var input = (AdamBeautyInputSettings)inputsSettings[0];
+            var input = (RenderTextureSamplerSettings)inputsSettings[0];
 
             var colorSpace = m_OutputFormat == PNGRecordeOutputFormat.EXR ? ColorSpace.Linear : ColorSpace.Gamma;
             if (input.m_ColorSpace != colorSpace)

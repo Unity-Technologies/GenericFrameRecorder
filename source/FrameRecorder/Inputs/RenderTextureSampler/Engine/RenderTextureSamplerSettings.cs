@@ -13,7 +13,7 @@
         x16 = 16,
     }
 
-    public class AdamBeautyInputSettings : InputSettings<AdamBeautyInput>
+    public class RenderTextureSamplerSettings : InputSettings<RenderTextureSampler>
     {
         public EImageSource source = EImageSource.GameDisplay;
         public EImageDimension m_RenderSize = EImageDimension.x720p_HD;
@@ -26,6 +26,7 @@
         public string m_CameraTag;
         public bool m_ForceEvenSize;
         public ColorSpace m_ColorSpace = ColorSpace.Gamma;
+        public bool m_FlipFinalOutput = false;
 
         public override bool isValid {
             get

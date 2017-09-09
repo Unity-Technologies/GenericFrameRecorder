@@ -23,7 +23,7 @@ namespace UnityEditor.FrameRecorder
 
         public static void ShowAndPreselectCategory(string category)
         {
-            var window = GetWindow(typeof(RecorderWindow), false, "Recorder") as RecorderWindow;
+            var window = GetWindow(typeof(RecorderWindow), false, "Recorder " + RecorderVersion.Stage) as RecorderWindow;
 
             if (RecordersInventory.recordersByCategory.ContainsKey(category))
             {

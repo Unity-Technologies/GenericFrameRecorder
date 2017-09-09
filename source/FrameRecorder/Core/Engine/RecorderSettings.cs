@@ -53,8 +53,6 @@ namespace UnityEngine.Recorder
         public FileNameGenerator m_BaseFileName;
         public OutputPath m_DestinationPath;
 
-        public static bool m_Verbose;
-
         [SerializeField]
         private InputSettingsList m_InputsSettings = new InputSettingsList();
 

@@ -14,13 +14,13 @@ namespace UnityEngine.Recorder
     {
         const string k_HostGoName = "UnityEngine-Recorder";
 
-        static GameObject GetGameObject(bool createIfAbsent)
+        internal static GameObject GetGameObject(bool createIfAbsent)
         {
             var go = GameObject.Find(k_HostGoName);
             if (go == null && createIfAbsent)
             {
                 go = new GameObject(k_HostGoName);
-                if (!RecorderSettings.m_Verbose)
+                if (!Verbose.enabled)
                     go.hideFlags = HideFlags.HideInHierarchy;
             }
 

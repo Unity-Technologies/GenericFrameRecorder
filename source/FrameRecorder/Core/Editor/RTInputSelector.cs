@@ -8,7 +8,7 @@ namespace UnityEditor.FrameRecorder
     public class RTInputSelector
     {
         string title { get; set; }
-        string[] candidates = { "Camera output", "Offscreen rendering", "Render Texture" };
+        string[] candidates = { "Frame buffer", "Sampling", "Render Texture" };
         RecorderSettings recSettings;
 
         public RTInputSelector( RecorderSettings recSettings, string title )
@@ -20,7 +20,7 @@ namespace UnityEditor.FrameRecorder
         public bool OnInputGui( ref RecorderInputSetting input)
         {
             var index = input.GetType() == typeof(CBRenderTextureInputSettings) ? 0 :
-                input.GetType() == typeof(AdamBeautyInputSettings) ? 1 : 2;
+                input.GetType() == typeof(RenderTextureSamplerSettings) ? 1 : 2;
             var newIndex = EditorGUILayout.Popup("Collection method", index, candidates);
 
             if (index != newIndex)
@@ -31,7 +31,7 @@ namespace UnityEditor.FrameRecorder
                         input = recSettings.NewInputSettingsObj<CBRenderTextureInputSettings>( title );
                         break;
                     case 1:
-                        input = recSettings.NewInputSettingsObj<AdamBeautyInputSettings>( title );
+                        input = recSettings.NewInputSettingsObj<RenderTextureSamplerSettings>( title );
                         break;
                     case 2:
                         input = recSettings.NewInputSettingsObj<RenderTextureInputSettings>( title );
