@@ -13,7 +13,7 @@ namespace UnityEditor.FrameRecorder
             return Application.dataPath + "/Recorder/";
         }
 
-        [MenuItem("Assets/Recorder/Generate Framework Package")]
+        [MenuItem("Tools/Recorder/Generate Framework Package", false, 50)]
         static void GeneratePackage()
         {
             var rootPath = FRPackagerPaths.GetFrameRecorderRootPath();
@@ -32,7 +32,7 @@ namespace UnityEditor.FrameRecorder
             Debug.Log("Generated package: " + destFile);
         }
 
-        [MenuItem("Assets/Recorder/Generate Package (full)")]
+        [MenuItem("Tools/Recorder/Generate Package (full)", false, 50)]
         static void GeneratePackageFull()
         {
             var rootPath = FRPackagerPaths.GetFrameRecorderRootPath();
@@ -61,7 +61,7 @@ namespace UnityEditor.FrameRecorder
             Debug.Log("Generated package: " + destFile);
         }
 
-        [MenuItem("Assets/Recorder/Generate Assetstore package")]
+        [MenuItem("Tools/Recorder/Generate Assetstore package", false, 50)]
         static void GenerateAssetStorePackage()
         {
             var rootPath = FRPackagerPaths.GetFrameRecorderRootPath();
