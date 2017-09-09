@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Recorder;
+using UnityEngine.Recorder.Input;
 
 namespace UTJ.FrameCapturer.Recorders
 {
@@ -25,5 +27,23 @@ namespace UTJ.FrameCapturer.Recorders
                         Application.platform == RuntimePlatform.LinuxPlayer;
             }
         }
+
+        public override RecorderInputSetting NewInputSettingsObj(Type type, string title )
+        {
+            var obj = base.NewInputSettingsObj(type, title);
+            if (type == typeof(CBRenderTextureInputSettings))
+            {
+                var settings = (CBRenderTextureInputSettings)obj;
+                settings.m_FlipFinalOutput = true;
+            }
+            else if (type == typeof(RenderTextureSamplerSettings))
+            {
+                var settings = (RenderTextureSamplerSettings)obj;
+                settings.m_FlipFinalOutput = true;
+            }
+
+            return obj ;
+        }
+
     }
 }

@@ -30,7 +30,11 @@ namespace UTJ.FrameCapturer.Recorders
         {
             var obj = base.NewInputSettingsObj(type, title);
             if (type == typeof(CBRenderTextureInputSettings))
-                (obj as CBRenderTextureInputSettings).m_ForceEvenSize = true;
+            {
+                var settings = (CBRenderTextureInputSettings)obj;
+                settings.m_ForceEvenSize = true;
+                settings.m_FlipFinalOutput = true;
+            }
 
             return obj ;
         }

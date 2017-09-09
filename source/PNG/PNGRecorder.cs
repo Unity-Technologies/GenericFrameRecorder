@@ -33,7 +33,7 @@ namespace UTJ.FrameCapturer.Recorders
 
             var input = (BaseRenderTextureInput)m_Inputs[0];
             var frame = input.outputRT;
-            var fileName = m_Settings.m_BaseFileName.BuildFileName( session, recordedFramesCount, frame.width, frame.height, "mp4");
+            var fileName = m_Settings.m_BaseFileName.BuildFileName( session, recordedFramesCount, frame.width, frame.height, "png");
             var path = Path.Combine(m_Settings.m_DestinationPath.GetFullPath(), fileName);
 
             fcAPI.fcLock(frame, (data, fmt) =>
