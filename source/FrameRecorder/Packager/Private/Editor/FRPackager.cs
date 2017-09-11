@@ -79,7 +79,7 @@ namespace UnityEditor.FrameRecorder
                 Path.Combine(rootPath, "Extensions/UTJ" ),
                 Path.Combine(rootPath, "Extensions/FCIntegration" ),
             };
-            var destFile = k_PackageName + ".unitypackage";
+            var destFile = k_PackageName + " " + RecorderVersion.Stage + " v"+ RecorderVersion.Version +  ".unitypackage";
             AssetDatabase.ExportPackage(files, destFile, ExportPackageOptions.Recurse);
             Debug.Log("Generated package: " + destFile);
         }
