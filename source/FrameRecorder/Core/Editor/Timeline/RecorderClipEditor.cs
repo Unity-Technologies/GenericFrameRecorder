@@ -1,3 +1,5 @@
+using System;
+using UnityEngine;
 using UnityEngine.FrameRecorder;
 using UnityEngine.FrameRecorder.Timeline;
 using UnityEngine.Timeline;
@@ -18,45 +20,68 @@ namespace UnityEditor.FrameRecorder.Timeline
 
         public override void OnInspectorGUI()
         {
-            if (target == null)
-                return;
-
-            // Bug? work arround: on Stop play, Enable is not called.
-            if (m_Editor != null && m_Editor.target == null)
+            try
             {
-                UnityHelpers.Destroy(m_Editor);
-                m_Editor = null;
-                m_recorderSelector = null;
-            }
+                if (target == null)
+                    return;
 
-            if (m_recorderSelector == null)
-            {
-                m_recorderSelector = new RecorderSelector( OnRecorderSelected, false );
-                m_recorderSelector.Init((target as RecorderClip).m_Settings);
-            }
-
-            m_recorderSelector.OnGui();
-
-            if (m_Editor != null)
-            {
-                m_Editor.showBounds = false;
-                m_Timeline = FindTimelineAsset();
-
-                PushTimelineIntoRecorder();
-
-                using (new EditorGUI.DisabledScope(EditorApplication.isPlaying))
+                // Bug? work arround: on Stop play, Enable is not called.
+                if (m_Editor != null && m_Editor.target == null)
                 {
-                    EditorGUILayout.Separator();
+                    UnityHelpers.Destroy(m_Editor);
+                    m_Editor = null;
+                    m_recorderSelector = null;
+                }
 
-                    m_Editor.OnInspectorGUI();
+                if (m_recorderSelector == null)
+                {
+                    m_recorderSelector = new RecorderSelector(OnRecorderSelected, false);
+                    m_recorderSelector.Init((target as RecorderClip).m_Settings);
+                }
 
-                    EditorGUILayout.Separator();
+                m_recorderSelector.OnGui();
 
-                    PushRecorderIntoTimeline();
+                if (m_Editor != null)
+                {
+                    m_Editor.showBounds = false;
+                    m_Timeline = FindTimelineAsset();
 
-                    serializedObject.Update();
+                    PushTimelineIntoRecorder();
+
+                    using (new EditorGUI.DisabledScope(EditorApplication.isPlaying))
+                    {
+                        EditorGUILayout.Separator();
+
+                        m_Editor.OnInspectorGUI();
+
+                        EditorGUILayout.Separator();
+
+                        PushRecorderIntoTimeline();
+
+                        serializedObject.Update();
+                    }
                 }
             }
+            catch (ExitGUIException)
+            {
+            }
+            catch (Exception ex)
+            {
+                EditorGUILayout.HelpBox("An exception was raised while editing the settings. This can be indicative of corrupted settings.", MessageType.Warning);
+
+                if (GUILayout.Button("Reset settings to default"))
+                    ResetSettings();
+
+                Debug.LogException(ex);
+            }
+        }
+
+        void ResetSettings()
+        {
+            UnityHelpers.Destroy(m_Editor);
+            m_Editor = null;
+            m_recorderSelector = null;
+            UnityHelpers.Destroy((target as RecorderClip).m_Settings, true);
         }
 
         public void OnRecorderSelected()

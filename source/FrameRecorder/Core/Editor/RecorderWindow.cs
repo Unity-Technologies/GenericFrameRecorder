@@ -75,8 +75,12 @@ namespace UnityEditor.FrameRecorder
                             {
                                 var path = AssetDatabase.GUIDToAssetPath(candidates[0]);
                                 m_WindowSettingsAsset = AssetDatabase.LoadAssetAtPath<RecorderWindowSettings>(path);
+                                if (m_WindowSettingsAsset == null)
+                                {
+                                    AssetDatabase.DeleteAsset(path);
+                                }
                             }
-                            else
+                            if(m_WindowSettingsAsset == null)
                             {
                                 m_WindowSettingsAsset = ScriptableObject.CreateInstance<RecorderWindowSettings>();
                                 AssetDatabase.CreateAsset(m_WindowSettingsAsset, "Assets/FrameRecordingSettings.asset");
@@ -114,7 +118,6 @@ namespace UnityEditor.FrameRecorder
             }
             catch (ExitGUIException)
             {
-                
             }
             catch (Exception ex)
             {
@@ -127,8 +130,29 @@ namespace UnityEditor.FrameRecorder
                     }
                     catch (Exception) {}
                 }
+                else
+                {
+                    EditorGUILayout.HelpBox("An exception was raised while editing the settings. This can be indicative of corrupted settings.", MessageType.Warning);
+
+                    if (GUILayout.Button("Reset settings to default"))
+                    {
+                        ResetSettings();
+                    }                    
+                }
                 Debug.LogException(ex);
             }
+        }
+
+        void ResetSettings()
+        {
+            UnityHelpers.Destroy(m_Editor);
+            m_Editor = null;
+            m_recorderSelector = null;
+            var path = AssetDatabase.GetAssetPath(m_WindowSettingsAsset);
+            UnityHelpers.Destroy(m_WindowSettingsAsset, true);
+            AssetDatabase.DeleteAsset(path);
+            AssetDatabase.Refresh(ImportAssetOptions.Default);
+            m_WindowSettingsAsset = null;
         }
 
         public void OnDestroy()
