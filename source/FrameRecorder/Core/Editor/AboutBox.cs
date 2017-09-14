@@ -5,10 +5,10 @@ namespace UnityEditor.FrameRecorder
 {
     public class AboutBox : EditorWindow
     {
-        [MenuItem("Tools/Recorder/About...", false, Int32.MinValue)]
+        [MenuItem("Tools/Recorder/About...", false, Int32.MaxValue)]
         public static void ShowAboutBox()
         {
-            EditorWindow.GetWindowWithRect<AboutBox>(new Rect(100, 100, 550, 310), true, "About Recorder");
+            EditorWindow.GetWindowWithRect<AboutBox>(new Rect(100, 100, 550, 330), true, "About Recorder");
         }
 
         GUIContent s_Header;
@@ -20,7 +20,7 @@ namespace UnityEditor.FrameRecorder
 
         public void OnGUI()
         {
-             GUILayout.Space(10);
+            GUILayout.Space(10);
             GUILayout.BeginHorizontal();
             GUILayout.Space(5);
             GUILayout.BeginVertical();
@@ -59,6 +59,14 @@ namespace UnityEditor.FrameRecorder
             if (GUILayout.Button("Want to write a recorder?"))
             {
                 Application.OpenURL("https://github.com/Unity-Technologies/GenericFrameRecorder/blob/master/README.md");
+                this.Close();
+            }
+            GUILayout.EndHorizontal();
+            GUILayout.Space(5);
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Unity's User forum"))
+            {
+                Application.OpenURL("https://forum.unity.com/categories/betas-experimental-features.86/");
                 this.Close();
             }
             GUILayout.EndHorizontal();

@@ -6,7 +6,7 @@ namespace UnityEditor.FrameRecorder
 {
     public class RecorderVersion : ScriptableObject
     {
-        public const string Version = "0.1.170912-10";
-        public const string Stage = "(Beta)";
+        public const string Version = "0.1.170913-02";
+        public const string Stage = "(Experimental)";
     }
 }
