@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 
 namespace UnityEngine.Recorder
 {
@@ -17,6 +18,9 @@ namespace UnityEngine.Recorder
         internal static GameObject GetGameObject(bool createIfAbsent)
         {
             var go = GameObject.Find(k_HostGoName);
+            if (go != null && go.scene != SceneManager.GetActiveScene())
+                go = null;
+
             if (go == null && createIfAbsent)
             {
                 go = new GameObject(k_HostGoName);
@@ -62,7 +66,7 @@ namespace UnityEngine.Recorder
             else
                 settingsGO = settingsTr.gameObject;
 
-            return settingsGO;            
+            return settingsGO;
         }
 
         public static GameObject HookupRecorder()
@@ -97,13 +101,15 @@ namespace UnityEngine.Recorder
         {
             var settingsRoot = GetInputsComponent(assetId);
             settingsRoot.m_Settings.Add(input);
+            EditorSceneManager.MarkSceneDirty( settingsRoot.gameObject.scene );
         }
-        
+
         public static void UnregisterInputSettingObj(string assetId, RecorderInputSetting input)
         {
             var settingsRoot = GetInputsComponent(assetId);
             settingsRoot.m_Settings.Remove(input);
             UnityHelpers.Destroy(input);
+            EditorSceneManager.MarkSceneDirty( settingsRoot.gameObject.scene );
         }
 
         public static InputSettingsComponent GetInputsComponent(string assetId)

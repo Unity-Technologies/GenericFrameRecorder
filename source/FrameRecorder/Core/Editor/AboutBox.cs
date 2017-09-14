@@ -5,7 +5,7 @@ namespace UnityEditor.FrameRecorder
 {
     public class AboutBox : EditorWindow
     {
-        [MenuItem("Tools/Recorder/About...", false, Int32.MinValue)]
+        [MenuItem("Tools/Recorder/About...", false, Int32.MaxValue)]
         public static void ShowAboutBox()
         {
             EditorWindow.GetWindowWithRect<AboutBox>(new Rect(100, 100, 550, 310), true, "About Recorder");
@@ -20,19 +20,19 @@ namespace UnityEditor.FrameRecorder
 
         public void OnGUI()
         {
-             GUILayout.Space(10);
+            GUILayout.Space(10);
             GUILayout.BeginHorizontal();
             GUILayout.Space(5);
             GUILayout.BeginVertical();
             GUILayout.Label(s_Header, GUIStyle.none);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Space(52f); 
+            GUILayout.Space(52f);
             GUILayout.Label("Recorder " + RecorderVersion.Stage, EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Space(52f); 
+            GUILayout.Space(52f);
             GUILayout.Label(string.Format("Version {0}", RecorderVersion.Version));
             GUILayout.EndHorizontal();
             GUILayout.Space(4);
