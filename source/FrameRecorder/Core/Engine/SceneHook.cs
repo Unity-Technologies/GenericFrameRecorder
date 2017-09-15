@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+using UnityEditor.SceneManagement;
+#endif
 
 namespace UnityEngine.Recorder
 {
@@ -101,7 +103,9 @@ namespace UnityEngine.Recorder
         {
             var settingsRoot = GetInputsComponent(assetId);
             settingsRoot.m_Settings.Add(input);
+#if UNITY_EDITOR
             EditorSceneManager.MarkSceneDirty( settingsRoot.gameObject.scene );
+#endif
         }
 
         public static void UnregisterInputSettingObj(string assetId, RecorderInputSetting input)
@@ -109,7 +113,9 @@ namespace UnityEngine.Recorder
             var settingsRoot = GetInputsComponent(assetId);
             settingsRoot.m_Settings.Remove(input);
             UnityHelpers.Destroy(input);
+#if UNITY_EDITOR
             EditorSceneManager.MarkSceneDirty( settingsRoot.gameObject.scene );
+#endif
         }
 
         public static InputSettingsComponent GetInputsComponent(string assetId)

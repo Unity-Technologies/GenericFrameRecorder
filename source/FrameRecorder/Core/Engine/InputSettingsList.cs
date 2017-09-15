@@ -160,7 +160,9 @@ namespace UnityEngine.Recorder
                 AssetDatabase.SaveAssets();
 #endif
             }
+#if UNITY_EDITOR
             AssetDatabase.Refresh();
+#endif
         }
 
         void ReleaseAt(int index)

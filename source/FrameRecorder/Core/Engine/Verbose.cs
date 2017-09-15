@@ -57,7 +57,7 @@ namespace UnityEngine.Recorder
             get { return m_State; }
             set
             {
-                m_cachedState = value;
+                m_State = value;
                 var go = SceneHook.GetGameObject(false);
                 if (go != null)
                 {
