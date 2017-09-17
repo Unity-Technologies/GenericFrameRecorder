@@ -27,7 +27,7 @@ namespace UnityEditor.FrameRecorder
             m_RTInputSelector = new RTInputSelector( target as RecorderSettings, "Pixels");
 
             var pf = new PropertyFinder<MediaRecorderSettings>(serializedObject);
-            m_Inputs = pf.Find(w => w.m_SourceSettings);
+            m_Inputs = pf.Find(w => w.m_InputsSettings);
             m_OutputFormat = pf.Find(w => w.m_OutputFormat);
         }
 

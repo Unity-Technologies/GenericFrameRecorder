@@ -1,5 +1,6 @@
 using System;
 #if UNITY_EDITOR
+using System.Reflection;
 using UnityEditor;
 using UnityEditorInternal;
 
@@ -9,43 +10,83 @@ using UnityEngine.FrameRecorder.Input;
 
 namespace UnityEngine.FrameRecorder
 {
+    class AudioRenderer
+    {
+        private static MethodInfo m_StartMethod;
+        private static MethodInfo m_StopMethod;
+        private static MethodInfo m_GetSampleCountForCaptureFrameMethod;
+        private static MethodInfo m_RenderMethod;
+
+        static AudioRenderer()
+        {
+            var className = "UnityEngine.AudioRenderer";
+            var dllName = "UnityEngine";
+            var audioRecorderType = Type.GetType(className + ", " + dllName);
+            if (audioRecorderType == null)
+            {
+                Debug.Log("AudioInput could not find " + className + " type in " + dllName);
+                return;
+            }
+            m_StartMethod = audioRecorderType.GetMethod("Start");
+            m_StopMethod = audioRecorderType.GetMethod("Stop");
+            m_GetSampleCountForCaptureFrameMethod =
+                audioRecorderType.GetMethod("GetSampleCountForCaptureFrame");
+            m_RenderMethod = audioRecorderType.GetMethod("Render");
+        }
+
+        static public void Start()
+        {
+            m_StartMethod.Invoke(null, null);
+        }
+
+        static public void Stop()
+        {
+            m_StopMethod.Invoke(null, null);
+        }
+
+        static public uint GetSampleCountForCaptureFrame()
+        {
+            var count = (int)m_GetSampleCountForCaptureFrameMethod.Invoke(null, null);
+            return (uint)count;
+        }
+
+        static public void Render(NativeArray<float> buffer)
+        {
+            m_RenderMethod.Invoke(null, new object[] { buffer });
+        }
+    }
+
     public class AudioInput : RecorderInput
     {
         private class BufferManager : IDisposable
         {
-            NativeArray<float>[] buffers;
-            uint m_Length;
-	    ushort m_ChannelCount;
-    
-            public BufferManager(ushort numBuffers, uint length, ushort channelCount)
+            private NativeArray<float>[] m_Buffers;
+
+            public BufferManager(ushort bufferCount, uint sampleFrameCount, ushort channelCount)
             {
-                buffers = new NativeArray<float>[numBuffers];
-		m_ChannelCount = channelCount;
-                m_Length = length;
+                m_Buffers = new NativeArray<float>[bufferCount];
+                for (int i = 0; i < m_Buffers.Length; ++i)
+                    m_Buffers[i] = new NativeArray<float>((int)sampleFrameCount * (int)channelCount, Allocator.Temp);
             }
-    
+
             public NativeArray<float> GetBuffer(int index)
             {
-                if (buffers[index].Length == 0)
-		    buffers[index] = new NativeArray<float>(
-			(int)m_Length * (int)m_ChannelCount, Allocator.Temp);
-		return buffers[index];
+                return m_Buffers[index];
             }
-    
+
             public void Dispose()
             {
-                foreach (var a in buffers)
-		    a.Dispose();
+                foreach (var a in m_Buffers)
+                    a.Dispose();
             }
         }
 
         public ushort channelCount { get { return m_ChannelCount; } }
-	private ushort m_ChannelCount;
-	public int sampleRate { get { return AudioSettings.outputSampleRate; } }
-	public NativeArray<float> mainBuffer { get { return m_BufferManager.GetBuffer(0); } }
-	public NativeArray<float> GetMixerGroupBuffer(int n)
+        private ushort m_ChannelCount;
+        public int sampleRate { get { return AudioSettings.outputSampleRate; } }
+        public NativeArray<float> mainBuffer { get { return m_BufferManager.GetBuffer(0); } }
+        public NativeArray<float> GetMixerGroupBuffer(int n)
         { return m_BufferManager.GetBuffer(n + 1); }
-	
         private BufferManager m_BufferManager;
 
         public AudioInputSettings audioSettings
@@ -53,78 +94,77 @@ namespace UnityEngine.FrameRecorder
 
         public override void BeginRecording(RecordingSession session)
         {
-	    m_ChannelCount = new Func<ushort>(() => {
-		    switch (AudioSettings.speakerMode)
-		    {
-		    case AudioSpeakerMode.Mono:        return 1;
-		    case AudioSpeakerMode.Stereo:      return 2;
-		    case AudioSpeakerMode.Quad:        return 4;
-		    case AudioSpeakerMode.Surround:    return 5;
-		    case AudioSpeakerMode.Mode5point1: return 6;
-		    case AudioSpeakerMode.Mode7point1: return 7;
-		    case AudioSpeakerMode.Prologic:    return 2;		    
-		    default: return 1;
-		    }
+            m_ChannelCount = new Func<ushort>(() => {
+                    switch (AudioSettings.speakerMode)
+                    {
+                    case AudioSpeakerMode.Mono:        return 1;
+                    case AudioSpeakerMode.Stereo:      return 2;
+                    case AudioSpeakerMode.Quad:        return 4;
+                    case AudioSpeakerMode.Surround:    return 5;
+                    case AudioSpeakerMode.Mode5point1: return 6;
+                    case AudioSpeakerMode.Mode7point1: return 7;
+                    case AudioSpeakerMode.Prologic:    return 2;
+                    default: return 1;
+                    }
             })();
 
             if (session.settings.m_Verbose)
                 Debug.Log(string.Format(
-			      "AudioInput.BeginRecording for capture frame rate {0}", Time.captureFramerate));
+                              "AudioInput.BeginRecording for capture frame rate {0}", Time.captureFramerate));
 
-	    if (audioSettings.m_PreserveAudio)
-		AudioRecorder.StartOutputRecording();
-	}
+            if (audioSettings.m_PreserveAudio)
+                AudioRenderer.Start();
+        }
 
         public override void NewFrameReady(RecordingSession session)
-	{
-	    if (!audioSettings.m_PreserveAudio)
-		return;
+        {
+            if (!audioSettings.m_PreserveAudio)
+                return;
 
-	    var sampleFrameCount = (uint)AudioRecorder.GetRecordSamplesAvailable();
+            var sampleFrameCount = (uint)AudioRenderer.GetSampleCountForCaptureFrame();
             if (session.settings.m_Verbose)
                 Debug.Log(string.Format("AudioInput.NewFrameReady {0} audio sample frames @ {1} ch",
                                         sampleFrameCount, m_ChannelCount));
 
-	    ushort bufferCount = 
+            ushort bufferCount =
 #if RECORD_AUDIO_MIXERS
-		(ushort)(audioSettings.m_AudioMixerGroups.Length + 1)
+                (ushort)(audioSettings.m_AudioMixerGroups.Length + 1)
 #else
-		1
+                1
 #endif
             ;
 
-	    m_BufferManager = new BufferManager(bufferCount, sampleFrameCount, m_ChannelCount);
-	    var mainBuffer = m_BufferManager.GetBuffer(0);
+            m_BufferManager = new BufferManager(bufferCount, sampleFrameCount, m_ChannelCount);
+            var mainBuffer = m_BufferManager.GetBuffer(0);
 
 #if RECORD_AUDIO_MIXERS
-	    for (int n = 1; n < bufferCount; n++)
-	    {
-		var group = audioSettings.m_AudioMixerGroups[n - 1];
-		if (group.m_MixerGroup == null)
-		    continue;
+            for (int n = 1; n < bufferCount; n++)
+            {
+                var group = audioSettings.m_AudioMixerGroups[n - 1];
+                if (group.m_MixerGroup == null)
+                    continue;
 
-		var buffer = m_BufferManager.GetBuffer(n);
-		AudioRecorder.AddMixerGroupRecorder(group.m_MixerGroup, buffer, group.m_Isolate);
-	    }
+                var buffer = m_BufferManager.GetBuffer(n);
+                AudioRenderer.AddMixerGroupRecorder(group.m_MixerGroup, buffer, group.m_Isolate);
+            }
 #endif
 
-	    AudioRecorder.RecordOutput(mainBuffer);
-	}
+            AudioRenderer.Render(mainBuffer);
+        }
 
         public override void FrameDone(RecordingSession session)
         {
-	    if (!audioSettings.m_PreserveAudio)
-		return;
+            if (!audioSettings.m_PreserveAudio)
+                return;
 
-	    m_BufferManager.Dispose();
-	    m_BufferManager = null;
-	}
+            m_BufferManager.Dispose();
+            m_BufferManager = null;
+        }
 
         public override void EndRecording(RecordingSession session)
         {
-	    if (audioSettings.m_PreserveAudio)
-		AudioRecorder.StopOutputRecording();
+            if (audioSettings.m_PreserveAudio)
+                AudioRenderer.Stop();
         }
     }
 }
-
