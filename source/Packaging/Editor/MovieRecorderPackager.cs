@@ -9,7 +9,7 @@ namespace UnityEditor.Recorder
     {
         public static void GeneratePackage()
         {
-            var rootPath = FRPackagerPaths.GetFrameRecorderRootPath();
+            var rootPath = FRPackagerPaths.GetRecorderRootPath();
 
             File.WriteAllText( Path.Combine(rootPath, "Extensions/MovieRecorder/Packaging/TS.txt" ), DateTime.Now.ToString() );
 
@@ -34,12 +34,18 @@ namespace UnityEditor.Recorder
 
         static bool AutoExtractAllowed
         {
-            get { return !AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetTypes().Any(y => y.Name == "FRPackager" && y.Namespace == "UnityEditor.FrameRecorder")); }
+            get { return !AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetTypes().Any(y => y.Name == "FRPackager" && y.Namespace == "UnityEditor.Recorder")); }
         }
 
         static bool AudioRecordingAvailable
         {
-            get { return AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetTypes().Any(y => y.Name == "AudioRecorder" && y.Namespace == "UnityEngine")); }
+            get
+            {
+                var className = "UnityEngine.AudioRenderer";
+                var dllName = "UnityEngine";
+                var audioRecorderType = Type.GetType(className + ", " + dllName);
+                return audioRecorderType != null;
+            }
         }
 
         static bool MovieRecordingAvailable
@@ -51,9 +57,9 @@ namespace UnityEditor.Recorder
         {
             if(AutoExtractAllowed && AudioRecordingAvailable && MovieRecordingAvailable )
             {
-                var pkgFile = Path.Combine(FRPackagerPaths.GetFrameRecorderRootPath(), "Extensions/MovieRecorder/Packaging/" + k_PackageName);
-                var tsFile = Path.Combine(FRPackagerPaths.GetFrameRecorderRootPath(), "Extensions/MovieRecorder/Packaging/TS.txt");
-                var recDir = Path.Combine(FRPackagerPaths.GetFrameRecorderRootPath(), "Extensions/MovieRecorder/Recorder");
+                var pkgFile = Path.Combine(FRPackagerPaths.GetRecorderRootPath(), "Extensions/MovieRecorder/Packaging/" + k_PackageName);
+                var tsFile = Path.Combine(FRPackagerPaths.GetRecorderRootPath(), "Extensions/MovieRecorder/Packaging/TS.txt");
+                var recDir = Path.Combine(FRPackagerPaths.GetRecorderRootPath(), "Extensions/MovieRecorder/Recorder");
                 if ( File.Exists(pkgFile) && 
                     (!Directory.Exists(recDir) || File.GetLastWriteTime(pkgFile) > File.GetLastWriteTime(tsFile).AddMinutes(5))) // extra 5min to compensate for package write duration
                 {
