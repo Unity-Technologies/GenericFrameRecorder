@@ -5,7 +5,7 @@ using UnityEngine.Recorder;
 
 namespace UTJ.FrameCapturer.Recorders
 {
-    [FrameRecorder(typeof(WEBMRecorderSettings),"Video", "UTJ/WebM" )]
+    [Recorder(typeof(WEBMRecorderSettings),"Video", "UTJ/WebM" )]
     public class WEBMRecorder : GenericRecorder<WEBMRecorderSettings>
     {
         fcAPI.fcWebMContext m_ctx;

@@ -1,5 +1,5 @@
 using UnityEditor;
-using UnityEditor.FrameRecorder;
+using UnityEditor.Recorder;
 using UnityEngine;
 
 namespace UTJ.FrameCapturer.Recorders

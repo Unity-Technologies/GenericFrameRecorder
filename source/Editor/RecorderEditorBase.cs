@@ -1,5 +1,5 @@
 ﻿using UnityEditor;
-using UnityEditor.FrameRecorder;
+using UnityEditor.Recorder;
 using UnityEngine;
 using UnityEngine.Recorder;
 using UnityEngine.Recorder.Input;

@@ -4,7 +4,7 @@ using UnityEngine.Recorder;
 
 namespace UTJ.FrameCapturer.Recorders
 {
-    [FrameRecorder(typeof(EXRRecorderSettings),"Video", "UTJ/OpenEXR" )]
+    [Recorder(typeof(EXRRecorderSettings),"Video", "UTJ/OpenEXR" )]
     public class EXRRecorder : GenericRecorder<EXRRecorderSettings>
     {
         static readonly string[] s_channelNames = { "R", "G", "B", "A" };

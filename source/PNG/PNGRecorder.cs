@@ -5,7 +5,7 @@ using UnityEngine.Recorder;
 
 namespace UTJ.FrameCapturer.Recorders
 {
-    [FrameRecorder(typeof(PNGRecorderSettings),"Video", "UTJ/PNG" )]
+    [Recorder(typeof(PNGRecorderSettings),"Video", "UTJ/PNG" )]
     public class PNGRecorder : GenericRecorder<PNGRecorderSettings>
     {
         fcAPI.fcPngContext m_ctx;
