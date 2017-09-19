@@ -1,6 +1,19 @@
-﻿namespace UnityEngine.FrameRecorder.Input
+﻿namespace UnityEngine.Recorder.Input
 {
-    public class AdamBeautyInputSettings : InputSettings<AdamBeautyInput>
+    /// <summary>
+    /// What is it: 
+    /// Motivation: 
+    /// </summary>
+    public enum ESuperSamplingCount
+    {
+        x1 = 1,
+        x2 = 2,
+        x4 = 4,
+        x8 = 8,
+        x16 = 16,
+    }
+
+    public class RenderTextureSamplerSettings : InputSettings<RenderTextureSampler>
     {
         public EImageSource source = EImageSource.GameDisplay;
         public EImageDimension m_RenderSize = EImageDimension.x720p_HD;
@@ -11,7 +24,9 @@
         public float m_SuperKernelScale = 1f;
         public RenderTexture m_RenderTexture;
         public string m_CameraTag;
-        public bool m_ForceEvenSize = false;
+        public bool m_ForceEvenSize;
+        public ColorSpace m_ColorSpace = ColorSpace.Gamma;
+        public bool m_FlipFinalOutput = false;
 
         public override bool isValid {
             get

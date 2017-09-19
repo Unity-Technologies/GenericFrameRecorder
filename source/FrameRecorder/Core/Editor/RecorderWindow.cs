@@ -1,5 +1,5 @@
 using System;
-using UnityEngine.FrameRecorder;
+using UnityEngine.Recorder;
 using UnityEngine;
 
 namespace UnityEditor.FrameRecorder
@@ -23,7 +23,7 @@ namespace UnityEditor.FrameRecorder
 
         public static void ShowAndPreselectCategory(string category)
         {
-            var window = GetWindow(typeof(RecorderWindow), false, "Recorder") as RecorderWindow;
+            var window = GetWindow(typeof(RecorderWindow), false, "Recorder " + RecorderVersion.Stage) as RecorderWindow;
 
             if (RecordersInventory.recordersByCategory.ContainsKey(category))
             {
@@ -79,7 +79,7 @@ namespace UnityEditor.FrameRecorder
                             else
                             {
                                 m_WindowSettingsAsset = ScriptableObject.CreateInstance<RecorderWindowSettings>();
-                                AssetDatabase.CreateAsset(m_WindowSettingsAsset, "Assets/FrameRecordingSettings.asset");
+                                AssetDatabase.CreateAsset(m_WindowSettingsAsset, FRPackagerPaths.GetFrameRecorderRootPath() +  "/RecorderWindowSettings.asset");
                                 AssetDatabase.Refresh();
                             }
                         }

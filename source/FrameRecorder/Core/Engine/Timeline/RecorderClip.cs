@@ -2,7 +2,7 @@ using System;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-namespace UnityEngine.FrameRecorder.Timeline
+namespace UnityEngine.Recorder.Timeline
 {
     /// <summary>
     /// What is it: Implements a Timeline Clip asset that can be inserted onto a timeline track to trigger a recording of something.

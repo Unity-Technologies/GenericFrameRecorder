@@ -2,13 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace UnityEngine.FrameRecorder.Input
+namespace UnityEngine.Recorder.Input
 {
-    public class AdamBeautyInput : BaseRenderTextureInput
+    public class RenderTextureSampler : BaseRenderTextureInput
     {
         Shader superShader;
         Shader accumulateShader;
         Shader normalizeShader;
+
+        TextureFlipper m_VFlipper;
 
         RenderTexture m_renderRT;
         RenderTexture[] m_accumulateRTs = new RenderTexture[2];
@@ -28,9 +30,9 @@ namespace UnityEngine.FrameRecorder.Input
 
         Vector2[] m_samples;
 
-        AdamBeautyInputSettings adamSettings
+        RenderTextureSamplerSettings rtsSettings
         {
-            get { return (AdamBeautyInputSettings)settings; }
+            get { return (RenderTextureSamplerSettings)settings; }
         }
 
         void GenerateSamplesMSAA(Vector2[] samples, ESuperSamplingCount sc)
@@ -100,19 +102,22 @@ namespace UnityEngine.FrameRecorder.Input
             accumulateShader = Shader.Find("Hidden/BeautyShot/Accumulate");
             normalizeShader = Shader.Find("Hidden/BeautyShot/Normalize");
 
+            if( rtsSettings.m_FlipFinalOutput )
+                m_VFlipper = new TextureFlipper();
+
             // Below here is considered 'void Start()', but we run it for directly "various reasons".
-            if (adamSettings.m_FinalSize > adamSettings.m_RenderSize)
+            if (rtsSettings.m_FinalSize > rtsSettings.m_RenderSize)
                 throw new UnityException("Upscaling is not supported! Output dimension must be smaller or equal to render dimension.");
 
             // Calculate aspect and render/output sizes
             // Clamp size to 16K, which is the min always supported size in d3d11
             // Force output to divisible by two as x264 doesn't approve of odd image dimensions.
-            var aspect = AspectRatioHelper.GetRealAR(adamSettings.m_AspectRatio);
-            m_renderHeight = (int)adamSettings.m_RenderSize;
+            var aspect = AspectRatioHelper.GetRealAR(rtsSettings.m_AspectRatio);
+            m_renderHeight = (int)rtsSettings.m_RenderSize;
             m_renderWidth = Mathf.Min(16 * 1024, Mathf.RoundToInt(m_renderHeight * aspect));
-            m_outputHeight = (int)adamSettings.m_FinalSize;
+            m_outputHeight = (int)rtsSettings.m_FinalSize;
             m_outputWidth = Mathf.Min(16 * 1024, Mathf.RoundToInt(m_outputHeight * aspect));
-            if (adamSettings.m_ForceEvenSize)
+            if (rtsSettings.m_ForceEvenSize)
             {
                 m_outputWidth = (m_outputWidth + 1) & ~1;
                 m_outputHeight = (m_outputHeight + 1) & ~1;
@@ -135,18 +140,18 @@ namespace UnityEngine.FrameRecorder.Input
                 m_accumulateRTs[i].wrapMode = TextureWrapMode.Clamp;
                 m_accumulateRTs[i].Create();
             }
-            var rt = new RenderTexture(m_outputWidth, m_outputHeight, 0, RenderTextureFormat.Default, RenderTextureReadWrite.sRGB);
+            var rt = new RenderTexture(m_outputWidth, m_outputHeight, 0, RenderTextureFormat.DefaultHDR, RenderTextureReadWrite.Linear);
             rt.Create();
             outputRT = rt;
-            m_samples = new Vector2[(int)adamSettings.m_SuperSampling];
-            GenerateSamplesMSAA(m_samples, adamSettings.m_SuperSampling);
+            m_samples = new Vector2[(int)rtsSettings.m_SuperSampling];
+            GenerateSamplesMSAA(m_samples, rtsSettings.m_SuperSampling);
 
             m_hookedCameras = new List<HookedCamera>();
         }
 
         public override void NewFrameStarting(RecordingSession session)
         {
-            switch (adamSettings.source)
+            switch (rtsSettings.source)
             {
                 case EImageSource.GameDisplay:
                 {
@@ -238,6 +243,8 @@ namespace UnityEngine.FrameRecorder.Input
                 UnityHelpers.Destroy(m_superMaterial);
                 UnityHelpers.Destroy(m_accumulateMaterial);
                 UnityHelpers.Destroy(m_normalizeMaterial);
+                if(m_VFlipper != null)
+                    m_VFlipper.Dispose();
             }
 
             base.Dispose(disposing);
@@ -247,21 +254,26 @@ namespace UnityEngine.FrameRecorder.Input
         {
             PerformSubSampling();
 
-            if (adamSettings.m_RenderSize == adamSettings.m_FinalSize)
+            if (rtsSettings.m_RenderSize == rtsSettings.m_FinalSize)
             {
                 // Blit with normalization if sizes match.
-                m_normalizeMaterial.SetFloat("_NormalizationFactor", 1.0f / (float)adamSettings.m_SuperSampling);
+                m_normalizeMaterial.SetFloat("_NormalizationFactor", 1.0f / (float)rtsSettings.m_SuperSampling);
+                m_normalizeMaterial.SetInt("_ApplyGammaCorrection", QualitySettings.activeColorSpace == ColorSpace.Linear && rtsSettings.m_ColorSpace == ColorSpace.Gamma ? 1 : 0);
                 Graphics.Blit(m_renderRT, outputRT, m_normalizeMaterial);
             }
             else
             {
                 // Ideally we would use a separable filter here, but we're massively bound by readback and disk anyway for hi-res.
                 m_superMaterial.SetVector("_Target_TexelSize", new Vector4(1f / m_outputWidth, 1f / m_outputHeight, m_outputWidth, m_outputHeight));
-                m_superMaterial.SetFloat("_KernelCosPower", adamSettings.m_SuperKernelPower);
-                m_superMaterial.SetFloat("_KernelScale", adamSettings.m_SuperKernelScale);
-                m_superMaterial.SetFloat("_NormalizationFactor", 1.0f / (float)adamSettings.m_SuperSampling);
+                m_superMaterial.SetFloat("_KernelCosPower", rtsSettings.m_SuperKernelPower);
+                m_superMaterial.SetFloat("_KernelScale", rtsSettings.m_SuperKernelScale);
+                m_superMaterial.SetFloat("_NormalizationFactor", 1.0f / (float)rtsSettings.m_SuperSampling);
+                m_superMaterial.SetInt("_ApplyGammaCorrection", QualitySettings.activeColorSpace == ColorSpace.Linear && rtsSettings.m_ColorSpace == ColorSpace.Gamma ? 1 : 0);
                 Graphics.Blit(m_renderRT, outputRT, m_superMaterial);
             }
+
+            if (rtsSettings.m_FlipFinalOutput)
+                m_VFlipper.Flip(outputRT);
         }
 
         void ShiftProjectionMatrix(Camera camera, Vector2 sample)
@@ -294,7 +306,7 @@ namespace UnityEngine.FrameRecorder.Input
             {
                 var cam = hookedCam.camera;
 
-                for (int i = 0, n = (int)adamSettings.m_SuperSampling; i < n; i++)
+                for (int i = 0, n = (int)rtsSettings.m_SuperSampling; i < n; i++)
                 {
                     var oldProjectionMatrix = cam.projectionMatrix;
                     var oldRect = cam.rect;

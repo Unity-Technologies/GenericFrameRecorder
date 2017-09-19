@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
     [Flags]
     public enum EImageSource
@@ -53,8 +53,6 @@ namespace UnityEngine.FrameRecorder
         public FileNameGenerator m_BaseFileName;
         public OutputPath m_DestinationPath;
 
-        public static bool m_Verbose;
-
         [SerializeField]
         private InputSettingsList m_InputsSettings = new InputSettingsList();
 
@@ -65,6 +63,7 @@ namespace UnityEngine.FrameRecorder
                 return m_InputsSettings;
             }
         }
+
 
         [SerializeField]
         string m_RecorderTypeName;
@@ -165,5 +164,14 @@ namespace UnityEngine.FrameRecorder
             return obj;
         }
         
+        /// <summary>
+        /// Allows for recorder specific settings logic to correct/adjust settings that might be missed by it's editor.
+        /// </summary>
+        /// <returns>true if setting where changed</returns>
+        public virtual bool SelfAdjustSettings()
+        {
+            return false; 
     }
+        
+}
 }

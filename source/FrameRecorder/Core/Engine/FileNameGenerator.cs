@@ -2,8 +2,16 @@
 using System.Text.RegularExpressions;
 using UnityEngine.SceneManagement;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
+    /// <summary>
+    /// What is this: Utility class that generates file names and supports in-place tag replacement.
+    /// Motivation  : Most recorders output to files and having a comon implementation that supports
+    ///               most often used file name generation is quite convenient.
+    /// Notes       : 
+    ///     - Since most recorders will use this, RecorderSettings actually has one by default. 
+    ///     - Does not take path into consideration and output does not include it.
+    /// </summary>    
     [Serializable]
     public struct FileNameGenerator
     {

@@ -1,6 +1,6 @@
 ﻿using UnityEditor.Experimental.Animations;
 
-namespace UnityEngine.FrameRecorder.Input
+namespace UnityEngine.Recorder.Input
 {
     public class AnimationInput : RecorderInput
     {

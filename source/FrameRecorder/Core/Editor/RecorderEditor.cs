@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.FrameRecorder;
-using UnityEngine.SceneManagement;
+using UnityEngine.Recorder;
 
 namespace UnityEditor.FrameRecorder
 {
@@ -45,8 +43,6 @@ namespace UnityEditor.FrameRecorder
             }
         }
         protected List<InputEditorState> m_InputEditors;
-
-        //protected SerializedProperty m_Inputs;
 
         SerializedProperty m_FrameRateMode;
         SerializedProperty m_FrameRate;
@@ -122,15 +118,13 @@ namespace UnityEditor.FrameRecorder
         bool m_FoldoutTime = true;
         bool m_FoldoutBounds = true;
         bool m_FoldoutOutput = true;
+
         public override void OnInspectorGUI()
         {
             if (target == null)
                 return;
-
             
-
-            
-                BuildInputEditors();
+            BuildInputEditors();
 
             EditorGUI.BeginChangeCheck();
             serializedObject.Update();
@@ -142,11 +136,11 @@ namespace UnityEditor.FrameRecorder
             OnBoundsGroupGui();
             OnExtraGroupsGui();
 
-            RecorderSettings.m_Verbose = EditorGUILayout.Toggle(  "Verbose logging", RecorderSettings.m_Verbose );
-
             serializedObject.ApplyModifiedProperties();
+
             EditorGUI.EndChangeCheck();
 
+            (target as RecorderSettings).SelfAdjustSettings();
 
             if (!(target as RecorderSettings).isValid)
             {

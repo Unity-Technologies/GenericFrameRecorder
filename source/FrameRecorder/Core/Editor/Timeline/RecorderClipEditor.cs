@@ -1,5 +1,5 @@
-using UnityEngine.FrameRecorder;
-using UnityEngine.FrameRecorder.Timeline;
+using UnityEngine.Recorder;
+using UnityEngine.Recorder.Timeline;
 using UnityEngine.Timeline;
 
 namespace UnityEditor.FrameRecorder.Timeline

@@ -1,4 +1,4 @@
-Shader "Hidden/FrameRecorder/CopyFrameBuffer" {
+Shader "Hidden/Recorder/Inputs/CBRenderTexture/CopyFB" {
 
 CGINCLUDE
 #include "UnityCG.cginc"

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
     [ExecuteInEditMode]
     [Serializable]

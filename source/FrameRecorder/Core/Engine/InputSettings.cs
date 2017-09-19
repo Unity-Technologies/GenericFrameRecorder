@@ -1,7 +1,7 @@
 using System;
 using UnityEditor;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
     /// <summary>
     /// What is this: 
@@ -20,6 +20,7 @@ namespace UnityEngine.FrameRecorder
             if (string.IsNullOrEmpty(m_Id))
                 m_Id = Guid.NewGuid().ToString();
         }
+
 
         public bool storeInScene
         {

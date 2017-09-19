@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.FrameRecorder;
-using UnityEngine.FrameRecorder.Input;
+using UnityEngine.Recorder;
+using UnityEngine.Recorder.Input;
 
 namespace UnityEditor.FrameRecorder.Input
 {
@@ -13,8 +13,9 @@ namespace UnityEditor.FrameRecorder.Input
         SerializedProperty m_CameraTag;
         SerializedProperty m_RenderSize;
         SerializedProperty m_RenderAspect;
-        SerializedProperty m_FlipVertically;
+        SerializedProperty m_FlipFinalOutput;
         SerializedProperty m_Transparency;
+        SerializedProperty m_CaptureUI;
 
         protected void OnEnable()
         {
@@ -26,8 +27,9 @@ namespace UnityEditor.FrameRecorder.Input
             m_CameraTag = pf.Find(w => w.m_CameraTag);
             m_RenderSize = pf.Find(w => w.m_RenderSize);
             m_RenderAspect = pf.Find(w => w.m_RenderAspect);
-            m_FlipVertically = pf.Find(w => w.m_FlipVertical);
+            m_FlipFinalOutput = pf.Find( w => w.m_FlipFinalOutput );
             m_Transparency = pf.Find(w => w.m_AllowTransparency);
+            m_CaptureUI = pf.Find(w => w.m_CaptureUI);
         }
 
         public override void OnInspectorGUI()
@@ -61,11 +63,23 @@ namespace UnityEditor.FrameRecorder.Input
                 {
                     AddProperty(m_RenderAspect, () => EditorGUILayout.PropertyField(m_RenderAspect, new GUIContent("Aspect Ratio")));
                 }
+
+                using (new EditorGUI.DisabledScope( inputType != EImageSource.GameDisplay ))
+                {
+                    AddProperty(m_CaptureUI, () => EditorGUILayout.PropertyField(m_CaptureUI, new GUIContent("Capture UI")));
+                }
             }
 
             AddProperty(m_Transparency, () => EditorGUILayout.PropertyField(m_Transparency, new GUIContent("Capture alpha")));
-            AddProperty(m_FlipVertically, () => EditorGUILayout.PropertyField(m_FlipVertically, new GUIContent("Flip vertically")));
-           
+
+            if (Verbose.enabled)
+            {
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUILayout.PropertyField(m_FlipFinalOutput, new GUIContent("Flip output"));
+                }
+            }
+
             serializedObject.ApplyModifiedProperties();
 
             if (!(target as CBRenderTextureInputSettings).isValid)

@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor;
+using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+using UnityEditor.SceneManagement;
+#endif
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
 
     /// <summary>
@@ -14,13 +17,16 @@ namespace UnityEngine.FrameRecorder
     {
         const string k_HostGoName = "UnityEngine-Recorder";
 
-        static GameObject GetGameObject(bool createIfAbsent)
+        internal static GameObject GetGameObject(bool createIfAbsent)
         {
             var go = GameObject.Find(k_HostGoName);
+            if (go != null && go.scene != SceneManager.GetActiveScene())
+                go = null;
+
             if (go == null && createIfAbsent)
             {
                 go = new GameObject(k_HostGoName);
-                if (!RecorderSettings.m_Verbose)
+                if (!Verbose.enabled)
                     go.hideFlags = HideFlags.HideInHierarchy;
             }
 
@@ -62,7 +68,7 @@ namespace UnityEngine.FrameRecorder
             else
                 settingsGO = settingsTr.gameObject;
 
-            return settingsGO;            
+            return settingsGO;
         }
 
         public static GameObject HookupRecorder()
@@ -97,13 +103,19 @@ namespace UnityEngine.FrameRecorder
         {
             var settingsRoot = GetInputsComponent(assetId);
             settingsRoot.m_Settings.Add(input);
+#if UNITY_EDITOR
+            EditorSceneManager.MarkSceneDirty( settingsRoot.gameObject.scene );
+#endif
         }
-        
+
         public static void UnregisterInputSettingObj(string assetId, RecorderInputSetting input)
         {
             var settingsRoot = GetInputsComponent(assetId);
             settingsRoot.m_Settings.Remove(input);
             UnityHelpers.Destroy(input);
+#if UNITY_EDITOR
+            EditorSceneManager.MarkSceneDirty( settingsRoot.gameObject.scene );
+#endif
         }
 
         public static InputSettingsComponent GetInputsComponent(string assetId)

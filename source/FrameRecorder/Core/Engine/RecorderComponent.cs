@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
 
     /// <summary>

@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using UnityEditor;
-using UnityEngine.FrameRecorder.Input;
+using UnityEngine.Recorder.Input;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
     [FrameRecorder(typeof(AnimationRecorderSettings), "Animation", "Unity/Animation Recording")]
     public class AnimationRecorder : GenericRecorder<AnimationRecorderSettings>

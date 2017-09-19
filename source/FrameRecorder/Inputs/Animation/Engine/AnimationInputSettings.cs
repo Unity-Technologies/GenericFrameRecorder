@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UnityEngine.FrameRecorder.Input
+namespace UnityEngine.Recorder.Input
 {
     [Serializable]
     [StoreInScene]

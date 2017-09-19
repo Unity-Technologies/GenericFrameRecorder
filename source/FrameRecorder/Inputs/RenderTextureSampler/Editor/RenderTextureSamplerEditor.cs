@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
-using UnityEngine.FrameRecorder;
-using UnityEngine.FrameRecorder.Input;
+using UnityEngine.Recorder;
+using UnityEngine.Recorder.Input;
 
 namespace UnityEditor.FrameRecorder.Input
 {
-    [CustomEditor(typeof(AdamBeautyInputSettings))]
-    public class AdamBeautySourceEditor : InputEditor
+    [CustomEditor(typeof(RenderTextureSamplerSettings))]
+    public class RenderTextureSamplerEditor : InputEditor
     {
         static EImageSource m_SupportedSources = EImageSource.GameDisplay| EImageSource.MainCamera; // | EImageSource.RenderTexture*/; // not sure what to do with the RT as source here.
         string[] m_MaskedSourceNames;
@@ -21,7 +21,7 @@ namespace UnityEditor.FrameRecorder.Input
             if (target == null)
                 return;
 
-            var pf = new PropertyFinder<AdamBeautyInputSettings>(serializedObject);
+            var pf = new PropertyFinder<RenderTextureSamplerSettings>(serializedObject);
             m_Source = pf.Find(w => w.source);
             m_RenderSize = pf.Find(w => w.m_RenderSize);
             m_RenderTexture = pf.Find(w => w.m_RenderTexture);
@@ -85,9 +85,18 @@ namespace UnityEditor.FrameRecorder.Input
             if (m_FinalSize.intValue > renderSize.intValue)
                 renderSize.intValue = m_FinalSize.intValue;
 
+            if (Verbose.enabled)
+            {
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUILayout.TextField("Color Space", (target as RenderTextureSamplerSettings).m_ColorSpace.ToString());
+                    EditorGUILayout.Toggle("Flip output", (target as RenderTextureSamplerSettings).m_FlipFinalOutput);
+                }
+            }
+
             serializedObject.ApplyModifiedProperties();
 
-            if (!(target as AdamBeautyInputSettings).isValid)
+            if (!(target as RenderTextureSamplerSettings).isValid)
             {
                 EditorGUILayout.HelpBox("Incomplete/Invalid settings", MessageType.Warning);
             }
