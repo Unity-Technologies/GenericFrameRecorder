@@ -11,7 +11,7 @@ namespace UnityEngine.Recorder.Input
         struct CanvasBackup
         {
             public Camera camera;
-            public float planeDistance;
+            public Canvas canvas;
         }
 
         static int      m_ModifiedResolutionCount;
@@ -232,7 +232,7 @@ namespace UnityEngine.Recorder.Input
                 // Find canvases
                 var canvases = Object.FindObjectsOfType<Canvas>();
                 if (m_CanvasBackups == null || m_CanvasBackups.Length != canvases.Length)
-                    m_CanvasBackups  =new CanvasBackup[canvases.Length];
+                    m_CanvasBackups = new CanvasBackup[canvases.Length];
 
                 // Hookup canvase to UI camera
                 for (var i = 0; i < canvases.Length; i++)
@@ -241,21 +241,19 @@ namespace UnityEngine.Recorder.Input
                     if (canvas.isRootCanvas && canvas.renderMode == RenderMode.ScreenSpaceOverlay)
                     {
                         m_CanvasBackups[i].camera = canvas.worldCamera;
-                        m_CanvasBackups[i].planeDistance = canvas.planeDistance;
+                        m_CanvasBackups[i].canvas = canvas;
                         canvas.renderMode = RenderMode.ScreenSpaceCamera;
                         canvas.worldCamera = m_UICamera;
-                        canvas.planeDistance = 1;
                     }
                 }
 
                 m_UICamera.Render();
 
                 // Restore canvas settings
-                for (var i = 0; i < canvases.Length; i++)
+                for (var i = 0; i < m_CanvasBackups.Length; i++)
                 {
-                    canvases[i].renderMode = RenderMode.ScreenSpaceOverlay;
-                    canvases[i].worldCamera = m_CanvasBackups[i].camera;
-                    canvases[i].planeDistance = m_CanvasBackups[i].planeDistance;
+                    m_CanvasBackups[i].canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                    m_CanvasBackups[i].canvas.worldCamera = m_CanvasBackups[i].camera;
                 }
             }
 
