@@ -6,14 +6,14 @@ namespace UnityEditor.Recorder
 {
     class FRPackagerPaths : ScriptableObject
     {
-        public static string GetFrameRecorderRootPath()
+        public static string GetRecorderRootPath()
         {
             var path = GetFrameRecorderPath();
             path = path.Substring(path.IndexOf("Assets"));
             return path;
         }
 
-        public static string GetFrameRecorderVersionFilePath()
+        public static string GetRecorderVersionFilePath()
         {
             var dummy = ScriptableObject.CreateInstance<RecorderVersion>();
             var path = Application.dataPath + AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(dummy)).Substring("Assets".Length);

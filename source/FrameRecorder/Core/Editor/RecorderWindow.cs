@@ -79,7 +79,7 @@ namespace UnityEditor.Recorder
                             else
                             {
                                 m_WindowSettingsAsset = ScriptableObject.CreateInstance<RecorderWindowSettings>();
-                                AssetDatabase.CreateAsset(m_WindowSettingsAsset, FRPackagerPaths.GetFrameRecorderRootPath() +  "/RecorderWindowSettings.asset");
+                                AssetDatabase.CreateAsset(m_WindowSettingsAsset, FRPackagerPaths.GetRecorderRootPath() +  "/RecorderWindowSettings.asset");
                                 AssetDatabase.Refresh();
                             }
                         }

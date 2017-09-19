@@ -12,7 +12,7 @@ namespace UnityEditor.Recorder
         {
             return Application.dataPath + "/Recorder/";
         }
-
+        /*
         [MenuItem("Tools/Recorder/Generate Framework Package", false,100)]
         static void GeneratePackage()
         {
@@ -31,12 +31,18 @@ namespace UnityEditor.Recorder
             AssetDatabase.ExportPackage(files, destFile, ExportPackageOptions.Recurse);
             Debug.Log("Generated package: " + destFile);
         }
-
+        */
         [MenuItem("Tools/Recorder/Generate Assetstore package", false, 100)]
         static void GenerateAssetStorePackage()
         {
-            var rootPath = FRPackagerPaths.GetFrameRecorderRootPath();
-
+            var rootPath = FRPackagerPaths.GetRecorderRootPath();
+            var type = Type.GetType("UnityEditor.Recorder.MovieRecorderPackager");
+            if (type != null)
+            {
+                var method = type.GetMethod("GeneratePackage");
+                method.Invoke(null, null);
+                AssetDatabase.Refresh();
+            }
             UpdateVersion();
 
             var files = new []
@@ -49,6 +55,7 @@ namespace UnityEditor.Recorder
                 Path.Combine(rootPath, "Framework/Packager/Editor" ),
                 Path.Combine(rootPath, "Extensions/UTJ" ),
                 Path.Combine(rootPath, "Extensions/FCIntegration" ),
+                Path.Combine(rootPath, "Extensions/MovieRecorder/Packaging" ),
             };
             var destFile = k_PackageName + " " + RecorderVersion.Stage + " v"+ RecorderVersion.Version +  ".unitypackage";
             AssetDatabase.ExportPackage(files, destFile, ExportPackageOptions.Recurse);
@@ -57,7 +64,7 @@ namespace UnityEditor.Recorder
 
         static void UpdateVersion()
         {
-            var path = FRPackagerPaths.GetFrameRecorderVersionFilePath();
+            var path = FRPackagerPaths.GetRecorderVersionFilePath();
             var script = File.ReadAllText(path);
 
             var tag = "public const string Version = ";
