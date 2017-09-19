@@ -1,7 +1,6 @@
 ﻿#if UNITY_EDITOR
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 
@@ -42,29 +41,8 @@ namespace UnityEngine.Recorder.Input
             return group;
         }
 
-        static int TotalCount()
-        {
-            var group = Group();
-            var totalCount = group.GetType().GetMethod("GetTotalCount", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-            return (int) totalCount.Invoke(group, null) ;
-        }
-
-
-        static object GetGameViewSize(object group, int index)
-        {
-            var obj = group.GetType().GetMethod("GetGameViewSize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-            return obj.Invoke(group, new object[] {index}) ;            
-        }
-
-        static void SizeOf(object gameViewSize, out int width, out int height)
-        {
-            width = (int)gameViewSize.GetType().GetProperty("width", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).GetValue(gameViewSize, new object[0] { });
-            height = (int)gameViewSize.GetType().GetProperty("height", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).GetValue(gameViewSize, new object[0] { });
-        }
-
         public static object SetCustomSize(int width, int height)
         {
-            // Find recorder size object
             var sizeObj = FindRecorderSizeObj();
             if (sizeObj != null)
             {
@@ -80,7 +58,7 @@ namespace UnityEngine.Recorder.Input
         }
 
 
-        private static object FindRecorderSizeObj()
+        static object FindRecorderSizeObj()
         {
             var group = Group();
 
@@ -118,14 +96,11 @@ namespace UnityEngine.Recorder.Input
 
         static object NewSizeObj(int width, int height)
         {
-            var T = System.Type.GetType("UnityEditor.GameViewSize,UnityEditor");
-            var sizeObj =Activator.CreateInstance(T, new object[] {1,width, height,  string.Format("FrameRecorder", width, height) });
+            var T = Type.GetType("UnityEditor.GameViewSize,UnityEditor");
+            var TT = Type.GetType("UnityEditor.GameViewSizeType,UnityEditor");
 
-            T.GetProperty("sizeType", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).SetValue(sizeObj,  1, new object[0] { });
-            T.GetProperty("width", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).SetValue(sizeObj,  width, new object[0] { });
-            T.GetProperty("height", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).SetValue(sizeObj,  height, new object[0] { });
-            T.GetProperty("baseText", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).SetValue(sizeObj,  "(Recording resolution)", new object[0] { });
-
+            var c = T.GetConstructor( new Type[] {TT, typeof(int), typeof(int), typeof(string)} );
+            var sizeObj = c.Invoke(new object[] {1,width, height,  string.Format("FrameRecorder", width, height) });
             return sizeObj;
         }
 
