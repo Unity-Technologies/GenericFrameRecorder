@@ -100,7 +100,7 @@ namespace UnityEngine.Recorder.Input
             var TT = Type.GetType("UnityEditor.GameViewSizeType,UnityEditor");
 
             var c = T.GetConstructor( new Type[] {TT, typeof(int), typeof(int), typeof(string)} );
-            var sizeObj = c.Invoke(new object[] {1,width, height,  string.Format("FrameRecorder", width, height) });
+            var sizeObj = c.Invoke(new object[] {1,width, height,  "(Recording resolution)"});
             return sizeObj;
         }
 
