@@ -1,6 +1,6 @@
 using UnityEngine.Audio;
 
-namespace UnityEngine.FrameRecorder.Input
+namespace UnityEngine.Recorder.Input
 {
     public class AudioInputSettings : InputSettings<AudioInput>
     {

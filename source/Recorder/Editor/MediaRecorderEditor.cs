@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
-using UnityEngine.FrameRecorder;
-using UnityEngine.FrameRecorder.Input;
+using UnityEngine.Recorder;
+using UnityEngine.Recorder.Input;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     [CustomEditor(typeof(MediaRecorderSettings))]
     public class MediaRecorderEditor : RecorderEditor
@@ -27,7 +27,6 @@ namespace UnityEditor.FrameRecorder
             m_RTInputSelector = new RTInputSelector( target as RecorderSettings, "Pixels");
 
             var pf = new PropertyFinder<MediaRecorderSettings>(serializedObject);
-            m_Inputs = pf.Find(w => w.m_InputsSettings);
             m_OutputFormat = pf.Find(w => w.m_OutputFormat);
         }
 
@@ -40,7 +39,7 @@ namespace UnityEditor.FrameRecorder
         {
             if (inputIndex == 0)
             {
-                var input = m_Inputs.GetArrayElementAtIndex(inputIndex).objectReferenceValue as RecorderInputSetting;
+                var input = (target as RecorderSettings).inputsSettings[inputIndex];
                 if (m_RTInputSelector.OnInputGui(ref input))
                     ChangeInputSettings(inputIndex, input);                
             }

@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     class MovieRecorderPackager : ScriptableObject
     {

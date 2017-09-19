@@ -4,11 +4,11 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Collections;
-using UnityEngine.FrameRecorder.Input;
+using UnityEngine.Recorder.Input;
 using UnityEditor;
 using UnityEditor.Media;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
 #if RECORD_AUDIO_MIXERS
     class WavWriter
@@ -65,7 +65,7 @@ namespace UnityEngine.FrameRecorder
     }
 #endif
 
-    [FrameRecorder(typeof(MediaRecorderSettings), "Video", "Unity/Movie")]
+    [Recorder(typeof(MediaRecorderSettings), "Video", "Unity/Movie")]
     public class MediaRecorder : GenericRecorder<MediaRecorderSettings>
     {
         private MediaEncoder m_Encoder;
@@ -92,7 +92,7 @@ namespace UnityEngine.FrameRecorder
             var input = (BaseRenderTextureInput)m_Inputs[0];
             if (input == null)
             {
-                if (settings.m_Verbose)
+                if (Verbose.enabled)
                     Debug.Log("MediaRecorder could not find input.");
                 return false;
             }
@@ -101,7 +101,7 @@ namespace UnityEngine.FrameRecorder
             var height = input.outputHeight;
             if (width <= 0 || height <= 0)
             {
-                if (settings.m_Verbose)
+                if (Verbose.enabled)
                     Debug.Log(string.Format(
                         "MovieRecorder got invalid input resolution {0} x {1}.", width, height));
                 return false;
@@ -124,7 +124,7 @@ namespace UnityEngine.FrameRecorder
                 includeAlpha = includeAlphaFromTexture
             };
 
-            if (settings.m_Verbose)
+            if (Verbose.enabled)
                 Debug.Log(
                     string.Format(
                         "MovieRecorder starting to write video {0}x{1}@[{2}/{3}] fps into {4}",
@@ -146,7 +146,7 @@ namespace UnityEngine.FrameRecorder
                 };
             audioAttrsList.Add(audioAttrs);
 
-            if (settings.m_Verbose)
+            if (Verbose.enabled)
                 Debug.Log( string.Format( "MovieRecorder starting to write audio {0}ch @ {1}Hz", audioAttrs.channelCount, audioAttrs.sampleRate.numerator));
 
 #if RECORD_AUDIO_MIXERS
@@ -177,7 +177,7 @@ namespace UnityEngine.FrameRecorder
             }
             catch
             {
-                if (settings.m_Verbose)
+                if (Verbose.enabled)
                     Debug.LogError("MovieRecorder unable to create MovieEncoder.");
             }
 
@@ -193,7 +193,7 @@ namespace UnityEngine.FrameRecorder
             var width = textureInput.outputWidth;
             var height = textureInput.outputHeight;
 
-            if (settings.m_Verbose)
+            if (Verbose.enabled)
                 Debug.Log(string.Format("MovieRecorder.RecordFrame {0} x {1} (wanted: {2} x {3})",
                     textureInput.outputRT.width, textureInput.outputRT.height,
                     width, height));

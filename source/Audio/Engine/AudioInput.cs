@@ -6,9 +6,9 @@ using UnityEditorInternal;
 
 #endif
 using UnityEngine.Collections;
-using UnityEngine.FrameRecorder.Input;
+using UnityEngine.Recorder.Input;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
     class AudioRenderer
     {
@@ -108,7 +108,7 @@ namespace UnityEngine.FrameRecorder
                     }
             })();
 
-            if (session.settings.m_Verbose)
+            if (Verbose.enabled)
                 Debug.Log(string.Format(
                               "AudioInput.BeginRecording for capture frame rate {0}", Time.captureFramerate));
 
@@ -122,7 +122,7 @@ namespace UnityEngine.FrameRecorder
                 return;
 
             var sampleFrameCount = (uint)AudioRenderer.GetSampleCountForCaptureFrame();
-            if (session.settings.m_Verbose)
+            if (Verbose.enabled)
                 Debug.Log(string.Format("AudioInput.NewFrameReady {0} audio sample frames @ {1} ch",
                                         sampleFrameCount, m_ChannelCount));
 

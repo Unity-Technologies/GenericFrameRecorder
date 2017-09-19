@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine.Audio;
-using UnityEngine.FrameRecorder.Input;
+using UnityEngine.Recorder.Input;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
 
     public enum MediaRecorderOutputFormat
@@ -23,7 +23,7 @@ namespace UnityEngine.FrameRecorder
             m_BaseFileName.pattern = "movie.<ext>";
         }
 
-        public override List<RecorderInputSetting> GetDefaultSourcesSettings()
+        public override List<RecorderInputSetting> GetDefaultInputSettings()
         {
             return new List<RecorderInputSetting>()
             {
@@ -43,11 +43,11 @@ namespace UnityEngine.FrameRecorder
             if (type == typeof(CBRenderTextureInputSettings))
             {
                 (obj as CBRenderTextureInputSettings).m_ForceEvenSize = true;
-                (obj as CBRenderTextureInputSettings).m_FlipVertical = true;
+                (obj as CBRenderTextureInputSettings).m_FlipFinalOutput = true;
             }
-            if (type == typeof(AdamBeautyInputSettings))
+            if (type == typeof(RenderTextureSamplerSettings))
             {
-                (obj as AdamBeautyInputSettings).m_ForceEvenSize = true;
+                (obj as RenderTextureSamplerSettings).m_ForceEvenSize = true;
             }
 
             return obj ;
