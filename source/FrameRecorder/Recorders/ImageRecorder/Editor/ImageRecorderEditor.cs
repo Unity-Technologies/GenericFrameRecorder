@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Recorder;
 using UnityEngine.Recorder.Input;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     [CustomEditor(typeof(ImageRecorderSettings))]
     public class ImageRecorderEditor : RecorderEditor

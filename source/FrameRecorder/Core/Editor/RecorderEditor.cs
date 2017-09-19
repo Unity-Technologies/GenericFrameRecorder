@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Recorder;
 using UnityEngine.SceneManagement;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     public enum EFieldDisplayState
     {

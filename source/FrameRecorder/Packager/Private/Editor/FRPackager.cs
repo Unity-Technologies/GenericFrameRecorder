@@ -2,7 +2,7 @@
 using System.IO;
 using UnityEngine;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     static class FRPackager
     {

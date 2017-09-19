@@ -2,7 +2,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Recorder;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     class FRPackagerPaths : ScriptableObject
     {

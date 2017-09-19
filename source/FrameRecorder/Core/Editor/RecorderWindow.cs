@@ -2,7 +2,7 @@ using System;
 using UnityEngine.Recorder;
 using UnityEngine;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     public class RecorderWindow : EditorWindow
     {
