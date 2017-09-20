@@ -119,6 +119,15 @@ namespace UnityEditor.FrameRecorder
         bool m_FoldoutBounds = true;
         bool m_FoldoutOutput = true;
 
+        protected virtual void OnGroupGui()
+        {
+            OnInputGroupGui();
+            OnOutputGroupGui();
+            OnEncodingGroupGui();
+            OnFrameRateGroupGui();
+            OnBoundsGroupGui();
+            OnExtraGroupsGui();
+        }
         public override void OnInspectorGUI()
         {
             if (target == null)
@@ -129,12 +138,7 @@ namespace UnityEditor.FrameRecorder
             EditorGUI.BeginChangeCheck();
             serializedObject.Update();
 
-            OnInputGroupGui();
-            OnOutputGroupGui();
-            OnEncodingGroupGui();
-            OnFrameRateGroupGui();
-            OnBoundsGroupGui();
-            OnExtraGroupsGui();
+            OnGroupGui();
 
             serializedObject.ApplyModifiedProperties();
 

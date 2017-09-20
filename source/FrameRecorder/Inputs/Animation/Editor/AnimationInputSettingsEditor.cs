@@ -12,10 +12,9 @@ namespace UnityEditor.FrameRecorder.Input
         public override void OnInspectorGUI()
         {
             var animImputSetting = target as AnimationInputSettings;;
-            EditorGUILayout.BeginHorizontal();
                    
             EditorGUI.BeginChangeCheck();
-            animImputSetting.gameObject = EditorGUILayout.ObjectField(animImputSetting.gameObject, typeof(GameObject), true) as GameObject;
+            animImputSetting.gameObject = EditorGUILayout.ObjectField("Game Object",animImputSetting.gameObject, typeof(GameObject), true) as GameObject;
             if (EditorGUI.EndChangeCheck())
             {
                 animImputSetting.enabled = animImputSetting.gameObject != null;
@@ -47,8 +46,7 @@ namespace UnityEditor.FrameRecorder.Input
                         flags |= 1 << found;
                 }
                 EditorGUI.BeginChangeCheck();
-                flags = EditorGUILayout.MaskField("", flags, compos.Select(x => x.Name).ToArray(),
-                    GUILayout.MaxWidth(100));
+                flags = EditorGUILayout.MaskField("Recorded Target(s)", flags, compos.Select(x => x.Name).ToArray());
                 if (EditorGUI.EndChangeCheck())
                 {
                     animImputSetting.bindingTypeName = new List<string>();
@@ -61,15 +59,8 @@ namespace UnityEditor.FrameRecorder.Input
                     }
                 }
             }
-            EditorGUILayout.EndHorizontal();
-            
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Recursive",GUILayout.MaxWidth(70));
-            animImputSetting.recursive = EditorGUILayout.Toggle(animImputSetting.recursive,GUILayout.MaxWidth(30), GUILayout.MinWidth(30));   
-            
-            EditorGUILayout.LabelField("On",GUILayout.MaxWidth(35));
-            animImputSetting.enabled = EditorGUILayout.Toggle(animImputSetting.enabled,GUILayout.MaxWidth(30), GUILayout.MinWidth(30));
-            EditorGUILayout.EndHorizontal();
+
+            animImputSetting.recursive = EditorGUILayout.Toggle("Recursive",animImputSetting.recursive,GUILayout.MaxWidth(30), GUILayout.MinWidth(30));   
         }
     }
     

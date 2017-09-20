@@ -20,7 +20,8 @@ namespace UnityEngine.Recorder
         public override void EndRecording(RecordingSession ctx)
         {
             var ars = ctx.settings as AnimationRecorderSettings;
-            var dir = Path.GetDirectoryName("Assets/"+ars.outputPath);
+            var dir = Path.GetDirectoryName("Assets/" + ars.outputPath)
+                .Replace(AnimationRecorderSettings.takeToken, ars.take.ToString("000"));
             Directory.CreateDirectory(dir);
 
             for (int i = 0; i < m_Inputs.Count; ++i)
@@ -32,7 +33,7 @@ namespace UnityEngine.Recorder
                     AnimationClip clip = new AnimationClip();
                     var clipName = "Assets/" + ars.outputPath
                                        .Replace(AnimationRecorderSettings.goToken, set.gameObject.name)
-                                       .Replace(AnimationRecorderSettings.inputToken,(i+1).ToString("000"))
+                                       .Replace(AnimationRecorderSettings.inputToken,(i+1).ToString("00"))
                                        .Replace(AnimationRecorderSettings.takeToken, ars.take.ToString("000"))+".anim";
                     AssetDatabase.CreateAsset(clip, clipName);
                     aInput.m_gameObjectRecorder.SaveToClip(clip);

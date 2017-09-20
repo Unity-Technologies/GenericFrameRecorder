@@ -10,6 +10,8 @@ namespace UnityEngine.Recorder.Input
         public GameObject gameObject;
         public bool enabled = false;
         public bool recursive = true;
+
+        public bool fold = true;
                    
         [HideInInspector]
         public List<string> bindingTypeName = new List<string>();       
