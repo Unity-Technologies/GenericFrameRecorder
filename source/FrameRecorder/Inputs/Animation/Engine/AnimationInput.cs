@@ -15,10 +15,10 @@ namespace UnityEngine.Recorder.Input
             {
                 m_gameObjectRecorder.BindComponent(srcGO, binding, aniSettings.recursive); 
             }
-            m_time = 0;
+            m_time = session.RecorderTime;
         }
 
-        public void NewFrame(RecordingSession session)
+        public override void NewFrameReady(RecordingSession session)
         {
             if (session.recording && (settings as AnimationInputSettings).enabled )
             {

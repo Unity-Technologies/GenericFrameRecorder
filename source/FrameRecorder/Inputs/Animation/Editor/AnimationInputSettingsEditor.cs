@@ -60,7 +60,7 @@ namespace UnityEditor.FrameRecorder.Input
                 }
             }
 
-            animImputSetting.recursive = EditorGUILayout.Toggle("Recursive",animImputSetting.recursive,GUILayout.MaxWidth(30), GUILayout.MinWidth(30));   
+            animImputSetting.recursive = EditorGUILayout.Toggle("Recursive",animImputSetting.recursive);   
         }
     }
     

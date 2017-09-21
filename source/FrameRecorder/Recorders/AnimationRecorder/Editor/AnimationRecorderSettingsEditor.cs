@@ -12,7 +12,7 @@ namespace UnityEditor.FrameRecorder
         private bool recorderSettings = false;
         
         [MenuItem("Tools/Recorder/Animation")]
-        static void ShowRecorderWindow()
+        private static void ShowRecorderWindow()
         {
             RecorderWindow.ShowAndPreselectCategory("Animation");
         }
@@ -38,7 +38,7 @@ namespace UnityEditor.FrameRecorder
                 r.xMin += 15;
                 input.enabled = EditorGUI.ToggleLeft(r,"Object Recorder",input.enabled);
                
-                GUIStyle gearStyle = new GUIStyle("Icon.Options");
+                var gearStyle = new GUIStyle("Icon.Options");
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button(gearStyle.normal.background,new GUIStyle("IconButton")))
                 {
@@ -66,7 +66,7 @@ namespace UnityEditor.FrameRecorder
 
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Add", GUILayout.Width(200)))
+            if (GUILayout.Button("Add Object To Record", GUILayout.Width(200)))
             {
                 var newSettings = aRecorderSettings.NewInputSettingsObj<AnimationInputSettings>("Animation");
                 aRecorderSettings.inputsSettings.Add(newSettings);

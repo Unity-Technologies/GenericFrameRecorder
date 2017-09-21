@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine.Recorder.Input;
 
@@ -9,32 +10,25 @@ namespace UnityEngine.Recorder
     {
         public override void RecordFrame(RecordingSession session)
         {
-            foreach (RecorderInput t in m_Inputs)
-            {
-                var aInput = t as AnimationInput;
-                aInput.NewFrame(session);
-            }
         }
 
 
         public override void EndRecording(RecordingSession ctx)
         {
             var ars = ctx.settings as AnimationRecorderSettings;
-            var dir = Path.GetDirectoryName("Assets/" + ars.outputPath)
-                .Replace(AnimationRecorderSettings.takeToken, ars.take.ToString("000"));
-            Directory.CreateDirectory(dir);
 
             for (int i = 0; i < m_Inputs.Count; ++i)
             {
                 var set = (settings.inputsSettings[i] as AnimationInputSettings);
                 if (set.enabled)
                 {
+                    var dir = ReplaceTokens(Path.GetDirectoryName("Assets/" + ars.outputPath), ars, set);
+                    Directory.CreateDirectory(dir);
+                    
                     var aInput = m_Inputs[i] as AnimationInput;
                     AnimationClip clip = new AnimationClip();
-                    var clipName = "Assets/" + ars.outputPath
-                                       .Replace(AnimationRecorderSettings.goToken, set.gameObject.name)
-                                       .Replace(AnimationRecorderSettings.inputToken,(i+1).ToString("00"))
-                                       .Replace(AnimationRecorderSettings.takeToken, ars.take.ToString("000"))+".anim";
+                    var clipName = ReplaceTokens(("Assets/" + ars.outputPath),ars, set)+".anim";
+                    clipName = AssetDatabase.GenerateUniqueAssetPath(clipName);
                     AssetDatabase.CreateAsset(clip, clipName);
                     aInput.m_gameObjectRecorder.SaveToClip(clip);
                     aInput.m_gameObjectRecorder.ResetRecording();
@@ -43,6 +37,14 @@ namespace UnityEngine.Recorder
 
             ars.take++;
             base.EndRecording(ctx);
+        }
+
+        private string ReplaceTokens(string input, AnimationRecorderSettings ars, AnimationInputSettings  ais)
+        {
+            var idx = m_Inputs.Select(x => x.settings).ToList().IndexOf(ais);
+            return input.Replace(AnimationRecorderSettings.goToken, ais.gameObject.name)
+                       .Replace(AnimationRecorderSettings.inputToken,(idx+1).ToString("00"))
+                       .Replace(AnimationRecorderSettings.takeToken, ars.take.ToString("000"));
         }
     }
 }
