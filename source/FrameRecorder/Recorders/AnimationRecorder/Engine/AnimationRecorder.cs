@@ -21,8 +21,14 @@ namespace UnityEngine.Recorder
             {
                 var set = (settings.inputsSettings[i] as AnimationInputSettings);
                 if (set.enabled)
-                {
-                    var dir = ReplaceTokens(Path.GetDirectoryName("Assets/" + ars.outputPath), ars, set);
+                {                  
+                    var dir = "Assets/" + ars.outputPath;
+                    var idx = dir.LastIndexOf('/');
+                    if (idx > -1)
+                    {
+                        dir = dir.Substring(0,idx);
+                    }
+                    dir = ReplaceTokens(dir, ars, set);
                     Directory.CreateDirectory(dir);
                     
                     var aInput = m_Inputs[i] as AnimationInput;
