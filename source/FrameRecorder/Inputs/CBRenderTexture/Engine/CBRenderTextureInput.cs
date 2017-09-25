@@ -1,6 +1,6 @@
 ﻿using System;
 #if UNITY_EDITOR
-    using UnityEditor;
+using UnityEditor;
 #endif
 using UnityEngine.Rendering;
 
@@ -14,21 +14,21 @@ namespace UnityEngine.Recorder.Input
             public Canvas canvas;
         }
 
-        static int      m_ModifiedResolutionCount;
-        bool            m_ModifiedResolution;
-        Shader          m_shCopy;
-        Material        m_CopyMaterial;
-        TextureFlipper  m_VFlipper = new TextureFlipper();
-        Mesh            m_quad;
-        CommandBuffer   m_cbCopyFB;
-        CommandBuffer   m_cbCopyGB;
-        CommandBuffer   m_cbClearGB;
-        CommandBuffer   m_cbCopyVelocity;
-        Camera          m_Camera;
-        bool            m_cameraChanged;
-        Camera          m_UICamera;
+        static int m_ModifiedResolutionCount;
+        bool m_ModifiedResolution;
+        Shader m_shCopy;
+        Material m_CopyMaterial;
+        TextureFlipper m_VFlipper = new TextureFlipper();
+        Mesh m_quad;
+        CommandBuffer m_cbCopyFB;
+        CommandBuffer m_cbCopyGB;
+        CommandBuffer m_cbClearGB;
+        CommandBuffer m_cbCopyVelocity;
+        Camera m_Camera;
+        bool m_cameraChanged;
+        Camera m_UICamera;
 
-        CanvasBackup[]  m_CanvasBackups;
+        CanvasBackup[] m_CanvasBackups;
 
         public CBRenderTextureInputSettings cbSettings
         {
@@ -72,7 +72,7 @@ namespace UnityEngine.Recorder.Input
                 {
                     m_CopyMaterial = new Material(copyShader);
                     copyMaterial.EnableKeyword("OFFSCREEN");
-                    if( cbSettings.m_AllowTransparency )
+                    if (cbSettings.m_AllowTransparency)
                         m_CopyMaterial.EnableKeyword("TRANSPARENCY_ON");
                 }
                 return m_CopyMaterial;
@@ -81,7 +81,7 @@ namespace UnityEngine.Recorder.Input
 
         public override void BeginRecording(RecordingSession session)
         {
-            if( cbSettings.m_FlipFinalOutput )
+            if (cbSettings.m_FlipFinalOutput)
                 m_VFlipper = new TextureFlipper();
 
             m_quad = CreateFullscreenQuad();
@@ -89,8 +89,9 @@ namespace UnityEngine.Recorder.Input
             {
                 case EImageSource.GameDisplay:
                 case EImageSource.MainCamera:
+                case EImageSource.TaggedCamera:
                 {
-                    int screenWidth  = Screen.width;
+                    int screenWidth = Screen.width;
                     int screenHeight = Screen.height;
 #if UNITY_EDITOR
                     switch (cbSettings.m_RenderSize)
@@ -125,7 +126,7 @@ namespace UnityEngine.Recorder.Input
                             if (size == null)
                                 size = GameViewSize.AddSize(outputWidth, outputHeight);
 
-                            if( m_ModifiedResolutionCount == 0 )
+                            if (m_ModifiedResolutionCount == 0)
                                 GameViewSize.BackupCurrentSize();
                             else
                             {
@@ -141,9 +142,8 @@ namespace UnityEngine.Recorder.Input
                         }
                     }
 #endif
-                        break;
+                    break;
                 }
-                case EImageSource.TaggedCamera:
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -155,7 +155,7 @@ namespace UnityEngine.Recorder.Input
                 uiGO.transform.parent = session.m_RecorderGO.transform;
 
                 m_UICamera = uiGO.AddComponent<Camera>();
-                m_UICamera.cullingMask = 1 << 5 ;
+                m_UICamera.cullingMask = 1 << 5;
                 m_UICamera.clearFlags = CameraClearFlags.Depth;
                 m_UICamera.renderingPath = RenderingPath.DeferredShading;
                 m_UICamera.targetTexture = outputRT;
@@ -197,6 +197,27 @@ namespace UnityEngine.Recorder.Input
                     break;
                 }
                 case EImageSource.TaggedCamera:
+                {
+                    var tag = (settings as CBRenderTextureInputSettings).m_CameraTag;
+
+                    if (targetCamera == null || targetCamera.gameObject.tag != tag)
+                    {
+                        try
+                        {
+                            var cams = GameObject.FindGameObjectsWithTag(tag);
+                            if (cams.Length > 0)
+                                Debug.LogWarning("More than one camera has the requested target tag:" + tag);
+                            targetCamera = cams[0].transform.GetComponent<Camera>();
+                            
+                        }
+                        catch (UnityException)
+                        {
+                            Debug.LogWarning("No camera has the requested target tag:" + tag);
+                            targetCamera = null;
+                        }
+                    }
+                    break;
+                }
                 default:
                     throw new ArgumentOutOfRangeException();
             }

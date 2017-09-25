@@ -7,7 +7,7 @@ namespace UnityEditor.Recorder.Input
     [CustomEditor(typeof(CBRenderTextureInputSettings))]
     public class CBRenderTextureInputSettingsEditor : InputEditor
     {
-        static EImageSource m_SupportedSources = EImageSource.MainCamera | EImageSource.GameDisplay;
+        static EImageSource m_SupportedSources = EImageSource.MainCamera | EImageSource.GameDisplay | EImageSource.TaggedCamera;
         string[] m_MaskedSourceNames;
         SerializedProperty m_Source;
         SerializedProperty m_CameraTag;
