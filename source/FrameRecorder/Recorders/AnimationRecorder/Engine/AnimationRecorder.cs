@@ -5,7 +5,7 @@ using UnityEngine.Recorder.Input;
 
 namespace UnityEngine.Recorder
 {
-    [FrameRecorder(typeof(AnimationRecorderSettings), "Animation", "Unity/Animation Recording")]
+    [Recorder(typeof(AnimationRecorderSettings), "Animation", "Unity/Animation Recording")]
     public class AnimationRecorder : GenericRecorder<AnimationRecorderSettings>
     {
         public override void RecordFrame(RecordingSession session)
