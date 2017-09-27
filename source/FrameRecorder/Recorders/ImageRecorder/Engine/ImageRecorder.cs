@@ -3,7 +3,7 @@ using System.IO;
 
 namespace UnityEngine.Recorder
 {
-    [FrameRecorder(typeof(ImageRecorderSettings),"Video", "Unity/Image sequence" )]
+    [Recorder(typeof(ImageRecorderSettings),"Video", "Unity/Image sequence" )]
     public class ImageRecorder : GenericRecorder<ImageRecorderSettings>
     {
 

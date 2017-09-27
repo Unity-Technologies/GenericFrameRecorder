@@ -2,7 +2,7 @@ using System;
 using UnityEngine.Recorder;
 using UnityEngine;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     public class RecorderWindow : EditorWindow
     {
@@ -79,7 +79,7 @@ namespace UnityEditor.FrameRecorder
                             else
                             {
                                 m_WindowSettingsAsset = ScriptableObject.CreateInstance<RecorderWindowSettings>();
-                                AssetDatabase.CreateAsset(m_WindowSettingsAsset, FRPackagerPaths.GetFrameRecorderRootPath() +  "/RecorderWindowSettings.asset");
+                                AssetDatabase.CreateAsset(m_WindowSettingsAsset, FRPackagerPaths.GetRecorderRootPath() +  "/RecorderWindowSettings.asset");
                                 AssetDatabase.Refresh();
                             }
                         }

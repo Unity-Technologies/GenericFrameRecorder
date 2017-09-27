@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Recorder;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     class RecorderSelector
     {

@@ -2,7 +2,7 @@
 using UnityEngine.Recorder;
 using UnityEngine.Recorder.Input;
 
-namespace UnityEditor.FrameRecorder.Input
+namespace UnityEditor.Recorder.Input
 {
     [CustomEditor(typeof(CBRenderTextureInputSettings))]
     public class CBRenderTextureInputSettingsEditor : InputEditor

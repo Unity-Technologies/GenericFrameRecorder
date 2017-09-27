@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     public abstract class InputEditor : Editor
     {

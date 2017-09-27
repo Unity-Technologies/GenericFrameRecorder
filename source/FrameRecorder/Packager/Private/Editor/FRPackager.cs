@@ -2,7 +2,7 @@
 using System.IO;
 using UnityEngine;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     static class FRPackager
     {
@@ -12,7 +12,7 @@ namespace UnityEditor.FrameRecorder
         {
             return Application.dataPath + "/Recorder/";
         }
-
+        /*
         [MenuItem("Tools/Recorder/Generate Framework Package", false,100)]
         static void GeneratePackage()
         {
@@ -31,20 +31,18 @@ namespace UnityEditor.FrameRecorder
             AssetDatabase.ExportPackage(files, destFile, ExportPackageOptions.Recurse);
             Debug.Log("Generated package: " + destFile);
         }
-
+        */
         [MenuItem("Tools/Recorder/Generate Assetstore package", false, 100)]
         static void GenerateAssetStorePackage()
         {
-            var rootPath = FRPackagerPaths.GetFrameRecorderRootPath();
-
-            var type = System.Type.GetType("UnityEditor.FrameRecorder.MovieRecorderPackager");
+            var rootPath = FRPackagerPaths.GetRecorderRootPath();
+            var type = Type.GetType("UnityEditor.Recorder.MovieRecorderPackager");
             if (type != null)
             {
                 var method = type.GetMethod("GeneratePackage");
                 method.Invoke(null, null);
                 AssetDatabase.Refresh();
             }
-
             UpdateVersion();
 
             var files = new []
@@ -66,7 +64,7 @@ namespace UnityEditor.FrameRecorder
 
         static void UpdateVersion()
         {
-            var path = FRPackagerPaths.GetFrameRecorderVersionFilePath();
+            var path = FRPackagerPaths.GetRecorderVersionFilePath();
             var script = File.ReadAllText(path);
 
             var tag = "public const string Version = ";

@@ -2,7 +2,7 @@ using UnityEngine.Recorder;
 using UnityEngine.Recorder.Timeline;
 using UnityEngine.Timeline;
 
-namespace UnityEditor.FrameRecorder.Timeline
+namespace UnityEditor.Recorder.Timeline
 {
     [CustomEditor(typeof(RecorderClip), true)]
     public class RecorderClipEditor : Editor

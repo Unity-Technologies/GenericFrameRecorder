@@ -31,7 +31,7 @@ namespace UnityEngine.Recorder
 
         static IEnumerable<KeyValuePair<Type, object[]>> FindRecorders()
         {
-            var attribType = typeof(FrameRecorderAttribute);
+            var attribType = typeof(RecorderAttribute);
             foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
             {
                 foreach (var t in a.GetTypes())
@@ -87,10 +87,10 @@ namespace UnityEngine.Recorder
 
         static bool AddRecorder(Type recorderType)
         {
-            var recorderAttribs = recorderType.GetCustomAttributes(typeof(FrameRecorderAttribute), false);
+            var recorderAttribs = recorderType.GetCustomAttributes(typeof(RecorderAttribute), false);
             if (recorderAttribs.Length == 1)
             {
-                var recorderAttrib = recorderAttribs[0] as FrameRecorderAttribute;
+                var recorderAttrib = recorderAttribs[0] as RecorderAttribute;
             
                 if (m_Recorders == null)
                     m_Recorders = new SortedDictionary<string, RecorderInfo>();

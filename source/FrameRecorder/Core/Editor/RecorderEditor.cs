@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Recorder;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     public enum EFieldDisplayState
     {

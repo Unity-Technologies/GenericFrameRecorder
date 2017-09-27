@@ -8,13 +8,13 @@ namespace UnityEngine.Recorder
     /// Motivation  : Dynamically discover Recorder classes and provide a classification system and link between the recorder classes and their Settings classes.
     /// </summary>    
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class FrameRecorderAttribute : Attribute
+    public class RecorderAttribute : Attribute
     {
         public Type settings;
         public string category;
         public string displayName;
 
-        public FrameRecorderAttribute(Type settingsType, string category, string displayName)
+        public RecorderAttribute(Type settingsType, string category, string displayName)
         {
             this.settings = settingsType;
             this.category = category;
