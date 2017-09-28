@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 
 namespace UnityEngine.Recorder
@@ -23,10 +24,32 @@ namespace UnityEngine.Recorder
         {
             if(m_InputsSettingsAssets == null)
                 m_InputsSettingsAssets = new List<RecorderInputSetting>();
+
+            Rebuild();
+        }
+
+        public void Rebuild()
+        {
             m_InputsSettings = new List<RecorderInputSetting>();
 
-            foreach (var input in m_InputsSettingsAssets)
-                m_InputsSettings.Add(input);  
+            foreach (var inputAsset in m_InputsSettingsAssets)
+            {
+                var ib = inputAsset as InputBinder;
+                if (ib != null)
+                {
+                    var sceneInputs = SceneHook.GetInputsComponent(m_ParentAssetId);
+                    foreach (var input in sceneInputs.m_Settings)
+                    {
+                        if (input.m_Id == inputAsset.m_Id)
+                        {
+                            m_InputsSettings.Add(input);
+                            break;
+                        }
+                    }
+                }
+                else
+                    m_InputsSettings.Add(inputAsset);
+            }            
         }
 
         public bool isValid
@@ -44,7 +67,7 @@ namespace UnityEngine.Recorder
         {
             get
             {
-                foreach( var x in m_InputsSettings )
+                foreach( var x in m_InputsSettings.ToList() )
                     if (x == null || x is InputBinder)
                         return true;
                 return false;
@@ -105,8 +128,9 @@ namespace UnityEngine.Recorder
 
             for (int i = 0; i < m_InputsSettings.Count; i++)
             {
-                var ib = m_InputsSettings[i] as InputBinder;
-                if ( ib == null || ib.inputType == input.GetType() )
+                var x = m_InputsSettings[i];
+                var ib = x as InputBinder;
+                if ( ib != null && ib.m_Id == input.m_Id) 
                 {
                     m_InputsSettings[i] = input;
                     return;
@@ -141,7 +165,8 @@ namespace UnityEngine.Recorder
                 var binder = ScriptableObject.CreateInstance<InputBinder>();
                 binder.name = "Scene-Stored";
                 binder.m_DisplayName = input.m_DisplayName;
-                binder.m_TypeName = input.GetType().FullName;
+                binder.m_TypeName = input.GetType().AssemblyQualifiedName;
+                binder.m_Id = input.m_Id;
                 m_InputsSettingsAssets[index] = binder;
                 SceneHook.RegisterInputSettingObj(m_ParentAssetId, input);
 
@@ -160,9 +185,7 @@ namespace UnityEngine.Recorder
                 AssetDatabase.SaveAssets();
 #endif
             }
-#if UNITY_EDITOR
             AssetDatabase.Refresh();
-#endif
         }
 
         void ReleaseAt(int index)
@@ -186,6 +209,7 @@ namespace UnityEngine.Recorder
                 {
                     var newInput = ScriptableObject.CreateInstance(ib.inputType) as RecorderInputSetting;
                     newInput.m_DisplayName = ib.m_DisplayName;
+                    newInput.m_Id = ib.m_Id;
                     m_InputsSettings[i] = newInput;
                     SceneHook.RegisterInputSettingObj(m_ParentAssetId, newInput);
                 }

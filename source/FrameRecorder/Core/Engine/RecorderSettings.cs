@@ -65,6 +65,7 @@ namespace UnityEngine.Recorder
             }
         }
 
+
         [SerializeField]
         string m_RecorderTypeName;
 
@@ -129,11 +130,7 @@ namespace UnityEngine.Recorder
             if (!m_InputsSettings.hasBrokenBindings)
                 return;
 
-            var sceneInputs = SceneHook.GetInputsComponent(m_AssetID);
-            foreach (var input in sceneInputs.m_Settings)
-            {
-                m_InputsSettings.Rebind(input);
-            }
+            m_InputsSettings.Rebuild();
             
 #if UNITY_EDITOR
             if (m_InputsSettings.hasBrokenBindings)
@@ -145,7 +142,6 @@ namespace UnityEngine.Recorder
 
             if (m_InputsSettings.hasBrokenBindings)
                 Debug.LogError("Recorder: missing input settings");
-
         }
 
         public virtual void OnDestroy()
@@ -168,7 +164,7 @@ namespace UnityEngine.Recorder
             obj.name = Guid.NewGuid().ToString();
             return obj;
         }
-
+        
         /// <summary>
         /// Allows for recorder specific settings logic to correct/adjust settings that might be missed by it's editor.
         /// </summary>
@@ -176,7 +172,7 @@ namespace UnityEngine.Recorder
         public virtual bool SelfAdjustSettings()
         {
             return false; 
-        }
-        
     }
+        
+}
 }

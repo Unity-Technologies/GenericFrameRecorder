@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Recorder;
-using UnityEngine.SceneManagement;
 
 namespace UnityEditor.Recorder
 {
@@ -90,6 +88,9 @@ namespace UnityEditor.Recorder
         void BuildInputEditors()
         {
             var rs = target as RecorderSettings;
+            if (!rs.inputsSettings.hasBrokenBindings && rs.inputsSettings.Count == m_InputEditors.Count)
+                return;
+            
             if (rs.inputsSettings.hasBrokenBindings)
                 rs.BindSceneInputSettings();
 
@@ -117,31 +118,33 @@ namespace UnityEditor.Recorder
         bool m_FoldoutTime = true;
         bool m_FoldoutBounds = true;
         bool m_FoldoutOutput = true;
-        public override void OnInspectorGUI()
+
+        protected virtual void OnGroupGui()
         {
-            if (target == null)
-                return;
-
-            var settingsTarget = target as RecorderSettings;
-
-            if (settingsTarget.inputsSettings.hasBrokenBindings)
-                BuildInputEditors();
-
-            EditorGUI.BeginChangeCheck();
-            serializedObject.Update();
-
             OnInputGroupGui();
             OnOutputGroupGui();
             OnEncodingGroupGui();
             OnFrameRateGroupGui();
             OnBoundsGroupGui();
             OnExtraGroupsGui();
+        }
+        public override void OnInspectorGUI()
+        {
+            if (target == null)
+                return;
+            
+            BuildInputEditors();
+
+            EditorGUI.BeginChangeCheck();
+            serializedObject.Update();
+
+            OnGroupGui();
 
             serializedObject.ApplyModifiedProperties();
 
             EditorGUI.EndChangeCheck();
 
-            settingsTarget.SelfAdjustSettings();
+            (target as RecorderSettings).SelfAdjustSettings();
 
             if (!(target as RecorderSettings).isValid)
             {
