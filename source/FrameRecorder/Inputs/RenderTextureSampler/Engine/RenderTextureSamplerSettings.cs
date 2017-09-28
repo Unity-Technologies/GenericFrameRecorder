@@ -22,7 +22,6 @@
         public ESuperSamplingCount m_SuperSampling = ESuperSamplingCount.x1;
         public float m_SuperKernelPower = 16f;
         public float m_SuperKernelScale = 1f;
-        public RenderTexture m_RenderTexture;
         public string m_CameraTag;
         public bool m_ForceEvenSize;
         public ColorSpace m_ColorSpace = ColorSpace.Gamma;

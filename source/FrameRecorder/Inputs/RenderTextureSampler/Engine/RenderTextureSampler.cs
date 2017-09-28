@@ -185,7 +185,7 @@ namespace UnityEngine.Recorder.Input
 
                     if (sort)
                     {
-                        m_hookedCameras.Sort((x, y) => x.camera.depth < y.camera.depth ? -1 : x.camera.depth > y.camera.depth ? 1 : 0 );
+                        m_hookedCameras.Sort((x, y) => x.camera.depth < y.camera.depth ? -1 : x.camera.depth > y.camera.depth ? 1 : 0);
                     }
                     break;
                 }
@@ -211,9 +211,57 @@ namespace UnityEngine.Recorder.Input
                     break;
                 }
                 case EImageSource.TaggedCamera:
+                {
+                    GameObject[] taggedObjs;
+                    var tag = (settings as RenderTextureSamplerSettings).m_CameraTag;
+                    try
+                    {
+                        taggedObjs = GameObject.FindGameObjectsWithTag(tag);
+                    }
+                    catch (UnityException)
+                    {
+                        Debug.LogWarning("No camera has the requested target tag:" + tag);
+                        taggedObjs = new GameObject[0];
+                    }
+
+                    // Remove un-tagged cameras form list
+                    for (int i = m_hookedCameras.Count - 1; i >= 0; i--)
+                    {
+                        if (m_hookedCameras[i].camera.gameObject.tag != tag)
+                        {
+                            // un-hook it
+                            m_hookedCameras[i].camera.targetTexture = m_hookedCameras[i].textureBackup;
+                            m_hookedCameras.RemoveAt(i);
+                        }
+                    }
+
+                    // Add newly tagged cameras
+                    for (var i = 0; i < taggedObjs.Length; i++)
+                    {
+                        var found = false;
+                        var cam = taggedObjs[i].transform.GetComponent<Camera>();
+                        if (cam != null && cam.enabled)
+                        {
+                            for (var j = 0; j < m_hookedCameras.Count; j++)
+                            {
+                                if (m_hookedCameras[j].camera == taggedObjs[i].transform.GetComponent<Camera>())
+                                {
+                                    found = true;
+                                    break;
+                                }
+                            }
+
+                            if (!found)
+                            {
+                                var hookedCam = new HookedCamera() { camera = cam, textureBackup = cam.targetTexture };
+                                cam.targetTexture = m_renderRT;
+                                m_hookedCameras.Add(hookedCam);
+
+                            }
+                        }
+                    }
                     break;
-                case EImageSource.RenderTexture:
-                    break;
+                }
                 default:
                     throw new ArgumentOutOfRangeException();
             }
