@@ -126,7 +126,7 @@ namespace UnityEditor.Recorder
                         StopRecording();
                     }
                     catch (Exception) {}
-                }
+                    }
                 Debug.LogException(ex);
             }
         }
@@ -147,7 +147,7 @@ namespace UnityEditor.Recorder
             {
                 case EState.Idle:
                 {
-                    using (new EditorGUI.DisabledScope(!m_Editor.isValid ))
+                    using (new EditorGUI.DisabledScope(!m_Editor.isValid))
                     {
                         if (GUILayout.Button("Start Recording"))
                             StartRecording();

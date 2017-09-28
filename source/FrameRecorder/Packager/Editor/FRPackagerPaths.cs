@@ -27,7 +27,8 @@ namespace UnityEditor.Recorder
             var path = Application.dataPath + AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(dummy)).Substring("Assets".Length);
             UnityHelpers.Destroy(dummy);
 
-            return path.Replace("/Framework/Packager/Editor/FRPackagerPaths.cs", "");
+            path= path.Replace("/Packager/Editor/FRPackagerPaths.cs", "");
+            return path.Substring(0, path.LastIndexOf("/"));
         }
 
     }

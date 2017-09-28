@@ -1,9 +1,3 @@
-using System.Collections.Generic;
-using UnityEngine.Recorder.Input;
-#if UNITY_EDITOR
-    using UnityEditor;
-#endif
-
 namespace UnityEngine.Recorder
 {
     /// <summary>
