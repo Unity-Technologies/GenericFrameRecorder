@@ -33,6 +33,7 @@ namespace UnityEngine.FrameRecorder
         x19_10,
         x5_4,
         x4_3,
+        x48_9,
     }
 
     public class AspectRatioHelper
@@ -51,6 +52,8 @@ namespace UnityEngine.FrameRecorder
                     return 5.0f / 4.0f;
                 case EImageAspect.x4_3:
                     return 4.0f / 3.0f;
+                case EImageAspect.x48_9;
+                    return 48.0f / 9.0f;
                 default:
                     throw new ArgumentOutOfRangeException("aspectRatio", aspectRatio, null);
             }
