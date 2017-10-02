@@ -52,7 +52,7 @@ namespace UnityEngine.FrameRecorder
                     return 5.0f / 4.0f;
                 case EImageAspect.x4_3:
                     return 4.0f / 3.0f;
-                case EImageAspect.x48_9;
+                case EImageAspect.x48_9:
                     return 48.0f / 9.0f;
                 default:
                     throw new ArgumentOutOfRangeException("aspectRatio", aspectRatio, null);
