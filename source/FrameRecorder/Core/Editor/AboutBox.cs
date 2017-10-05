@@ -33,7 +33,7 @@ namespace UnityEditor.Recorder
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(52f);
-            GUILayout.Label(string.Format("Version {0}", RecorderVersion.Version));
+            GUILayout.Label(string.Format("Version {0}", RecorderVersion.Tag));
             GUILayout.EndHorizontal();
             GUILayout.Space(4);
             GUILayout.EndVertical();
