@@ -75,7 +75,7 @@ namespace UnityEngine.Recorder
             set
             {
                 m_AssetID = value;
-                m_InputsSettings.m_ParentAssetId = value;
+                m_InputsSettings.ownerRecorderSettingsAssetId = value;
             }
         }
 

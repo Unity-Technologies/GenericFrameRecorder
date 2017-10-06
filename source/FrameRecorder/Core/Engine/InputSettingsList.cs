@@ -12,11 +12,12 @@ namespace UnityEngine.Recorder
         [SerializeField]
         List<RecorderInputSetting> m_InputsSettingsAssets;
         List<RecorderInputSetting> m_InputsSettings;
-        public string m_ParentAssetId;
 
-        public void OnEnable( string parentAssetId )
+        public string ownerRecorderSettingsAssetId;
+
+        public void OnEnable( string ownerSettingsAssetId )
         {
-            m_ParentAssetId = parentAssetId;
+            ownerRecorderSettingsAssetId = ownerSettingsAssetId;
             Reset();
         }
 
@@ -34,16 +35,31 @@ namespace UnityEngine.Recorder
 
             foreach (var inputAsset in m_InputsSettingsAssets)
             {
-                var ib = inputAsset as InputBinder;
-                if (ib != null)
+                if (inputAsset is InputBinder)
                 {
-                    var sceneInputs = SceneHook.GetInputsComponent(m_ParentAssetId);
+                    var sceneInputs = SceneHook.GetInputsComponent(ownerRecorderSettingsAssetId);
+                    bool found = false;
                     foreach (var input in sceneInputs.m_Settings)
                     {
                         if (input.m_Id == inputAsset.m_Id)
                         {
                             m_InputsSettings.Add(input);
+                            found = true;
                             break;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        var binder = inputAsset as InputBinder;
+                        if( string.IsNullOrEmpty( binder.typeName) )
+                            Debug.LogError("Recorder Input asset in invalid!");
+                        else
+                        {
+                            Debug.LogWarning("Recorder input setting missing from scene, adding with default state.");
+                            var replacementInput = ScriptableObject.CreateInstance(binder.inputType) as RecorderInputSetting;
+                            replacementInput.m_Id = inputAsset.m_Id;
+                            m_InputsSettings.Add(replacementInput);
                         }
                     }
                 }
@@ -165,13 +181,13 @@ namespace UnityEngine.Recorder
                 var binder = ScriptableObject.CreateInstance<InputBinder>();
                 binder.name = "Scene-Stored";
                 binder.m_DisplayName = input.m_DisplayName;
-                binder.m_TypeName = input.GetType().AssemblyQualifiedName;
+                binder.typeName = input.GetType().AssemblyQualifiedName;
                 binder.m_Id = input.m_Id;
                 m_InputsSettingsAssets[index] = binder;
-                SceneHook.RegisterInputSettingObj(m_ParentAssetId, input);
+                SceneHook.RegisterInputSettingObj(ownerRecorderSettingsAssetId, input);
 
 #if UNITY_EDITOR
-                var assetPath = AssetDatabase.GUIDToAssetPath(m_ParentAssetId);
+                var assetPath = AssetDatabase.GUIDToAssetPath(ownerRecorderSettingsAssetId);
                 AssetDatabase.AddObjectToAsset(binder, assetPath);
                 AssetDatabase.SaveAssets();
 #endif
@@ -181,7 +197,7 @@ namespace UnityEngine.Recorder
             {
                 m_InputsSettingsAssets[index] = input;
 #if UNITY_EDITOR
-                AssetDatabase.AddObjectToAsset(input, AssetDatabase.GUIDToAssetPath(m_ParentAssetId));
+                AssetDatabase.AddObjectToAsset(input, AssetDatabase.GUIDToAssetPath(ownerRecorderSettingsAssetId));
                 AssetDatabase.SaveAssets();
 #endif
             }
@@ -190,10 +206,12 @@ namespace UnityEngine.Recorder
 
         void ReleaseAt(int index)
         {
-            if (m_InputsSettingsAssets[index] is InputBinder ) 
-                SceneHook.UnregisterInputSettingObj(m_ParentAssetId, m_InputsSettings[index]);
+            bool isBinder = m_InputsSettingsAssets[index] is InputBinder;
+            if ( isBinder ) 
+                SceneHook.UnregisterInputSettingObj(ownerRecorderSettingsAssetId, m_InputsSettings[index]);
 
             UnityHelpers.Destroy(m_InputsSettingsAssets[index],true);
+            AssetDatabase.SaveAssets();
 
             m_InputsSettings[index] = null;
             m_InputsSettingsAssets[index] = null;
@@ -211,7 +229,7 @@ namespace UnityEngine.Recorder
                     newInput.m_DisplayName = ib.m_DisplayName;
                     newInput.m_Id = ib.m_Id;
                     m_InputsSettings[i] = newInput;
-                    SceneHook.RegisterInputSettingObj(m_ParentAssetId, newInput);
+                    SceneHook.RegisterInputSettingObj(ownerRecorderSettingsAssetId, newInput);
                 }
             }            
         }
@@ -222,7 +240,7 @@ namespace UnityEngine.Recorder
             for (int i = 0; i < m_InputsSettingsAssets.Count; i++)
             {
                 if (m_InputsSettingsAssets[i] is InputBinder)
-                    SceneHook.UnregisterInputSettingObj(m_ParentAssetId, m_InputsSettings[i]);
+                    SceneHook.UnregisterInputSettingObj(ownerRecorderSettingsAssetId, m_InputsSettings[i]);
 
                 UnityHelpers.Destroy(m_InputsSettingsAssets[i], true);
             }

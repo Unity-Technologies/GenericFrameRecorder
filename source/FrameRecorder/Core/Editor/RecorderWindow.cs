@@ -84,7 +84,7 @@ namespace UnityEditor.Recorder
                             }
                         }
 
-                        m_recorderSelector = new RecorderSelector(OnRecorderSelected, true);
+                        m_recorderSelector = new RecorderSelector(OnRecorderSelected, false);
                         m_recorderSelector.Init(m_WindowSettingsAsset.m_Settings, m_StartingCategory);
                     }
 
