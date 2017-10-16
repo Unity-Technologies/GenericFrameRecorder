@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Recorder;
 
-namespace UnityEngine.Recorder.Input
+namespace UnityEditor.Experimental.Recorder.Input
 {
     [Serializable]
     [StoreInScene]

@@ -1,10 +1,12 @@
 ﻿using System;
+using UnityEditor.Experimental.Recorder;
+using UnityEditor.Experimental.Recorder.Input;
 using UnityEditor.Recorder;
 using UnityEngine;
 using UnityEngine.Recorder;
 using UnityEngine.Recorder.Input;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Experimental.FrameRecorder
 {
     [Serializable]
     [CustomEditor(typeof(AnimationRecorderSettings))]

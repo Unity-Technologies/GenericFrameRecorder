@@ -1,9 +1,12 @@
 ﻿using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Experimental.Recorder.Input;
+using UnityEngine;
+using UnityEngine.Recorder;
 using UnityEngine.Recorder.Input;
 
-namespace UnityEngine.Recorder
+namespace UnityEditor.Experimental.Recorder
 {
     [Recorder(typeof(AnimationRecorderSettings), "Animation", "Unity/Animation Recording")]
     public class AnimationRecorder : GenericRecorder<AnimationRecorderSettings>

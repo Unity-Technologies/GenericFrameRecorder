@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor.Experimental.Recorder.Input;
+using UnityEngine;
+using UnityEngine.Recorder;
 using UnityEngine.Recorder.Input;
 
-namespace UnityEngine.Recorder
+namespace UnityEditor.Experimental.Recorder
 {
     [ExecuteInEditMode]
     [Serializable]
