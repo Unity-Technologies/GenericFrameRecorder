@@ -70,7 +70,7 @@ namespace UnityEngine.Recorder
     {
         private MediaEncoder m_Encoder;
 #if RECORD_AUDIO_MIXERS
-	private WavWriter[]  m_WavWriters;
+        private WavWriter[]  m_WavWriters;
 #endif
         private Texture2D m_ReadBackTexture;
 
@@ -150,7 +150,7 @@ namespace UnityEngine.Recorder
                 Debug.Log( string.Format( "MovieRecorder starting to write audio {0}ch @ {1}Hz", audioAttrs.channelCount, audioAttrs.sampleRate.numerator));
 
 #if RECORD_AUDIO_MIXERS
-	    var audioSettings = input.audioSettings;
+            var audioSettings = input.audioSettings;
             m_WavWriters = new WavWriter [audioSettings.m_AudioMixerGroups.Length];
 
             for (int n = 0; n < m_WavWriters.Length; n++)
@@ -159,10 +159,10 @@ namespace UnityEngine.Recorder
                     continue;
 
                 var path = Path.Combine(
-		    m_Settings.m_DestinationPath,
-		    "recording of " + audioSettings.m_AudioMixerGroups[n].m_MixerGroup.name + ".wav");
-		if (settings.m_Verbose)
-		    Debug.Log("Starting wav recording into file " + path);
+                    m_Settings.m_DestinationPath,
+                    "recording of " + audioSettings.m_AudioMixerGroups[n].m_MixerGroup.name + ".wav");
+                if (Verbose.enabled)
+                    Debug.Log("Starting wav recording into file " + path);
                 m_WavWriters[n].Start(path);
             }
 #endif
@@ -202,8 +202,7 @@ namespace UnityEngine.Recorder
                 m_ReadBackTexture = new Texture2D(width, height, TextureFormat.RGBA32, false);
             var backupActive = RenderTexture.active;
             RenderTexture.active = textureInput.outputRT;
-            m_ReadBackTexture.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-            m_ReadBackTexture.Apply();
+            m_ReadBackTexture.ReadPixels(new Rect(0, 0, width, height), 0, 0, false);
             m_Encoder.AddFrame(m_ReadBackTexture);
             RenderTexture.active = backupActive;
 
@@ -212,9 +211,9 @@ namespace UnityEngine.Recorder
                 return;
 
 #if RECORD_AUDIO_MIXERS
-	    for (int n = 0; n < m_WavWriters.Length; n++)
-		if (m_WavWriters[n] != null)
-		    m_WavWriters[n].Feed(audioInput.mixerGroupAudioBuffer(n));
+            for (int n = 0; n < m_WavWriters.Length; n++)
+                if (m_WavWriters[n] != null)
+                    m_WavWriters[n].Feed(audioInput.mixerGroupAudioBuffer(n));
 #endif
 
             m_Encoder.AddSamples(audioInput.mainBuffer);
@@ -251,7 +250,7 @@ namespace UnityEngine.Recorder
             double integral = Math.Floor(value);
             double frac = value - integral;
 
-            const long precision = 1000000000;
+            const long precision = 10000000;
 
             long gcd = GreatestCommonDivisor((long)Math.Round(frac * precision), precision);
             long denom = precision / gcd;
