@@ -14,7 +14,7 @@ namespace UnityEngine.Recorder.Input
 
         RenderTexture m_renderRT;
         RenderTexture[] m_accumulateRTs = new RenderTexture[2];
-        int m_renderWidth, m_renderHeight, m_outputWidth, m_outputHeight;
+        int m_renderWidth, m_renderHeight;
 
         Material m_superMaterial;
         Material m_accumulateMaterial;
@@ -115,12 +115,12 @@ namespace UnityEngine.Recorder.Input
             var aspect = AspectRatioHelper.GetRealAR(rtsSettings.m_AspectRatio);
             m_renderHeight = (int)rtsSettings.m_RenderSize;
             m_renderWidth = Mathf.Min(16 * 1024, Mathf.RoundToInt(m_renderHeight * aspect));
-            m_outputHeight = (int)rtsSettings.m_FinalSize;
-            m_outputWidth = Mathf.Min(16 * 1024, Mathf.RoundToInt(m_outputHeight * aspect));
+            outputHeight = (int)rtsSettings.m_FinalSize;
+            outputWidth = Mathf.Min(16 * 1024, Mathf.RoundToInt(outputHeight * aspect));
             if (rtsSettings.m_ForceEvenSize)
             {
-                m_outputWidth = (m_outputWidth + 1) & ~1;
-                m_outputHeight = (m_outputHeight + 1) & ~1;
+                outputWidth = (outputWidth + 1) & ~1;
+                outputHeight = (outputHeight + 1) & ~1;
             }
 
             m_superMaterial = new Material(superShader);
@@ -140,7 +140,7 @@ namespace UnityEngine.Recorder.Input
                 m_accumulateRTs[i].wrapMode = TextureWrapMode.Clamp;
                 m_accumulateRTs[i].Create();
             }
-            var rt = new RenderTexture(m_outputWidth, m_outputHeight, 0, RenderTextureFormat.DefaultHDR, RenderTextureReadWrite.Linear);
+            var rt = new RenderTexture(outputWidth, outputHeight, 0, RenderTextureFormat.DefaultHDR, RenderTextureReadWrite.Linear);
             rt.Create();
             outputRT = rt;
             m_samples = new Vector2[(int)rtsSettings.m_SuperSampling];
@@ -312,7 +312,7 @@ namespace UnityEngine.Recorder.Input
             else
             {
                 // Ideally we would use a separable filter here, but we're massively bound by readback and disk anyway for hi-res.
-                m_superMaterial.SetVector("_Target_TexelSize", new Vector4(1f / m_outputWidth, 1f / m_outputHeight, m_outputWidth, m_outputHeight));
+                m_superMaterial.SetVector("_Target_TexelSize", new Vector4(1f / outputWidth, 1f / outputHeight, outputWidth, outputHeight));
                 m_superMaterial.SetFloat("_KernelCosPower", rtsSettings.m_SuperKernelPower);
                 m_superMaterial.SetFloat("_KernelScale", rtsSettings.m_SuperKernelScale);
                 m_superMaterial.SetFloat("_NormalizationFactor", 1.0f / (float)rtsSettings.m_SuperSampling);

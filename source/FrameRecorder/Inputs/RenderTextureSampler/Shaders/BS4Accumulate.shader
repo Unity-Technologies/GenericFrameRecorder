@@ -13,7 +13,8 @@ Properties {
 
 CGINCLUDE
 
-#pragma only_renderers d3d11 ps4 opengl
+// FIXME: Had to comment out to make it work on OSX. Needs to be revised.
+// #pragma only_renderers d3d11 ps4 opengl
 
 #include "UnityCG.cginc"
 

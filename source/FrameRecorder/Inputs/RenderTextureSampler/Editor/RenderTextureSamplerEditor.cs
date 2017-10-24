@@ -15,6 +15,7 @@ namespace UnityEditor.Recorder.Input
         SerializedProperty m_AspectRatio;
         SerializedProperty m_SuperSampling;
         SerializedProperty m_CameraTag;
+        SerializedProperty m_FlipFinalOutput;
 
         protected void OnEnable()
         {
@@ -28,6 +29,7 @@ namespace UnityEditor.Recorder.Input
             m_SuperSampling = pf.Find(w => w.m_SuperSampling);
             m_FinalSize = pf.Find(w => w.m_FinalSize);
             m_CameraTag = pf.Find(w => w.m_CameraTag);
+            m_FlipFinalOutput = pf.Find( w => w.m_FlipFinalOutput );
         }
 
 
@@ -80,7 +82,7 @@ namespace UnityEditor.Recorder.Input
                 using (new EditorGUI.DisabledScope(true))
                 {
                     EditorGUILayout.TextField("Color Space", (target as RenderTextureSamplerSettings).m_ColorSpace.ToString());
-                    EditorGUILayout.Toggle("Flip output", (target as RenderTextureSamplerSettings).m_FlipFinalOutput);
+                    EditorGUILayout.PropertyField(m_FlipFinalOutput, new GUIContent("Flip output"));
                 }
             }
 
