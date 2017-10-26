@@ -6,9 +6,9 @@ using UnityEditorInternal;
 
 #endif
 using UnityEngine.Collections;
-using UnityEngine.Recorder.Input;
+using UnityEngine.Recorder;
 
-namespace UnityEngine.Recorder
+namespace UnityEngine.Recorder.Input
 {
     class AudioRenderer
     {
