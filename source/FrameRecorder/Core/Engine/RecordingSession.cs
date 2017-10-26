@@ -33,7 +33,7 @@ namespace UnityEngine.Recorder
             get { return m_FirstRecordedFrameCount == -1 ? 0 : Time.renderedFrameCount - m_FirstRecordedFrameCount; }
         }
 
-        public float RecorderTime
+        public float recorderTime
         {
             get { return (float)(m_CurrentFrameStartTS - settings.m_StartTime); }
         }

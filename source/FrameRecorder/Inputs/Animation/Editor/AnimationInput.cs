@@ -16,15 +16,15 @@ namespace UnityEditor.Experimental.Recorder.Input
             {
                 m_gameObjectRecorder.BindComponent(srcGO, binding, aniSettings.recursive); 
             }
-            m_time = session.RecorderTime;
+            m_time = session.recorderTime;
         }
 
         public override void NewFrameReady(RecordingSession session)
         {
             if (session.recording && (settings as AnimationInputSettings).enabled )
             {
-                m_gameObjectRecorder.TakeSnapshot(session.RecorderTime - m_time);
-                m_time = session.RecorderTime;
+                m_gameObjectRecorder.TakeSnapshot(session.recorderTime - m_time);
+                m_time = session.recorderTime;
             }
         }
     }
