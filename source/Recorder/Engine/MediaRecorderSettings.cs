@@ -43,7 +43,6 @@ namespace UnityEngine.Recorder
             if (type == typeof(CBRenderTextureInputSettings))
             {
                 (obj as CBRenderTextureInputSettings).m_ForceEvenSize = true;
-                (obj as CBRenderTextureInputSettings).m_FlipFinalOutput = true;
             }
             if (type == typeof(RenderTextureSamplerSettings))
             {
