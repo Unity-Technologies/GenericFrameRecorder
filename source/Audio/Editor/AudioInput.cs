@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 #if UNITY_EDITOR
 using System.Reflection;
 using UnityEditor;
@@ -8,7 +9,7 @@ using UnityEditorInternal;
 using UnityEngine.Collections;
 using UnityEngine.Recorder;
 
-namespace UnityEngine.Recorder.Input
+namespace UnityEditor.Recorder.Input
 {
     class AudioRenderer
     {

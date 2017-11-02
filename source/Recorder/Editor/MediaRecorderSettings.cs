@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine.Audio;
+using UnityEditor.Recorder.Input;
+using UnityEngine;
+using UnityEngine.Recorder;
 using UnityEngine.Recorder.Input;
 
-namespace UnityEngine.Recorder
+namespace UnityEditor.Recorder
 {
 
     public enum MediaRecorderOutputFormat

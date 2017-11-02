@@ -1,6 +1,7 @@
 using UnityEngine.Audio;
+using UnityEngine.Recorder;
 
-namespace UnityEngine.Recorder.Input
+namespace UnityEditor.Recorder.Input
 {
     public class AudioInputSettings : InputSettings<AudioInput>
     {

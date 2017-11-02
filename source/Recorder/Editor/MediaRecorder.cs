@@ -7,8 +7,10 @@ using UnityEngine.Collections;
 using UnityEngine.Recorder.Input;
 using UnityEditor;
 using UnityEditor.Media;
+using UnityEditor.Recorder.Input;
+using UnityEngine.Recorder;
 
-namespace UnityEngine.Recorder
+namespace UnityEditor.Recorder
 {
 #if RECORD_AUDIO_MIXERS
     class WavWriter
