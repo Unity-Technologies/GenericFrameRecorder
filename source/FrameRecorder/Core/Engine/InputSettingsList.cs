@@ -201,17 +201,23 @@ namespace UnityEngine.Recorder
                 AssetDatabase.SaveAssets();
 #endif
             }
+#if UNITY_EDITOR
             AssetDatabase.Refresh();
+#endif
+
         }
 
         void ReleaseAt(int index)
         {
             bool isBinder = m_InputsSettingsAssets[index] is InputBinder;
+#if UNITY_EDITOR
             if ( isBinder ) 
                 SceneHook.UnregisterInputSettingObj(ownerRecorderSettingsAssetId, m_InputsSettings[index]);
-
+#endif
             UnityHelpers.Destroy(m_InputsSettingsAssets[index],true);
+#if UNITY_EDITOR
             AssetDatabase.SaveAssets();
+#endif
 
             m_InputsSettings[index] = null;
             m_InputsSettingsAssets[index] = null;
