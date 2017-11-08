@@ -19,4 +19,3 @@ See the [GenericFrameRecorder](https://github.com/Unity-Technologies/GenericFram
 
 * Only available in editor.
 * Only supports constant frame rate.
-* Bitrate is fixed.

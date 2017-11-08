@@ -9,6 +9,7 @@ namespace UnityEditor.Recorder
     public class MediaRecorderEditor : RecorderEditor
     {
         SerializedProperty m_OutputFormat;
+        SerializedProperty m_OutputBitRateMode;
         SerializedProperty m_FlipVertical;
         RTInputSelector m_RTInputSelector;
 
@@ -28,6 +29,7 @@ namespace UnityEditor.Recorder
 
             var pf = new PropertyFinder<MediaRecorderSettings>(serializedObject);
             m_OutputFormat = pf.Find(w => w.m_OutputFormat);
+			m_OutputBitRateMode = pf.Find(w => w.m_VideoBitRateMode);
         }
 
         protected override void OnEncodingGroupGui()
@@ -50,6 +52,7 @@ namespace UnityEditor.Recorder
         protected override void OnOutputGui()
         {
             AddProperty(m_OutputFormat, () => EditorGUILayout.PropertyField(m_OutputFormat, new GUIContent("Output format")));
+            AddProperty(m_OutputBitRateMode, () => EditorGUILayout.PropertyField(m_OutputBitRateMode, new GUIContent("Output Bitrate")));
 
             base.OnOutputGui();
         }

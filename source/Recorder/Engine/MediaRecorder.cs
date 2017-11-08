@@ -121,7 +121,8 @@ namespace UnityEngine.Recorder
                 frameRate = RationalFromDouble(session.settings.m_FrameRate),
                 width = (uint)width,
                 height = (uint)height,
-                includeAlpha = includeAlphaFromTexture
+                includeAlpha = includeAlphaFromTexture,
+                bitRateMode = (VideoBitRateMode)m_Settings.m_VideoBitRateMode
             };
 
             if (Verbose.enabled)
