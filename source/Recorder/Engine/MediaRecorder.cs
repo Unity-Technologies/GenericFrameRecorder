@@ -86,7 +86,7 @@ namespace UnityEngine.Recorder
             catch (Exception)
             {
                 Debug.LogError(string.Format( "Movie recorder output directory \"{0}\" could not be created.", m_Settings.m_DestinationPath.GetFullPath()));
-                return false;                
+                return false;
             }
 
             var input = (BaseRenderTextureInput)m_Inputs[0];
@@ -121,8 +121,12 @@ namespace UnityEngine.Recorder
                 frameRate = RationalFromDouble(session.settings.m_FrameRate),
                 width = (uint)width,
                 height = (uint)height,
+#if UNITY_2018_1_OR_NEWER
                 includeAlpha = includeAlphaFromTexture,
                 bitRateMode = (VideoBitRateMode)m_Settings.m_VideoBitRateMode
+#else
+                includeAlpha = includeAlphaFromTexture
+#endif
             };
 
             if (Verbose.enabled)

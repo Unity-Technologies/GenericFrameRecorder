@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.Audio;
 using UnityEngine.Recorder.Input;
+#if UNITY_2018_1_OR_NEWER
 using UnityEditor.Media;
+#endif
 
 namespace UnityEngine.Recorder
 {
@@ -17,7 +19,9 @@ namespace UnityEngine.Recorder
     public class MediaRecorderSettings : RecorderSettings
     {
         public MediaRecorderOutputFormat m_OutputFormat = MediaRecorderOutputFormat.MP4;
+#if UNITY_2018_1_OR_NEWER
         public UnityEditor.Media.VideoBitRateMode m_VideoBitRateMode = UnityEditor.Media.VideoBitRateMode.High;
+#endif
         public bool m_AppendSuffix = false;
 
         MediaRecorderSettings()

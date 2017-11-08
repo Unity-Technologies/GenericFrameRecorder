@@ -9,7 +9,9 @@ namespace UnityEditor.Recorder
     public class MediaRecorderEditor : RecorderEditor
     {
         SerializedProperty m_OutputFormat;
-        SerializedProperty m_OutputBitRateMode;
+#if UNITY_2018_1_OR_NEWER
+        SerializedProperty m_EncodingBitRateMode;
+#endif
         SerializedProperty m_FlipVertical;
         RTInputSelector m_RTInputSelector;
 
@@ -29,13 +31,22 @@ namespace UnityEditor.Recorder
 
             var pf = new PropertyFinder<MediaRecorderSettings>(serializedObject);
             m_OutputFormat = pf.Find(w => w.m_OutputFormat);
-			m_OutputBitRateMode = pf.Find(w => w.m_VideoBitRateMode);
+#if UNITY_2018_1_OR_NEWER
+            m_EncodingBitRateMode = pf.Find(w => w.m_VideoBitRateMode);
+#endif
         }
 
+#if UNITY_2018_1_OR_NEWER
+        protected override void OnEncodingGui()
+        {
+            AddProperty(m_EncodingBitRateMode, () => EditorGUILayout.PropertyField(m_EncodingBitRateMode, new GUIContent("Bitrate Mode")));
+        }
+#else
         protected override void OnEncodingGroupGui()
         {
-            // hiding this group by not calling parent class's implementation.  
+            // hiding this group by not calling parent class's implementation.
         }
+#endif
 
         protected override void OnInputGui(int inputIndex)
         {
@@ -43,7 +54,7 @@ namespace UnityEditor.Recorder
             {
                 var input = (target as RecorderSettings).inputsSettings[inputIndex];
                 if (m_RTInputSelector.OnInputGui(ref input))
-                    ChangeInputSettings(inputIndex, input);                
+                    ChangeInputSettings(inputIndex, input);
             }
 
             base.OnInputGui(inputIndex);
@@ -52,7 +63,6 @@ namespace UnityEditor.Recorder
         protected override void OnOutputGui()
         {
             AddProperty(m_OutputFormat, () => EditorGUILayout.PropertyField(m_OutputFormat, new GUIContent("Output format")));
-            AddProperty(m_OutputBitRateMode, () => EditorGUILayout.PropertyField(m_OutputBitRateMode, new GUIContent("Output Bitrate")));
 
             base.OnOutputGui();
         }
