@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Recorder;
 using UnityEngine.Recorder.Input;
@@ -43,6 +44,22 @@ namespace UTJ.FrameCapturer.Recorders
             }
 
             return obj ;
+        }
+
+        public override List<InputGroupFilter> GetInputGroups()
+        {
+            return new List<InputGroupFilter>()
+            {
+                new InputGroupFilter()
+                {
+                    title = "Pixels", typesFilter = new List<InputFilter>()
+                    {
+                        new TInputFilter<CBRenderTextureInputSettings>("Camera(s)"),
+                        new TInputFilter<RenderTextureSamplerSettings>("Sampling"),
+                        new TInputFilter<RenderTextureInputSettings>("Render Texture"),
+                    }
+                }
+            };
         }
 
     }
