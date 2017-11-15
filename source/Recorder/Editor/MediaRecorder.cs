@@ -1,3 +1,4 @@
+#if UNITY_2017_3_OR_NEWER
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -91,16 +92,27 @@ namespace UnityEditor.Recorder
                 return false;                
             }
 
-            var input = (BaseRenderTextureInput)m_Inputs[0];
-            if (input == null)
+            int width;
+            int height;
+            if (m_Inputs[0] is ScreenCaptureInput)
             {
-                if (Verbose.enabled)
-                    Debug.Log("MediaRecorder could not find input.");
-                return false;
+                var input = (ScreenCaptureInput)m_Inputs[0];
+                width = input.outputWidth;
+                height = input.outputHeight;
+            }
+            else
+            {
+                var input = (BaseRenderTextureInput)m_Inputs[0];
+                if (input == null)
+                {
+                    if (Verbose.enabled)
+                        Debug.Log("MediaRecorder could not find input.");
+                    return false;
+                }
+                width = input.outputWidth;
+                height = input.outputHeight;
             }
 
-            var width = input.outputWidth;
-            var height = input.outputHeight;
             if (width <= 0 || height <= 0)
             {
                 if (Verbose.enabled)
@@ -109,7 +121,7 @@ namespace UnityEditor.Recorder
                 return false;
             }
 
-            var cbRenderTextureInput = input as CBRenderTextureInput;
+            var cbRenderTextureInput = m_Inputs[0] as CBRenderTextureInput;
 
             bool includeAlphaFromTexture = cbRenderTextureInput != null && cbRenderTextureInput.cbSettings.m_AllowTransparency;
             if (includeAlphaFromTexture && m_Settings.m_OutputFormat == MediaRecorderOutputFormat.MP4)
@@ -191,22 +203,29 @@ namespace UnityEditor.Recorder
             if (m_Inputs.Count != 2)
                 throw new Exception("Unsupported number of sources");
 
-            var textureInput = (BaseRenderTextureInput)m_Inputs[0];
-            var width = textureInput.outputWidth;
-            var height = textureInput.outputHeight;
+            int width;
+            int height;
+            if (m_Inputs[0] is ScreenCaptureInput)
+            {
+                var input = (ScreenCaptureInput)m_Inputs[0];
+                width = input.outputWidth;
+                height = input.outputHeight;
+                m_Encoder.AddFrame(input.image);
+            }
+            else
+            {
+                var input = (BaseRenderTextureInput)m_Inputs[0];
+                width = input.outputWidth;
+                height = input.outputHeight;
 
-            if (Verbose.enabled)
-                Debug.Log(string.Format("MovieRecorder.RecordFrame {0} x {1} (wanted: {2} x {3})",
-                    textureInput.outputRT.width, textureInput.outputRT.height,
-                    width, height));
-
-            if (!m_ReadBackTexture)
-                m_ReadBackTexture = new Texture2D(width, height, TextureFormat.RGBA32, false);
-            var backupActive = RenderTexture.active;
-            RenderTexture.active = textureInput.outputRT;
-            m_ReadBackTexture.ReadPixels(new Rect(0, 0, width, height), 0, 0, false);
-            m_Encoder.AddFrame(m_ReadBackTexture);
-            RenderTexture.active = backupActive;
+                if (!m_ReadBackTexture)
+                    m_ReadBackTexture = new Texture2D(width, height, TextureFormat.RGBA32, false);
+                var backupActive = RenderTexture.active;
+                RenderTexture.active = input.outputRT;
+                m_ReadBackTexture.ReadPixels(new Rect(0, 0, width, height), 0, 0, false);
+                m_Encoder.AddFrame(m_ReadBackTexture);
+                RenderTexture.active = backupActive;
+            }
 
             var audioInput = (AudioInput)m_Inputs[1];
             if (!audioInput.audioSettings.m_PreserveAudio)
@@ -265,3 +284,4 @@ namespace UnityEditor.Recorder
         }
     }
 }
+#endif

@@ -1,3 +1,5 @@
+#if UNITY_2017_3_OR_NEWER
+
 using System;
 using System.Collections.Generic;
 using UnityEditor.Recorder.Input;
@@ -54,5 +56,33 @@ namespace UnityEditor.Recorder
             return obj ;
         }
 
+        public override List<InputGroupFilter> GetInputGroups()
+        {
+            return new List<InputGroupFilter>()
+            {
+                new InputGroupFilter()
+                {
+                    title = "Pixels",
+                    typesFilter = new List<InputFilter>()
+                    {
+                        new TInputFilter<ScreenCaptureInputSettings>("Screen"),
+                        new TInputFilter<CBRenderTextureInputSettings>("Camera(s)"),
+                        new TInputFilter<RenderTextureSamplerSettings>("Sampling"),
+                        new TInputFilter<RenderTextureInputSettings>("Render Texture"),
+                    }
+                },
+                new InputGroupFilter()
+                {
+                    title = "Sound",
+                    typesFilter = new List<InputFilter>()
+                    {
+                        new TInputFilter<AudioInputSettings>("Audio"),
+                    }
+                }
+            };
+        }
+
     }
 }
+
+#endif

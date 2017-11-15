@@ -1,4 +1,8 @@
+#if UNITY_2017_3_OR_NEWER
+
 using System;
+using System.Collections.Generic;
+using UnityEditor.Recorder.Input;
 using UnityEngine;
 using UnityEngine.Recorder;
 using UnityEngine.Recorder.Input;
@@ -24,28 +28,17 @@ namespace UnityEditor.Recorder
 
             if (target == null)
                 return;
-            m_RTInputSelector = new RTInputSelector( target as RecorderSettings, "Pixels");
 
             var pf = new PropertyFinder<MediaRecorderSettings>(serializedObject);
             m_OutputFormat = pf.Find(w => w.m_OutputFormat);
         }
-
+#if UNITY_2018_1_OR_NEWER
+#else
         protected override void OnEncodingGroupGui()
         {
             // hiding this group by not calling parent class's implementation.  
         }
-
-        protected override void OnInputGui(int inputIndex)
-        {
-            if (inputIndex == 0)
-            {
-                var input = (target as RecorderSettings).inputsSettings[inputIndex];
-                if (m_RTInputSelector.OnInputGui(ref input))
-                    ChangeInputSettings(inputIndex, input);                
-            }
-
-            base.OnInputGui(inputIndex);
-        }
+#endif
 
         protected override void OnOutputGui()
         {
@@ -69,5 +62,9 @@ namespace UnityEditor.Recorder
 
             return EFieldDisplayState.Enabled;
         }
+
+
     }
 }
+
+#endif
