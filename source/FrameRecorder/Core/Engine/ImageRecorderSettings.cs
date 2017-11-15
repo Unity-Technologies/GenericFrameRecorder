@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.Remoting.Messaging;
 
 namespace UnityEngine.Recorder
 {

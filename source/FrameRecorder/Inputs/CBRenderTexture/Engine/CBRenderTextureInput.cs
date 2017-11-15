@@ -14,7 +14,6 @@ namespace UnityEngine.Recorder.Input
             public Canvas canvas;
         }
 
-        static int m_ModifiedResolutionCount;
         bool m_ModifiedResolution;
         Shader m_shCopy;
         Material m_CopyMaterial;
@@ -87,7 +86,7 @@ namespace UnityEngine.Recorder.Input
             m_quad = CreateFullscreenQuad();
             switch (cbSettings.source)
             {
-                case EImageSource.GameDisplay:
+                case EImageSource.ActiveCameras:
                 case EImageSource.MainCamera:
                 case EImageSource.TaggedCamera:
                 {
@@ -126,7 +125,7 @@ namespace UnityEngine.Recorder.Input
                             if (size == null)
                                 size = GameViewSize.AddSize(outputWidth, outputHeight);
 
-                            if (m_ModifiedResolutionCount == 0)
+                            if (GameViewSize.m_ModifiedResolutionCount == 0)
                                 GameViewSize.BackupCurrentSize();
                             else
                             {
@@ -135,7 +134,7 @@ namespace UnityEngine.Recorder.Input
                                     Debug.LogError("Requestion a resultion change while a recorder's input has already requested one! Undefined behaviour.");
                                 }
                             }
-                            m_ModifiedResolutionCount++;
+                            GameViewSize.m_ModifiedResolutionCount++;
                             m_ModifiedResolution = true;
                             GameViewSize.SelectSize(size);
                             break;
@@ -167,7 +166,7 @@ namespace UnityEngine.Recorder.Input
         {
             switch (cbSettings.source)
             {
-                case EImageSource.GameDisplay:
+                case EImageSource.ActiveCameras:
                 {
                     if (targetCamera == null)
                     {
@@ -291,8 +290,8 @@ namespace UnityEngine.Recorder.Input
 #if UNITY_EDITOR
                 if (m_ModifiedResolution)
                 {
-                    m_ModifiedResolutionCount --;
-                    if( m_ModifiedResolutionCount == 0 )
+                    GameViewSize.m_ModifiedResolutionCount --;
+                    if(GameViewSize.m_ModifiedResolutionCount == 0 )
                         GameViewSize.RestoreSize();
                 }
 #endif

@@ -7,7 +7,7 @@ namespace UnityEditor.Recorder.Input
     [CustomEditor(typeof(RenderTextureSamplerSettings))]
     public class RenderTextureSamplerEditor : InputEditor
     {
-        static EImageSource m_SupportedSources = EImageSource.GameDisplay | EImageSource.MainCamera | EImageSource.TaggedCamera;
+        static EImageSource m_SupportedSources = EImageSource.ActiveCameras | EImageSource.MainCamera | EImageSource.TaggedCamera;
         string[] m_MaskedSourceNames;
         SerializedProperty m_Source;
         SerializedProperty m_RenderSize;

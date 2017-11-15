@@ -20,8 +20,8 @@ namespace UnityEngine.Recorder
         internal static GameObject GetGameObject(bool createIfAbsent)
         {
             var go = GameObject.Find(k_HostGoName);
-            if (go != null && go.scene != SceneManager.GetActiveScene())
-                go = null;
+            /*if (go != null && go.scene != SceneManager.GetActiveScene())
+                go = null;*/
 
             if (go == null && createIfAbsent)
             {

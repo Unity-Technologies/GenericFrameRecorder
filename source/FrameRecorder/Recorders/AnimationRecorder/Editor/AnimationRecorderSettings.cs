@@ -33,5 +33,21 @@ namespace UnityEditor.Experimental.Recorder
                        Application.platform == RuntimePlatform.WindowsEditor;
             }
         }
+
+        public override List<InputGroupFilter> GetInputGroups()
+        {
+            return new List<InputGroupFilter>()
+            {
+                new InputGroupFilter()
+                {
+                    title = "Animation",
+                    typesFilter = new List<InputFilter>()
+                    {
+                        new TInputFilter<AnimationClipSettings>("GameObject Recorder"),
+                    }
+                }
+            };
+        }
+
     }
 }

@@ -60,5 +60,24 @@ namespace UnityEngine.Recorder
 
             return false;
         }
+
+        public override List<InputGroupFilter> GetInputGroups()
+        {
+            return new List<InputGroupFilter>()
+            {
+                new InputGroupFilter()
+                {
+                    title = "Pixels", typesFilter = new List<InputFilter>()
+                    {
+#if UNITY_2017_3_OR_NEWER
+                        new TInputFilter<ScreenCaptureInputSettings>("Screen"),
+#endif
+                        new TInputFilter<CBRenderTextureInputSettings>("Camera(s)"),
+                        new TInputFilter<RenderTextureSamplerSettings>("Sampling"),
+                        new TInputFilter<RenderTextureInputSettings>("Render Texture"),
+                    }
+                }
+            };
+        }
     }
 }

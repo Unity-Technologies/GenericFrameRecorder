@@ -7,7 +7,7 @@ namespace UnityEditor.Recorder.Input
     [CustomEditor(typeof(CBRenderTextureInputSettings))]
     public class CBRenderTextureInputSettingsEditor : InputEditor
     {
-        static EImageSource m_SupportedSources = EImageSource.MainCamera | EImageSource.GameDisplay | EImageSource.TaggedCamera;
+        static EImageSource m_SupportedSources = EImageSource.MainCamera | EImageSource.ActiveCameras | EImageSource.TaggedCamera;
         string[] m_MaskedSourceNames;
         SerializedProperty m_Source;
         SerializedProperty m_CameraTag;
@@ -64,7 +64,7 @@ namespace UnityEditor.Recorder.Input
                     AddProperty(m_RenderAspect, () => EditorGUILayout.PropertyField(m_RenderAspect, new GUIContent("Aspect Ratio")));
                 }
 
-                using (new EditorGUI.DisabledScope( inputType != EImageSource.GameDisplay ))
+                using (new EditorGUI.DisabledScope( inputType != EImageSource.ActiveCameras ))
                 {
                     AddProperty(m_CaptureUI, () => EditorGUILayout.PropertyField(m_CaptureUI, new GUIContent("Capture UI")));
                 }

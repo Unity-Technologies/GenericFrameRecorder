@@ -153,7 +153,7 @@ namespace UnityEngine.Recorder.Input
         {
             switch (rtsSettings.source)
             {
-                case EImageSource.GameDisplay:
+                case EImageSource.ActiveCameras:
                 {
                     bool sort = false;
 

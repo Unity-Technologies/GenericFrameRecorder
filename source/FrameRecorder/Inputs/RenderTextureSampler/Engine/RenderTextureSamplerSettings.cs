@@ -15,7 +15,7 @@
 
     public class RenderTextureSamplerSettings : InputSettings<RenderTextureSampler>
     {
-        public EImageSource source = EImageSource.GameDisplay;
+        public EImageSource source = EImageSource.ActiveCameras;
         public EImageDimension m_RenderSize = EImageDimension.x720p_HD;
         public EImageDimension m_FinalSize = EImageDimension.x720p_HD;
         public EImageAspect m_AspectRatio = EImageAspect.x16_9;
@@ -30,7 +30,7 @@
         public override bool isValid {
             get
             {
-                return source == EImageSource.GameDisplay || source == EImageSource.MainCamera; 
+                return source == EImageSource.ActiveCameras || source == EImageSource.MainCamera; 
             }
         }
     }

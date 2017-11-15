@@ -14,6 +14,7 @@ namespace UnityEditor.Recorder
 
     public abstract class RecorderEditor : Editor
     {
+
         protected class InputEditorState
         {
             InputEditor.IsFieldAvailableDelegate m_Validator;
@@ -43,6 +44,7 @@ namespace UnityEditor.Recorder
             }
         }
         protected List<InputEditorState> m_InputEditors;
+        RTInputSelector m_RTInputSelector;
 
         SerializedProperty m_FrameRateMode;
         SerializedProperty m_FrameRate;
@@ -80,6 +82,8 @@ namespace UnityEditor.Recorder
                 m_FrameRateExact = pf.Find(x => x.m_FrameRateExact);
                 m_DestinationPath = pf.Find(w => w.m_DestinationPath);
                 m_BaseFileName = pf.Find(w => w.m_BaseFileName);
+
+                m_RTInputSelector = new RTInputSelector(target as RecorderSettings);
 
                 BuildInputEditors();
             }
@@ -201,6 +205,11 @@ namespace UnityEditor.Recorder
 
         protected virtual void OnInputGui( int inputIndex )
         {
+            var inputs = (target as RecorderSettings).inputsSettings;
+            var input = inputs[inputIndex];
+            if (m_RTInputSelector.OnInputGui(inputIndex, ref input))
+                ChangeInputSettings(inputIndex, input);  
+
            m_InputEditors[inputIndex].editor.OnInspectorGUI();
         }
 

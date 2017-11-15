@@ -2,7 +2,7 @@
 {
     public class CBRenderTextureInputSettings : InputSettings<CBRenderTextureInput>
     {
-        public EImageSource source = EImageSource.GameDisplay;
+        public EImageSource source = EImageSource.ActiveCameras;
         public EImageDimension m_RenderSize = EImageDimension.x720p_HD;
         public EImageAspect m_RenderAspect = EImageAspect.x16_9;
         public string m_CameraTag;

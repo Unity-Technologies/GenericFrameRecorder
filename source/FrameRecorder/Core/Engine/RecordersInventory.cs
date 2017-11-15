@@ -34,7 +34,18 @@ namespace UnityEngine.Recorder
             var attribType = typeof(RecorderAttribute);
             foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
             {
-                foreach (var t in a.GetTypes())
+                Type[] types = null;
+                try
+                {
+                    types = a.GetTypes();
+                }
+                catch (Exception)
+                {
+                    Debug.LogError( "Failed reflecting assembly: " + a.FullName );
+                    continue;
+                }
+
+                foreach (var t in types)
                 {
                     var attributes = t.GetCustomAttributes(attribType, false);
                     if (attributes.Length != 0)

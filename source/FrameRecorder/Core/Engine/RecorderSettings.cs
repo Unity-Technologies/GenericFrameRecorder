@@ -5,10 +5,10 @@ namespace UnityEngine.Recorder
 {
     [Flags]
     public enum EImageSource
-    {       
-        GameDisplay = 1,
+    {
+        ActiveCameras = 1,
         SceneView = 2,
-        MainCamera  = 4,
+        MainCamera = 4,
         TaggedCamera = 8,
         RenderTexture = 16,
     }
@@ -26,7 +26,33 @@ namespace UnityEngine.Recorder
         FrameInterval,
         TimeInterval
     }
-  
+
+    public class InputFilter
+    {
+        public InputFilter(string title, Type type)
+        {
+            this.title = title;
+            this.type = type;
+        }
+        public string title { get; private set; }
+        public Type type { get; private set; }
+
+    }
+
+
+    public class TInputFilter<T> : InputFilter
+    {
+        public TInputFilter(string title) : base( title, typeof(T))
+        {
+        }
+    }
+
+    public struct InputGroupFilter
+    {
+        public string title;
+        public List<InputFilter> typesFilter;
+    }
+
     /// <summary>
     /// What is this: Base settings class for all Recorders.
     /// Motivation  : All recorders share a basic common set of settings and some of them are known to the 
@@ -42,7 +68,7 @@ namespace UnityEngine.Recorder
         string m_AssetID;
         public int m_CaptureEveryNthFrame = 1;
         public FrameRateMode m_FrameRateMode = FrameRateMode.Constant;
-        [Range(1,120)]
+        [Range(1, 120)]
         public double m_FrameRate = 30.0;
         public EFrameRate m_FrameRateExact = EFrameRate.FR_CUSTOM;
         public int m_StartFrame;
@@ -59,10 +85,7 @@ namespace UnityEngine.Recorder
 
         public InputSettingsList inputsSettings
         {
-            get
-            {
-                return m_InputsSettings;
-            }
+            get { return m_InputsSettings; }
         }
 
 
@@ -91,7 +114,7 @@ namespace UnityEngine.Recorder
             {
                 if (string.IsNullOrEmpty(m_RecorderTypeName))
                     return null;
-                return Type.GetType(m_RecorderTypeName); 
+                return Type.GetType(m_RecorderTypeName);
             }
             set { m_RecorderTypeName = value == null ? string.Empty : value.AssemblyQualifiedName; }
         }
@@ -117,7 +140,10 @@ namespace UnityEngine.Recorder
             }
         }
 
-        public virtual bool isPlatformSupported {get { return true; }}
+        public virtual bool isPlatformSupported
+        {
+            get { return true; }
+        }
 
         public virtual void OnEnable()
         {
@@ -131,7 +157,7 @@ namespace UnityEngine.Recorder
                 return;
 
             m_InputsSettings.Rebuild();
-            
+
 #if UNITY_EDITOR
             if (m_InputsSettings.hasBrokenBindings)
             {
@@ -152,27 +178,29 @@ namespace UnityEngine.Recorder
 
         public abstract List<RecorderInputSetting> GetDefaultInputSettings();
 
-        public T NewInputSettingsObj<T>( string title ) where T: class
+        public T NewInputSettingsObj<T>(string title) where T : class
         {
             return NewInputSettingsObj(typeof(T), title) as T;
         }
 
-        public virtual RecorderInputSetting NewInputSettingsObj(Type type, string title )
+        public virtual RecorderInputSetting NewInputSettingsObj(Type type, string title)
         {
-            var obj = (RecorderInputSetting)ScriptableObject.CreateInstance(type) ;
+            var obj = (RecorderInputSetting)ScriptableObject.CreateInstance(type);
             obj.m_DisplayName = title;
             obj.name = Guid.NewGuid().ToString();
             return obj;
         }
-        
+
+        public abstract List<InputGroupFilter> GetInputGroups();
+
         /// <summary>
         /// Allows for recorder specific settings logic to correct/adjust settings that might be missed by it's editor.
         /// </summary>
         /// <returns>true if setting where changed</returns>
         public virtual bool SelfAdjustSettings()
         {
-            return false; 
+            return false;
+        }
+
     }
-        
-}
 }
