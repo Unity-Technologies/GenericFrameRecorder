@@ -49,7 +49,7 @@ namespace UnityEngine.Recorder
                 tex = new Texture2D(width, height, m_Settings.m_OutputFormat != PNGRecordeOutputFormat.EXR ? TextureFormat.RGBA32 : TextureFormat.RGBAFloat, false);
                 var backupActive = RenderTexture.active;
                 RenderTexture.active = input.outputRT;
-                tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+                tex.ReadPixels(new Rect(0, 0, width, height), 0, 0, false);
                 tex.Apply();
                 RenderTexture.active = backupActive;
             }

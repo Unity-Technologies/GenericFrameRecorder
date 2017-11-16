@@ -1,4 +1,6 @@
-﻿using UnityEditor.Experimental.Animations;
+﻿using System;
+using UnityEditor.Experimental.Animations;
+using UnityEngine;
 using UnityEngine.Recorder;
 
 namespace UnityEditor.Experimental.Recorder.Input
@@ -7,11 +9,20 @@ namespace UnityEditor.Experimental.Recorder.Input
     {
         public GameObjectRecorder m_gameObjectRecorder;
         private float m_time;
+
         public override void BeginRecording(RecordingSession session)
         {
             var aniSettings = (settings as AnimationInputSettings);
-            var srcGO= aniSettings.gameObject;
+
+            if (!aniSettings.enabled)
+                return;
+
+            var srcGO = aniSettings.gameObject;
+#if UNITY_2018_1_OR_NEWER
+            m_gameObjectRecorder = new GameObjectRecorder(srcGO);
+#else
             m_gameObjectRecorder = new GameObjectRecorder {root = srcGO};
+#endif
             foreach (var binding in aniSettings.bindingType)
             {
                 m_gameObjectRecorder.BindComponent(srcGO, binding, aniSettings.recursive); 
@@ -27,5 +38,7 @@ namespace UnityEditor.Experimental.Recorder.Input
                 m_time = session.recorderTime;
             }
         }
+
+        
     }
 }

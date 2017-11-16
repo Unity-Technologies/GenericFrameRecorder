@@ -72,7 +72,7 @@ namespace UnityEditor.Recorder.Timeline
             if (m_recorderSelector.selectedRecorder == null)
                 return;
 
-            if (clip.m_Settings != null && RecordersInventory.GetRecorderInfo(m_recorderSelector.selectedRecorder).settings != clip.m_Settings.GetType())
+            if (clip.m_Settings != null && RecordersInventory.GetRecorderInfo(m_recorderSelector.selectedRecorder).settingsClass != clip.m_Settings.GetType())
             {
                 UnityHelpers.Destroy(clip.m_Settings, true);
                 clip.m_Settings = null;

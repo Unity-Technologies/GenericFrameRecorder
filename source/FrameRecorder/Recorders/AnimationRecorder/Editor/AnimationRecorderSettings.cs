@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor.Experimental.Recorder.Input;
 using UnityEngine;
 using UnityEngine.Recorder;
@@ -49,5 +50,17 @@ namespace UnityEditor.Experimental.Recorder
             };
         }
 
+        public override bool isValid
+        {
+            get
+            {
+                if (inputsSettings == null)
+                    return false;
+                if (!inputsSettings.Cast<AnimationInputSettings>().Any(x => x != null && x.enabled))
+                    return false;
+
+                return base.isValid; 
+            }
+        }
     }
 }

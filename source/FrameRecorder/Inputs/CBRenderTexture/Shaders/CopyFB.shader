@@ -47,7 +47,7 @@ float2 get_texcoord_gb(v2f i)
 half4 copy_framebuffer(v2f I) : SV_Target
 {
     float2 t = get_texcoord(I);
-#if !defined(OFFSCREEN) || !defined(UNITY_UV_STARTS_AT_TOP)
+#if !defined(OFFSCREEN) //|| !defined(UNITY_UV_STARTS_AT_TOP)
     t.y = 1.0 - t.y;
 #endif
     half4 O = tex2D(_TmpFrameBuffer, t);

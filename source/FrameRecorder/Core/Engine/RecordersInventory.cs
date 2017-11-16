@@ -10,8 +10,8 @@ namespace UnityEngine.Recorder
     public class RecorderInfo
     {
         public Type recorderType;
-        public Type settings;
-        public Type settingsEditor;
+        public Type settingsClass;
+        public Type settingsEditorClass;
         public string category;
         public string displayName;
     }
@@ -109,7 +109,7 @@ namespace UnityEngine.Recorder
                 var info = new RecorderInfo()
                 {
                     recorderType = recorderType,
-                    settings = recorderAttrib.settings,
+                    settingsClass = recorderAttrib.settings,
                     category = recorderAttrib.category,
                     displayName = recorderAttrib.displayName
                 };
@@ -195,7 +195,7 @@ namespace UnityEngine.Recorder
             if (recorderinfo != null)
             {
                 RecorderSettings settings = null;
-                settings = ScriptableObject.CreateInstance(recorderinfo.settings) as RecorderSettings;
+                settings = ScriptableObject.CreateInstance(recorderinfo.settingsClass) as RecorderSettings;
                 settings.name = "Recorder Settings";
                 settings.recorderType = recorderType;
 

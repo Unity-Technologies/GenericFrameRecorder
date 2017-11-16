@@ -18,6 +18,10 @@ namespace UnityEditor.Recorder
 
         Action m_SetRecorderCallback;
 
+        public string category {
+            get { return m_Category;}
+        }
+
         public RecorderSelector(Action setRecorderCallback, bool categoryIsReadonly)
         {
             m_CategoryIsReadonly = categoryIsReadonly;

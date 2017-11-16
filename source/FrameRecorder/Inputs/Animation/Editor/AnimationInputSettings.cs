@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Recorder;
 
@@ -34,7 +35,12 @@ namespace UnityEditor.Experimental.Recorder.Input
         {
             get
             {
-                return !enabled || gameObject != null && bindingType.Count !=0; 
+                return !enabled || 
+                    (
+                        gameObject != null 
+                        && bindingType.Count > 0 
+                        && bindingType.All( x => !typeof(MonoBehaviour).IsAssignableFrom(x) && !typeof(ScriptableObject).IsAssignableFrom(x) )
+                    ); 
             }
         }
     }
