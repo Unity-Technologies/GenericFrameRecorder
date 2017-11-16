@@ -62,5 +62,25 @@ namespace UTJ.FrameCapturer.Recorders
             };
         }
 
+        public override bool SelfAdjustSettings()
+        {
+            if (inputsSettings.Count == 0 )
+                return false;
+
+            var adjusted = false;
+
+            if (inputsSettings[0] is ImageInputSettings)
+            {
+                var iis = (ImageInputSettings)inputsSettings[0];
+                if (iis.maxSupportedSize != EImageDimension.x4320p_8K)
+                {
+                    iis.maxSupportedSize = EImageDimension.x4320p_8K;
+                    adjusted = true;
+                }
+            }
+            return adjusted;
+        }
+
+
     }
 }

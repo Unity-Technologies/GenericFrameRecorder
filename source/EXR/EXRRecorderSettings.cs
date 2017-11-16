@@ -20,5 +20,6 @@ namespace UTJ.FrameCapturer.Recorders
         {
             return new List<RecorderInputSetting>() { NewInputSettingsObj<CBRenderTextureInputSettings>("Pixels") };
         }
+
     }
 }
