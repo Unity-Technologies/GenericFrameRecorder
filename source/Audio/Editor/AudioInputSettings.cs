@@ -1,9 +1,10 @@
+using System;
 using UnityEngine.Audio;
 using UnityEngine.Recorder;
 
 namespace UnityEditor.Recorder.Input
 {
-    public class AudioInputSettings : InputSettings<AudioInput>
+    public class AudioInputSettings : RecorderInputSetting
     {
         public bool                         m_PreserveAudio = true;
 
@@ -19,6 +20,12 @@ namespace UnityEditor.Recorder.Input
         }
         public MixerGroupRecorderListItem[] m_AudioMixerGroups;
 #endif
+
+        public override Type inputType
+        {
+            get { return typeof(AudioInput); }
+        }
+
         public override bool isValid { get { return true; } }
     }
 }

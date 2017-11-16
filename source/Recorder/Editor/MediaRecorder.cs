@@ -121,6 +121,11 @@ namespace UnityEditor.Recorder
                 return false;
             }
 
+            if (width > 4096 || height > 2160 && m_Settings.m_OutputFormat == MediaRecorderOutputFormat.MP4)
+            {
+                Debug.LogError("Mp4 format does not support requested resolution.");
+            }
+
             var cbRenderTextureInput = m_Inputs[0] as CBRenderTextureInput;
 
             bool includeAlphaFromTexture = cbRenderTextureInput != null && cbRenderTextureInput.cbSettings.m_AllowTransparency;

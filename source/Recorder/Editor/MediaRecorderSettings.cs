@@ -40,7 +40,10 @@ namespace UnityEditor.Recorder
 
         public override bool isValid
         {
-            get { return base.isValid && !string.IsNullOrEmpty(m_DestinationPath.GetFullPath()); }
+            get
+            {
+                return base.isValid && !string.IsNullOrEmpty(m_DestinationPath.GetFullPath()); 
+            }
         }
 
         public override RecorderInputSetting NewInputSettingsObj(Type type, string title)
@@ -85,6 +88,27 @@ namespace UnityEditor.Recorder
             };
         }
 
+        public override bool SelfAdjustSettings()
+        {
+            if (inputsSettings.Count == 0 )
+                return false;
+
+            var adjusted = false;
+
+            if (inputsSettings[0] is ImageInputSettings)
+            {
+                var iis = (ImageInputSettings)inputsSettings[0];
+                var maxRes = m_OutputFormat == MediaRecorderOutputFormat.MP4 ? EImageDimension.x2160p_4K : EImageDimension.x4320p_8K;
+                if (iis.maxSupportedSize != maxRes)
+                {
+                    iis.maxSupportedSize = maxRes;
+                    adjusted = true;
+                }
+            }
+
+            return adjusted;
+        }
+       
     }
 }
 
