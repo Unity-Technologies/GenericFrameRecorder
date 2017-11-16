@@ -45,6 +45,9 @@ namespace UTJ.FrameCapturer.Recorders
             if( property.name == "m_CaptureEveryNthFrame" )
                 return EFieldDisplayState.Hidden;
 
+            if (property.name == "m_AllowTransparency"  )
+                return EFieldDisplayState.Hidden;
+
             return base.GetFieldDisplayState(property);
         }
     }

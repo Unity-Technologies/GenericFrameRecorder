@@ -12,7 +12,7 @@ namespace UTJ.FrameCapturer.Recorders
 
         GIFRecorderSettings()
         {
-            m_BaseFileName.pattern = "animation.<ext>";
+            m_BaseFileName.pattern = "image.<ext>";
         }
 
         public override List<RecorderInputSetting> GetDefaultInputSettings()
