@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.Recorder;
-using UnityEngine.Recorder.Input;
 
 namespace UnityEditor.Recorder
 {

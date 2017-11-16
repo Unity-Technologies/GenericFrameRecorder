@@ -9,6 +9,8 @@ namespace UnityEditor.Recorder.Input
     {
         static EImageSource m_SupportedSources = EImageSource.MainCamera | EImageSource.ActiveCameras | EImageSource.TaggedCamera;
         string[] m_MaskedSourceNames;
+        ResolutionSelector m_ResSelector;
+
         SerializedProperty m_Source;
         SerializedProperty m_CameraTag;
         SerializedProperty m_RenderSize;
@@ -22,14 +24,18 @@ namespace UnityEditor.Recorder.Input
             if (target == null)
                 return;
 
+
             var pf = new PropertyFinder<CBRenderTextureInputSettings>(serializedObject);
             m_Source = pf.Find(w => w.source);
             m_CameraTag = pf.Find(w => w.m_CameraTag);
-            m_RenderSize = pf.Find(w => w.m_RenderSize);
-            m_RenderAspect = pf.Find(w => w.m_RenderAspect);
+
+            m_RenderSize = pf.Find(w => w.m_OutputSize);
+            m_RenderAspect = pf.Find(w => w.m_AspectRatio);
             m_FlipFinalOutput = pf.Find( w => w.m_FlipFinalOutput );
             m_Transparency = pf.Find(w => w.m_AllowTransparency);
             m_CaptureUI = pf.Find(w => w.m_CaptureUI);
+
+            m_ResSelector = new ResolutionSelector();
         }
 
         public override void OnInspectorGUI()
@@ -58,7 +64,11 @@ namespace UnityEditor.Recorder.Input
 
             if (inputType != EImageSource.RenderTexture)
             {
-                AddProperty(m_RenderSize, () => EditorGUILayout.PropertyField(m_RenderSize, new GUIContent("Resolution")));
+                AddProperty(m_RenderSize, () =>
+                {
+                    m_ResSelector.OnInspectorGUI( (target as ImageInputSettings).maxSupportedSize, m_RenderSize );
+                });
+
                 if (m_RenderSize.intValue > (int)EImageDimension.Window)
                 {
                     AddProperty(m_RenderAspect, () => EditorGUILayout.PropertyField(m_RenderAspect, new GUIContent("Aspect Ratio")));

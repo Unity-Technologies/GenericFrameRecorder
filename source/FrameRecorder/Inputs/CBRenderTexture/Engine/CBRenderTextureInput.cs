@@ -93,7 +93,7 @@ namespace UnityEngine.Recorder.Input
                     int screenWidth = Screen.width;
                     int screenHeight = Screen.height;
 #if UNITY_EDITOR
-                    switch (cbSettings.m_RenderSize)
+                    switch (cbSettings.m_OutputSize)
                     {
                         case EImageDimension.Window:
                         {
@@ -112,8 +112,8 @@ namespace UnityEngine.Recorder.Input
 
                         default:
                         {
-                            outputHeight = (int)cbSettings.m_RenderSize;
-                            outputWidth = (int)(outputHeight * AspectRatioHelper.GetRealAR(cbSettings.m_RenderAspect));
+                            outputHeight = (int)cbSettings.m_OutputSize;
+                            outputWidth = (int)(outputHeight * AspectRatioHelper.GetRealAR(cbSettings.m_AspectRatio));
 
                             if (cbSettings.m_ForceEvenSize)
                             {

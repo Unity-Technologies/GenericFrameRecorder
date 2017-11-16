@@ -106,7 +106,7 @@ namespace UnityEngine.Recorder.Input
                 m_VFlipper = new TextureFlipper();
 
             // Below here is considered 'void Start()', but we run it for directly "various reasons".
-            if (rtsSettings.m_FinalSize > rtsSettings.m_RenderSize)
+            if (rtsSettings.m_OutputSize > rtsSettings.m_RenderSize)
                 throw new UnityException("Upscaling is not supported! Output dimension must be smaller or equal to render dimension.");
 
             // Calculate aspect and render/output sizes
@@ -115,7 +115,7 @@ namespace UnityEngine.Recorder.Input
             var aspect = AspectRatioHelper.GetRealAR(rtsSettings.m_AspectRatio);
             m_renderHeight = (int)rtsSettings.m_RenderSize;
             m_renderWidth = Mathf.Min(16 * 1024, Mathf.RoundToInt(m_renderHeight * aspect));
-            outputHeight = (int)rtsSettings.m_FinalSize;
+            outputHeight = (int)rtsSettings.m_OutputSize;
             outputWidth = Mathf.Min(16 * 1024, Mathf.RoundToInt(outputHeight * aspect));
             if (rtsSettings.m_ForceEvenSize)
             {
@@ -302,7 +302,7 @@ namespace UnityEngine.Recorder.Input
         {
             PerformSubSampling();
 
-            if (rtsSettings.m_RenderSize == rtsSettings.m_FinalSize)
+            if (rtsSettings.m_RenderSize == rtsSettings.m_OutputSize)
             {
                 // Blit with normalization if sizes match.
                 m_normalizeMaterial.SetFloat("_NormalizationFactor", 1.0f / (float)rtsSettings.m_SuperSampling);

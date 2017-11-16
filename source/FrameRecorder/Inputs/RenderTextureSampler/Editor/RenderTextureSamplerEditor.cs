@@ -16,6 +16,7 @@ namespace UnityEditor.Recorder.Input
         SerializedProperty m_SuperSampling;
         SerializedProperty m_CameraTag;
         SerializedProperty m_FlipFinalOutput;
+        ResolutionSelector m_ResSelector;
 
         protected void OnEnable()
         {
@@ -27,9 +28,10 @@ namespace UnityEditor.Recorder.Input
             m_RenderSize = pf.Find(w => w.m_RenderSize);
             m_AspectRatio = pf.Find(w => w.m_AspectRatio);
             m_SuperSampling = pf.Find(w => w.m_SuperSampling);
-            m_FinalSize = pf.Find(w => w.m_FinalSize);
+            m_FinalSize = pf.Find(w => w.m_OutputSize);
             m_CameraTag = pf.Find(w => w.m_CameraTag);
             m_FlipFinalOutput = pf.Find( w => w.m_FlipFinalOutput );
+            m_ResSelector = new ResolutionSelector();
         }
 
 
@@ -73,9 +75,12 @@ namespace UnityEditor.Recorder.Input
                 }
             });
 
-            AddProperty(m_FinalSize, () => EditorGUILayout.PropertyField(m_FinalSize, new GUIContent("Final resolution")));
-            if (m_FinalSize.intValue > renderSize.intValue)
-                renderSize.intValue = m_FinalSize.intValue;
+            AddProperty(m_FinalSize, () =>
+            {
+                m_ResSelector.OnInspectorGUI( (target as ImageInputSettings).maxSupportedSize, m_FinalSize );
+                if (m_FinalSize.intValue > renderSize.intValue)
+                    renderSize.intValue = m_FinalSize.intValue;
+            });
 
             if (Verbose.enabled)
             {

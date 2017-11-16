@@ -8,7 +8,7 @@ namespace UnityEditor.Experimental.Recorder.Input
 {
     [Serializable]
     [StoreInScene]
-    public class AnimationInputSettings : InputSettings<AnimationInput>
+    public class AnimationInputSettings : RecorderInputSetting
     {
         public GameObject gameObject;
         public bool enabled = false;
@@ -29,6 +29,11 @@ namespace UnityEditor.Experimental.Recorder.Input
                 }
                 return ret;
             }
+        }
+
+        public override Type inputType
+        {
+            get { return typeof(AnimationInput); }
         }
 
         public override bool isValid

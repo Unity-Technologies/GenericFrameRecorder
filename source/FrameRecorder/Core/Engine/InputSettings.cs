@@ -28,16 +28,4 @@ namespace UnityEngine.Recorder
         }
     }
 
-    /// <summary>
-    /// What is this: 
-    /// Motivation  : 
-    /// Notes: 
-    /// </summary>    
-    public abstract class InputSettings<TInput> : RecorderInputSetting
-    {
-        public override Type inputType
-        {
-            get { return typeof(TInput); }
-        }
-    }
 }

@@ -34,7 +34,9 @@ namespace UnityEngine.Recorder
         {
             get
             {
-                return base.isValid && !string.IsNullOrEmpty(m_DestinationPath.GetFullPath()) && !string.IsNullOrEmpty(m_BaseFileName.pattern);
+                return base.isValid 
+                    && !string.IsNullOrEmpty(m_DestinationPath.GetFullPath()) 
+                    && !string.IsNullOrEmpty(m_BaseFileName.pattern);
             }
         }
 
@@ -46,19 +48,33 @@ namespace UnityEngine.Recorder
 
         public override bool SelfAdjustSettings()
         {
-            if (inputsSettings.Count == 0 || !(inputsSettings[0] is RenderTextureSamplerSettings))
+            if (inputsSettings.Count == 0 )
                 return false;
 
-            var input = (RenderTextureSamplerSettings)inputsSettings[0];
+            bool adjusted = false;
 
-            var colorSpace = m_OutputFormat == PNGRecordeOutputFormat.EXR ? ColorSpace.Linear : ColorSpace.Gamma;
-            if (input.m_ColorSpace != colorSpace)
+            if (inputsSettings[0] is RenderTextureSamplerSettings)
             {
-                input.m_ColorSpace = colorSpace;
-                return true;
+                var input = (RenderTextureSamplerSettings)inputsSettings[0];
+                var colorSpace = m_OutputFormat == PNGRecordeOutputFormat.EXR ? ColorSpace.Linear : ColorSpace.Gamma;
+                if (input.m_ColorSpace != colorSpace)
+                {
+                    input.m_ColorSpace = colorSpace;
+                    adjusted = true;
+                }
             }
 
-            return false;
+            if (inputsSettings[0] is ImageInputSettings)
+            {
+                var iis = (ImageInputSettings)inputsSettings[0];
+                if (iis.maxSupportedSize != EImageDimension.x4320p_8K)
+                {
+                    iis.maxSupportedSize = EImageDimension.x4320p_8K;
+                    adjusted = true;
+                }
+            }
+
+            return adjusted;
         }
 
         public override List<InputGroupFilter> GetInputGroups()
