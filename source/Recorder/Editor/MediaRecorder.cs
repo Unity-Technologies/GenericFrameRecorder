@@ -89,7 +89,7 @@ namespace UnityEditor.Recorder
             catch (Exception)
             {
                 Debug.LogError(string.Format( "Movie recorder output directory \"{0}\" could not be created.", m_Settings.m_DestinationPath.GetFullPath()));
-                return false;                
+                return false;
             }
 
             int width;
@@ -135,7 +135,12 @@ namespace UnityEditor.Recorder
                 frameRate = RationalFromDouble(session.settings.m_FrameRate),
                 width = (uint)width,
                 height = (uint)height,
+#if UNITY_2018_1_OR_NEWER
+                includeAlpha = includeAlphaFromTexture,
+                //bitRateMode = (VideoBitrateMode)m_Settings.m_VideoBitRateMode
+#else
                 includeAlpha = includeAlphaFromTexture
+#endif
             };
 
             if (Verbose.enabled)

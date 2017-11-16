@@ -13,6 +13,9 @@ namespace UnityEditor.Recorder
     public class MediaRecorderEditor : RecorderEditor
     {
         SerializedProperty m_OutputFormat;
+#if UNITY_2018_1_OR_NEWER
+        SerializedProperty m_EncodingBitRateMode;
+#endif
         SerializedProperty m_FlipVertical;
         RTInputSelector m_RTInputSelector;
 
@@ -31,8 +34,16 @@ namespace UnityEditor.Recorder
 
             var pf = new PropertyFinder<MediaRecorderSettings>(serializedObject);
             m_OutputFormat = pf.Find(w => w.m_OutputFormat);
-        }
 #if UNITY_2018_1_OR_NEWER
+            m_EncodingBitRateMode = pf.Find(w => w.m_VideoBitRateMode);
+#endif
+        }
+
+#if UNITY_2018_1_OR_NEWER
+        protected override void OnEncodingGui()
+        {
+            AddProperty(m_EncodingBitRateMode, () => EditorGUILayout.PropertyField(m_EncodingBitRateMode, new GUIContent("Bitrate Mode")));
+        }
 #else
         protected override void OnEncodingGroupGui()
         {
@@ -59,8 +70,7 @@ namespace UnityEditor.Recorder
                 return (target as MediaRecorderSettings).m_OutputFormat == MediaRecorderOutputFormat.MP4 ? EFieldDisplayState.Disabled : EFieldDisplayState.Enabled;
             }
 
-
-            return EFieldDisplayState.Enabled;
+            return base.GetFieldDisplayState(property);
         }
 
 

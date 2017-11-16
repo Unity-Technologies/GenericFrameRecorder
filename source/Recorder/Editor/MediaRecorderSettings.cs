@@ -6,7 +6,6 @@ using UnityEditor.Recorder.Input;
 using UnityEngine;
 using UnityEngine.Recorder;
 using UnityEngine.Recorder.Input;
-
 namespace UnityEditor.Recorder
 {
 
@@ -20,6 +19,9 @@ namespace UnityEditor.Recorder
     public class MediaRecorderSettings : RecorderSettings
     {
         public MediaRecorderOutputFormat m_OutputFormat = MediaRecorderOutputFormat.MP4;
+#if UNITY_2018_1_OR_NEWER
+        public UnityEditor.VideoBitrateMode m_VideoBitRateMode = UnityEditor.VideoBitrateMode.High;
+#endif
         public bool m_AppendSuffix = false;
 
         MediaRecorderSettings()
@@ -47,6 +49,7 @@ namespace UnityEditor.Recorder
             if (type == typeof(CBRenderTextureInputSettings))
             {
                 (obj as CBRenderTextureInputSettings).m_ForceEvenSize = true;
+                (obj as CBRenderTextureInputSettings).m_FlipFinalOutput = Application.platform == RuntimePlatform.OSXEditor;
             }
             if (type == typeof(RenderTextureSamplerSettings))
             {
