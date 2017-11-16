@@ -16,6 +16,12 @@ namespace UTJ.FrameCapturer.Recorders
 
             m_Settings.m_DestinationPath.CreateDirectory();
 
+            var input = (BaseRenderTextureInput)m_Inputs[0];
+            if (input.outputWidth > 4096 || input.outputHeight > 2160 )
+            {
+                Debug.LogError("Mp4 format does not support requested resolution.");
+            }
+
             return true;
         }
 
