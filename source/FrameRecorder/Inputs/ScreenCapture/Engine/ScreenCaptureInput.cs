@@ -31,6 +31,7 @@ namespace UnityEngine.Recorder.Input
         {
             int screenWidth = Screen.width;
             int screenHeight = Screen.height;
+#if UNITY_EDITOR
             switch (scSettings.m_OutputSize)
             {
                 case EImageDimension.Window:
@@ -74,6 +75,8 @@ namespace UnityEngine.Recorder.Input
                     break;
                 }
             }
+#endif
+
         }
 
         public override void FrameDone(RecordingSession session)
