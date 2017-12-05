@@ -129,7 +129,7 @@ namespace UnityEngine.Recorder
 #else
                 .Replace(tags[(int)ETags.Product], "(prd-NA)")
 #endif
-                .Replace(tags[(int)ETags.Time], string.Format( "{0}h{1}m",session.m_SessionStartTS.ToString("hh"),session.m_SessionStartTS.ToString("mm") ))
+                .Replace(tags[(int)ETags.Time], string.Format( "{0}h{1}m",session.m_SessionStartTS.ToString("HH"),session.m_SessionStartTS.ToString("mm") ))
                 .Replace(tags[(int)ETags.Date], session.m_SessionStartTS.ToShortDateString().Replace('/','-'))
                 ;
             
