@@ -27,14 +27,18 @@ namespace UnityEditor.Experimental.FrameRecorder.Input
             if (animImputSetting.gameObject != null)
             {
                 var compos = animImputSetting.gameObject.GetComponents<UnityEngine.Component>()
-                    .Where(x => x != null).Select(x => x.GetType());
+                    .Where(x => x != null)
+                    .Select(x => x.GetType());
                 if (animImputSetting.recursive)
                 {
                     compos = compos.Union(animImputSetting.gameObject.GetComponentsInChildren<UnityEngine.Component>()
-                        .Where(x => x != null).Select(x => x.GetType()));
+                        .Where(x => x != null)
+                        .Select(x => x.GetType()));
                 }
                 
-                compos = compos.Distinct().ToList();
+                compos = compos.Distinct()
+                    .Where(x => !typeof(MonoBehaviour).IsAssignableFrom(x) && x != typeof(Animator)) // black list
+                    .ToList();
                 var compoNames = compos.Select(x => x.AssemblyQualifiedName).ToList();
 
                 int flags = 0;
