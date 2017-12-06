@@ -3,7 +3,7 @@
 using UnityEngine;
 using UnityEngine.Recorder;
 using UnityEngine.Recorder.Input;
-    
+
 namespace UnityEditor.Recorder.Input
 {
     [CustomEditor(typeof(ScreenCaptureInputSettings))]
@@ -29,7 +29,7 @@ namespace UnityEditor.Recorder.Input
         {
             AddProperty(m_RenderSize, () =>
             {
-                m_ResSelector.OnInspectorGUI( (target as ImageInputSettings).maxSupportedSize, m_RenderSize );
+                m_ResSelector.OnInspectorGUI((target as ImageInputSettings).maxSupportedSize, m_RenderSize);
             });
 
             if (m_RenderSize.intValue > (int)EImageDimension.Window)

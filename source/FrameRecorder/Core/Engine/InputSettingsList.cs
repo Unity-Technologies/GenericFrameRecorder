@@ -56,7 +56,10 @@ namespace UnityEngine.Recorder
                             Debug.LogError("Recorder Input asset in invalid!");
                         else
                         {
-                            Debug.LogWarning("Recorder input setting missing from scene, adding with default state.");
+                            if( Application.isPlaying )
+                                Debug.LogError("Recorder input setting missing from scene, adding with default state.");
+                            else if( Verbose.enabled )
+                                Debug.Log("Recorder input setting missing from scene, adding with default state.");
                             var replacementInput = ScriptableObject.CreateInstance(binder.inputType) as RecorderInputSetting;
                             replacementInput.m_Id = inputAsset.m_Id;
                             m_InputsSettings.Add(replacementInput);

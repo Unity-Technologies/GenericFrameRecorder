@@ -84,6 +84,10 @@ namespace UnityEditor.Experimental.FrameRecorder
             aRecorderSettings.outputPath = EditorGUILayout.TextField("Output Path", aRecorderSettings.outputPath);
         }
 
+        protected override void OnEncodingGroupGui()
+        {
+        }
+
         protected override void OnGroupGui()
         {
             recorderSettings = EditorGUILayout.Foldout(recorderSettings,"Recorder Settings");

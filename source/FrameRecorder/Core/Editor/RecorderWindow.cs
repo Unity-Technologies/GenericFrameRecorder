@@ -310,7 +310,6 @@ namespace UnityEditor.Recorder
 
         void CleanupSettingsAsset()
         {
-            var assetPath = AssetDatabase.GetAssetPath(m_WindowSettingsAsset);
             UnityHelpers.Destroy(m_WindowSettingsAsset, true);
             m_WindowSettingsAsset = ScriptableObject.CreateInstance<RecorderWindowSettings>();
             AssetDatabase.CreateAsset(m_WindowSettingsAsset, FRPackagerPaths.GetRecorderRootPath() +  "/RecorderWindowSettings.asset");

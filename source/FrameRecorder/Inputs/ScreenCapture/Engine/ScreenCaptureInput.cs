@@ -92,8 +92,8 @@ namespace UnityEngine.Recorder.Input
 #if UNITY_EDITOR
                 if (m_ModifiedResolution)
                 {
-                    GameViewSize.m_ModifiedResolutionCount --;
-                    if(GameViewSize.m_ModifiedResolutionCount == 0 )
+                    GameViewSize.m_ModifiedResolutionCount--;
+                    if (GameViewSize.m_ModifiedResolutionCount == 0)
                         GameViewSize.RestoreSize();
                 }
 #endif

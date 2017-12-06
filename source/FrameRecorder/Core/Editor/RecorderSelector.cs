@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.Recorder;
 
 namespace UnityEditor.Recorder
@@ -75,7 +76,7 @@ namespace UnityEditor.Recorder
         {
             m_Category = category;
             if (string.IsNullOrEmpty(m_Category) && m_Categories.Length > 0)
-                m_Category = m_Categories[0];
+                m_Category = "Video"; // default
 
             if (string.IsNullOrEmpty(m_Category))
             {
@@ -152,6 +153,10 @@ namespace UnityEditor.Recorder
         {
             if (selectedRecorder == newSelection)
                 return;
+
+            var recorderAttribs = newSelection.GetCustomAttributes(typeof(ObsoleteAttribute), false);
+            if (recorderAttribs.Length > 0 )
+                Debug.LogWarning( "Recorder " + ((ObsoleteAttribute)recorderAttribs[0]).Message);
 
             selectedRecorder = newSelection;
             m_SetRecorderCallback();

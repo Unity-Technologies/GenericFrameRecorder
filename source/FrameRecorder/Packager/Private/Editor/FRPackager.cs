@@ -13,10 +13,10 @@ namespace UnityEditor.Recorder
             return Application.dataPath + "/Recorder/";
         }
 
-        [MenuItem("Tools/Recorder/Asset Store/Increment Version", false, 100)]
-        static void IncrementVersion()
+        [MenuItem("Tools/Recorder/Asset Store/Decrement Version", false, 100)]
+        static void DecrementVersion()
         {
-            UpdateVersion();
+            UpdateVersion(-1);
         }
 
         [MenuItem("Tools/Recorder/Asset Store/Generate Assetstore package", false, 100)]
@@ -31,7 +31,7 @@ namespace UnityEditor.Recorder
                 AssetDatabase.Refresh();
             }
 
-            UpdateVersion();
+            UpdateVersion(1);
 
             var files = new []
             {
@@ -50,7 +50,7 @@ namespace UnityEditor.Recorder
             Debug.Log("Generated package: " + destFile);
         }
 
-        static void UpdateVersion()
+        static void UpdateVersion( int delta )
         {
             var path = FRPackagerPaths.GetRecorderVersionFilePath();
             var script = File.ReadAllText(path);
@@ -61,7 +61,7 @@ namespace UnityEditor.Recorder
             var endOffset = script.IndexOf(";", startOffset);
             var pattern = script.Substring(startOffset, endOffset - startOffset);
 
-            RecorderVersion.BuildNumber++;
+            RecorderVersion.BuildNumber+=delta;
             script = script.Replace(pattern, string.Format("public static int BuildNumber = {0}", RecorderVersion.BuildNumber));
             File.WriteAllText(path, script);
             AssetDatabase.Refresh();

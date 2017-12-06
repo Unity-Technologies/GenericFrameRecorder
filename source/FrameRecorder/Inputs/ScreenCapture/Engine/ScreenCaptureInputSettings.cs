@@ -19,4 +19,5 @@ namespace UnityEngine.Recorder.Input
         }
     }
 }
+
 #endif
