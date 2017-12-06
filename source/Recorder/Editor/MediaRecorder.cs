@@ -4,7 +4,11 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.Collections;
+#if UNITY_2018_1_OR_NEWER
+    using Unity.Collections;
+#else
+    using UnityEngine.Collections;
+#endif
 using UnityEngine.Recorder.Input;
 using UnityEditor;
 using UnityEditor.Media;

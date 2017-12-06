@@ -6,7 +6,11 @@ using UnityEditor;
 using UnityEditorInternal;
 
 #endif
-using UnityEngine.Collections;
+#if UNITY_2018_1_OR_NEWER
+    using Unity.Collections;
+#else
+    using UnityEngine.Collections;
+#endif
 using UnityEngine.Recorder;
 
 namespace UnityEditor.Recorder.Input
