@@ -5,7 +5,12 @@ using UnityEngine.Recorder;
 
 namespace UTJ.FrameCapturer.Recorders
 {
+#if UNITY_2017_3_OR_NEWER
+    [Obsolete("'UTJ/MP4' is obsolete, concider using 'Unity/Movie' instead", false)]
+    [Recorder(typeof(MP4RecorderSettings),"Video", "UTJ/Legacy/MP4" )]
+#else
     [Recorder(typeof(MP4RecorderSettings),"Video", "UTJ/MP4" )]
+#endif
     public class MP4Recorder : GenericRecorder<MP4RecorderSettings>
     {
         fcAPI.fcMP4Context m_ctx;
