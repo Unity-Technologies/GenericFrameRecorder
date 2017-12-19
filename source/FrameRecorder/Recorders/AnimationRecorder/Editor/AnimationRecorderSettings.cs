@@ -59,10 +59,10 @@ namespace UnityEditor.Experimental.Recorder
                 ok = false;
                 errors.Add("Invalid state!");
             }
-            if (!inputsSettings.Cast<AnimationInputSettings>().Any(x => x != null && x.enabled))
+            if (!inputsSettings.Cast<AnimationInputSettings>().Any(x => x != null && x.enabled && x.gameObject != null ))
             {
                 ok = false;
-                errors.Add("None of the input objects are enabled.");
+                errors.Add("No input object set/enabled.");
             }
 
             if ( string.IsNullOrEmpty(outputPath))

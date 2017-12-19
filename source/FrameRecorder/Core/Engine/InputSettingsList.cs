@@ -209,8 +209,8 @@ namespace UnityEngine.Recorder
 
         void ReleaseAt(int index)
         {
-            bool isBinder = m_InputsSettingsAssets[index] is InputBinder;
 #if UNITY_EDITOR
+            bool isBinder = m_InputsSettingsAssets[index] is InputBinder;
             if ( isBinder ) 
                 SceneHook.UnregisterInputSettingObj(ownerRecorderSettingsAssetId, m_InputsSettings[index]);
 #endif
