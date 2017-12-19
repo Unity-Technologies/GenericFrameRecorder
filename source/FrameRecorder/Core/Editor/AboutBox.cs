@@ -66,7 +66,7 @@ namespace UnityEditor.Recorder
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Unity's User forum"))
             {
-                Application.OpenURL("https://forum.unity.com/categories/betas-experimental-features.86/");
+                Application.OpenURL("https://forum.unity.com/threads/unity-recorder-update.509458/");
                 this.Close();
             }
             GUILayout.EndHorizontal();

@@ -13,8 +13,9 @@ namespace UnityEngine.Recorder.Input
         public bool m_FlipFinalOutput = false;
         public bool m_RenderStereo = true;
         public float m_StereoSeparation = 0.065f;
-        public int m_MapSize = 256;
-        public int m_OutputSizePower = 1024;
+        public int m_MapSize = 1024;
+        public int m_OutputWidth = 1024;
+        public int m_OutputHeight = 2048;
 
         public override Type inputType
         {
@@ -31,16 +32,28 @@ namespace UnityEngine.Recorder.Input
                 errors.Add("Missing camera tag");
             }
 
-            if (m_OutputSizePower != (1 << (int)Math.Log(m_OutputSizePower, 2)))
+            if (m_OutputWidth != (1 << (int)Math.Log(m_OutputWidth, 2)))
             {
                 ok =false;
-                errors.Add("Output size must be a power of 2.");
+                errors.Add("Output width must be a power of 2.");
             }
 
-            if (m_OutputSizePower < 128 || m_OutputSizePower > 8 * 1024)
+            if (m_OutputWidth < 128 || m_OutputWidth > 8 * 1024)
             {
                 ok = false;
-                errors.Add( string.Format( "Output size must fall between {0} and {1}.", 128, 8*1024 ));
+                errors.Add( string.Format( "Output width must fall between {0} and {1}.", 128, 8*1024 ));
+            }
+
+            if (m_OutputHeight != (1 << (int)Math.Log(m_OutputHeight, 2)))
+            {
+                ok =false;
+                errors.Add("Output height must be a power of 2.");
+            }
+
+            if (m_OutputHeight < 128 || m_OutputHeight > 8 * 1024)
+            {
+                ok = false;
+                errors.Add( string.Format( "Output height must fall between {0} and {1}.", 128, 8*1024 ));
             }
 
             if (m_MapSize != (1 << (int)Math.Log(m_MapSize, 2)))

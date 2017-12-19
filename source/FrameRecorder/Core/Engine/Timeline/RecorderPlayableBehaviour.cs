@@ -1,3 +1,4 @@
+using System;
 using UnityEngine.Playables;
 
 namespace UnityEngine.Recorder.Timeline
@@ -18,6 +19,8 @@ namespace UnityEngine.Recorder.Timeline
         WaitForEndOfFrameComponent endOfFrameComp;
         bool m_FirstOneSkipped;
 
+        public Action OnEnd;
+
         public override void OnGraphStart(Playable playable)
         {
             if (session != null)
@@ -30,8 +33,15 @@ namespace UnityEngine.Recorder.Timeline
 
         public override void OnGraphStop(Playable playable)
         {
-            if (session != null)
+            if (session != null && session.recording)
+            {
                 session.EndRecording();
+                session.Dispose();
+                session = null;
+
+                if (OnEnd != null)
+                    OnEnd();
+            }
         }
 
         public override void PrepareFrame(Playable playable, FrameData info)
@@ -74,6 +84,9 @@ namespace UnityEngine.Recorder.Timeline
                 session.EndRecording();
                 session.Dispose();
                 session = null;
+
+                if (OnEnd != null)
+                    OnEnd();
             }
 
             m_PlayState = PlayState.Paused;

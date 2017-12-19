@@ -42,7 +42,8 @@ namespace UnityEngine.Recorder.Input
         {
             if (settings360.m_FlipFinalOutput)
                 m_VFlipper = new TextureFlipper();
-            outputHeight = outputWidth = 1024;
+            outputWidth = settings360.m_OutputWidth;
+            outputHeight = settings360.m_OutputHeight;
         }
 
         public override void NewFrameStarting(RecordingSession session)
@@ -152,13 +153,15 @@ namespace UnityEngine.Recorder.Input
 
             outputRT = new RenderTexture(outputWidth, outputHeight, 24, RenderTextureFormat.ARGB32)
             {
-                dimension = TextureDimension.Cube
+                dimension = TextureDimension.Tex2D,
+                antiAliasing = 1
             };
-            m_Cubemap1 = new RenderTexture(256, 256, 24, RenderTextureFormat.ARGB32)
+            m_Cubemap1 = new RenderTexture(settings360.m_MapSize, settings360.m_MapSize, 24, RenderTextureFormat.ARGB32)
             {
-                dimension = TextureDimension.Cube 
+                dimension = TextureDimension.Cube ,
+                
             };
-            m_Cubemap2 = new RenderTexture(256, 256, 24, RenderTextureFormat.ARGB32)
+            m_Cubemap2 = new RenderTexture(settings360.m_MapSize, settings360.m_MapSize, 24, RenderTextureFormat.ARGB32)
             {
                 dimension = TextureDimension.Cube 
             };

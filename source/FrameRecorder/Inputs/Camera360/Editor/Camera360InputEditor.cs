@@ -17,7 +17,8 @@ namespace UnityEditor.Recorder.Input
         SerializedProperty m_FlipFinalOutput;
         SerializedProperty m_StereoSeparation;
         SerializedProperty m_CubeMapSz;
-        SerializedProperty m_OutputSizePower;
+        SerializedProperty m_OutputWidth;
+        SerializedProperty m_OutputHeight;
         SerializedProperty m_RenderStereo;
 
         protected void OnEnable()
@@ -32,7 +33,8 @@ namespace UnityEditor.Recorder.Input
             m_StereoSeparation = pf.Find(w => w.m_StereoSeparation);
             m_FlipFinalOutput = pf.Find( w => w.m_FlipFinalOutput );
             m_CubeMapSz = pf.Find( w => w.m_MapSize );
-            m_OutputSizePower = pf.Find(w => w.m_OutputSizePower);
+            m_OutputWidth = pf.Find(w => w.m_OutputWidth);
+            m_OutputHeight = pf.Find(w => w.m_OutputHeight);
             m_RenderStereo = pf.Find(w => w.m_RenderStereo);
         }
 
@@ -60,14 +62,19 @@ namespace UnityEditor.Recorder.Input
                 --EditorGUI.indentLevel;
             }
 
-            AddProperty(m_OutputSizePower, () =>
+            AddProperty(m_OutputWidth, () =>
             {
-                AddProperty(m_OutputSizePower, () => EditorGUILayout.PropertyField(m_OutputSizePower, new GUIContent("Output size (power of 2)")));
+                AddProperty(m_OutputWidth, () => EditorGUILayout.PropertyField(m_OutputWidth, new GUIContent("Output width")));
+            });
+
+            AddProperty(m_OutputHeight, () =>
+            {
+                AddProperty(m_OutputWidth, () => EditorGUILayout.PropertyField(m_OutputHeight, new GUIContent("Output height")));
             });
 
             AddProperty(m_CubeMapSz, () =>
             {
-                AddProperty(m_CubeMapSz, () => EditorGUILayout.PropertyField(m_CubeMapSz, new GUIContent("Cube map size (power of 2)")));
+                AddProperty(m_CubeMapSz, () => EditorGUILayout.PropertyField(m_CubeMapSz, new GUIContent("Cube map width")));
             });
 
             AddProperty(m_RenderStereo, () =>
