@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine.Audio;
 using UnityEngine.Recorder;
 
@@ -26,6 +27,9 @@ namespace UnityEditor.Recorder.Input
             get { return typeof(AudioInput); }
         }
 
-        public override bool isValid { get { return true; } }
+        public override bool ValidityCheck(List<string> errors)
+        {
+            return true;
+        }
     }
 }

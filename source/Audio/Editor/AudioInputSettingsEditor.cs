@@ -2,11 +2,12 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Recorder;
 using UnityEngine.Recorder.Input;
+using UnityEngine.UI;
 
 namespace UnityEditor.Recorder.Input
 {
     [CustomEditor(typeof(AudioInputSettings))]
-    public class AudioInputSettingsEditor : Editor
+    public class AudioInputSettingsEditor : InputEditor
     {
         SerializedProperty m_PreserveAudio;
 #if RECORD_AUDIO_MIXERS
@@ -61,9 +62,6 @@ namespace UnityEditor.Recorder.Input
 #endif
  
             serializedObject.ApplyModifiedProperties();
-
-            if (!(target as AudioInputSettings).isValid)
-                EditorGUILayout.HelpBox("Incomplete/Invalid settings", MessageType.Warning);
         }
     }
 }
