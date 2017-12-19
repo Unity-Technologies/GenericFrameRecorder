@@ -39,8 +39,7 @@ namespace UnityEngine.Recorder.Input
 
             var currentGroup = instance.GetType().GetProperty("currentGroup", BindingFlags.Public | BindingFlags.Instance);
             var group = currentGroup.GetValue(instance, new object[0] { });
-
-            return @group;
+            return group;
         }
 
         public static object SetCustomSize(int width, int height)
