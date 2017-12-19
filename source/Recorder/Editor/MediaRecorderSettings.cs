@@ -84,7 +84,7 @@ namespace UnityEditor.Recorder
                         new TInputFilter<ScreenCaptureInputSettings>("Screen"),
                         new TInputFilter<CBRenderTextureInputSettings>("Camera(s)"),
 #if UNITY_2018_1_OR_NEWER
-                        new TInputFilter<Camera360InputSettings>("360 View"),
+                        new TInputFilter<Camera360InputSettings>("360 View (feature preview)"),
 #endif
                         new TInputFilter<RenderTextureSamplerSettings>("Sampling"),
                         new TInputFilter<RenderTextureInputSettings>("Render Texture"),
