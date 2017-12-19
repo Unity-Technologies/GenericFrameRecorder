@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Recorder;
 using UnityEngine.Recorder.Input;
 
@@ -92,12 +93,6 @@ namespace UnityEditor.Recorder.Input
             }
 
             serializedObject.ApplyModifiedProperties();
-
-            if (!(target as RenderTextureSamplerSettings).isValid)
-            {
-                EditorGUILayout.HelpBox("Incomplete/Invalid settings", MessageType.Warning);
-            }
-
         }
     }
 

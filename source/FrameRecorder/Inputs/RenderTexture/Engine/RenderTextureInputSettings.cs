@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace UnityEngine.Recorder.Input
 {
@@ -11,12 +12,17 @@ namespace UnityEngine.Recorder.Input
             get { return typeof(RenderTextureInput); }
         }
 
-        public override bool isValid
+        public override bool ValidityCheck(List<string> errors)
         {
-            get
+            var ok = true;
+
+            if (m_SourceRTxtr == null)
             {
-                return m_SourceRTxtr != null; 
+                ok = false;
+                errors.Add("Missing source render texture object/asset.");
             }
+
+            return ok;
         }
 
     }

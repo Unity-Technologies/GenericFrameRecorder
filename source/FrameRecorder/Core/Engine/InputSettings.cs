@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 
 namespace UnityEngine.Recorder
@@ -11,7 +12,7 @@ namespace UnityEngine.Recorder
     public abstract class  RecorderInputSetting : ScriptableObject
     {
         public abstract Type inputType { get; }
-        public abstract bool isValid { get; }
+        public abstract bool ValidityCheck(List<string> errors);
         public string m_DisplayName;
         public string m_Id;
 

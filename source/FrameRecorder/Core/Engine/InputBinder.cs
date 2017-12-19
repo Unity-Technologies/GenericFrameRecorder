@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace UnityEngine.Recorder
 {
@@ -37,9 +38,9 @@ namespace UnityEngine.Recorder
             }
         }
 
-        public override bool isValid
+        public override bool ValidityCheck( List<string> errors )
         {
-            get { return false; }
+            return false;
         }
     }
 }

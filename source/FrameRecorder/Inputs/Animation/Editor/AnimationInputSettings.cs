@@ -36,17 +36,23 @@ namespace UnityEditor.Experimental.Recorder.Input
             get { return typeof(AnimationInput); }
         }
 
-        public override bool isValid
+        public override bool ValidityCheck( List<string> errors )
         {
-            get
+            var ok = true;
+            if (enabled)
             {
-                return !enabled || 
-                    (
-                        gameObject != null 
-                        && bindingType.Count > 0 
-                        && bindingType.All( x => !typeof(MonoBehaviour).IsAssignableFrom(x) && !typeof(ScriptableObject).IsAssignableFrom(x) )
-                    ); 
+
+                if (gameObject != null
+                    && bindingType.Count > 0
+                    && bindingType.Any(x => typeof(MonoBehaviour).IsAssignableFrom(x) || typeof(ScriptableObject).IsAssignableFrom(x))
+                )
+                {
+                    ok = false;
+                    errors.Add("Monobehaviours and ScriptableObjects are not supported inputs.");
+                }
             }
+
+            return ok;
         }
     }
 }

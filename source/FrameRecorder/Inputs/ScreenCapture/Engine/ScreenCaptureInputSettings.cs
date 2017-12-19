@@ -13,9 +13,9 @@ namespace UnityEngine.Recorder.Input
             get { return typeof(ScreenCaptureInput); }
         }
 
-        public override bool isValid
+        public override bool ValidityCheck( List<string> errors )
         {
-            get { return true; }
+            return true;
         }
     }
 }

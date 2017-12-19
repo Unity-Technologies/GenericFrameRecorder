@@ -11,9 +11,17 @@ namespace UnityEngine.Recorder.Input
         public EImageAspect m_AspectRatio = EImageAspect.x16_9;
         public bool m_ForceEvenSize = false;
 
-        public override bool isValid
+        public override bool ValidityCheck( List<string> errors )
         {
-            get { return m_OutputSize <= maxSupportedSize; }
+            var ok = true;
+
+            if (m_OutputSize > maxSupportedSize)
+            {
+                ok = false;
+                errors.Add("Output size exceeds maximum supported size: " + (int)maxSupportedSize );
+            }
+
+            return ok;
         }
     }
 }

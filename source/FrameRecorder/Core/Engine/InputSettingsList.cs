@@ -71,15 +71,12 @@ namespace UnityEngine.Recorder
             }            
         }
 
-        public bool isValid
+        public bool ValidityCheck( List<string> errors  )
         {
-            get
-            {
-                foreach( var x in m_InputsSettings )
-                    if (!x.isValid)
-                        return false;
-                return true;
-            }
+            foreach( var x in m_InputsSettings )
+                if (!x.ValidityCheck(errors))
+                    return false;
+            return true;
         }
 
         public bool hasBrokenBindings

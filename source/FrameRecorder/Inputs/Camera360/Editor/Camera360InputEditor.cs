@@ -94,12 +94,6 @@ namespace UnityEditor.Recorder.Input
             }
 
             serializedObject.ApplyModifiedProperties();
-
-            if (!(target as Camera360InputSettings).isValid)
-            {
-                EditorGUILayout.HelpBox("Incomplete/Invalid settings", MessageType.Warning);
-            }
-
         }
     }
 }

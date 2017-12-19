@@ -50,17 +50,28 @@ namespace UnityEditor.Experimental.Recorder
             };
         }
 
-        public override bool isValid
+        public override bool ValidityCheck( List<string> errors )
         {
-            get
-            {
-                if (inputsSettings == null)
-                    return false;
-                if (!inputsSettings.Cast<AnimationInputSettings>().Any(x => x != null && x.enabled))
-                    return false;
+            var ok = base.ValidityCheck(errors);
 
-                return base.isValid; 
+            if (inputsSettings == null)
+            {
+                ok = false;
+                errors.Add("Invalid state!");
             }
+            if (!inputsSettings.Cast<AnimationInputSettings>().Any(x => x != null && x.enabled))
+            {
+                ok = false;
+                errors.Add("None of the input objects are enabled.");
+            }
+
+            if ( string.IsNullOrEmpty(outputPath))
+            {
+                ok = false;
+                errors.Add("Invalid output path.");
+            }
+
+            return ok; 
         }
     }
 }

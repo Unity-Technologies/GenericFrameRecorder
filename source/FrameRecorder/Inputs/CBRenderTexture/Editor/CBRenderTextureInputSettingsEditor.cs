@@ -75,7 +75,7 @@ namespace UnityEditor.Recorder.Input
                     AddProperty(m_RenderAspect, () => EditorGUILayout.PropertyField(m_RenderAspect, new GUIContent("Aspect Ratio")));
                 }
 
-                using (new EditorGUI.DisabledScope(inputType != EImageSource.ActiveCameras))
+                if(inputType == EImageSource.ActiveCameras)
                 {
                     AddProperty(m_CaptureUI, () => EditorGUILayout.PropertyField(m_CaptureUI, new GUIContent("Capture UI")));
                 }
@@ -92,12 +92,6 @@ namespace UnityEditor.Recorder.Input
             }
 
             serializedObject.ApplyModifiedProperties();
-
-            if (!(target as CBRenderTextureInputSettings).isValid)
-            {
-                EditorGUILayout.HelpBox("Incomplete/Invalid settings", MessageType.Warning);
-            }
-
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace UnityEngine.Recorder.Input
 {
@@ -15,13 +16,16 @@ namespace UnityEngine.Recorder.Input
             get { return typeof(CBRenderTextureInput); }
         }
 
-        public override bool isValid
+        public override bool ValidityCheck( List<string> errors )
         {
-            get
+            var ok = base.ValidityCheck(errors);
+            if (source == EImageSource.TaggedCamera && string.IsNullOrEmpty(m_CameraTag))
             {
-                return base.isValid && 
-                       (source != EImageSource.TaggedCamera || !string.IsNullOrEmpty(m_CameraTag)); 
+                ok = false;
+                errors.Add("Missing tag for camera selection");
             }
+
+            return ok;
         }
     }
 }

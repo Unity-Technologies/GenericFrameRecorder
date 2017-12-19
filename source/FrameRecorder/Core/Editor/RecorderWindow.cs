@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine.Recorder;
 using UnityEngine;
 
@@ -148,7 +149,8 @@ namespace UnityEditor.Recorder
             {
                 case EState.Idle:
                 {
-                    using (new EditorGUI.DisabledScope(!m_Editor.isValid))
+                    var errors = new List<string>();
+                    using (new EditorGUI.DisabledScope(!m_Editor.ValidityCheck(errors)))
                     {
                         if (GUILayout.Button("Start Recording"))
                             StartRecording();

@@ -1,5 +1,6 @@
 ﻿#if UNITY_2017_3_OR_NEWER
 
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Recorder;
 using UnityEngine.Recorder.Input;
@@ -37,11 +38,6 @@ namespace UnityEditor.Recorder.Input
                 AddProperty(m_RenderAspect, () => EditorGUILayout.PropertyField(m_RenderAspect, new GUIContent("Aspect Ratio")));
             }
             serializedObject.ApplyModifiedProperties();
-
-            if (!(target as ScreenCaptureInputSettings).isValid)
-            {
-                EditorGUILayout.HelpBox("Incomplete/Invalid settings", MessageType.Warning);
-            }
         }
     }
 }

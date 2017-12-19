@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Experimental.Recorder.Input;
+using UnityEditor.Recorder;
 using UnityEngine;
 
 namespace UnityEditor.Experimental.FrameRecorder.Input
 {
     [CustomEditor(typeof(AnimationInputSettings))]
-    public class AnimationInputSettingsEditor : Editor
+    public class AnimationInputSettingsEditor : InputEditor
     {
         public override void OnInspectorGUI()
         {

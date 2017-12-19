@@ -124,20 +124,39 @@ namespace UnityEngine.Recorder
             get { return m_DurationMode != DurationMode.Manual; }
         }
 
-        public virtual bool isValid
+        public virtual bool ValidityCheck( List<string> errors )
         {
-            get
+            bool ok = true;
+
+            if (m_InputsSettings != null)
             {
-                if (m_FrameRate == 0 || m_CaptureEveryNthFrame <= 0)
-                    return false;
-
-                if (m_InputsSettings != null)
+                var inputErrors = new List<string>();
+                if (!m_InputsSettings.ValidityCheck(inputErrors))
                 {
-                    return m_InputsSettings.isValid;
+                    errors.Add("Input settings are incorrect.");
+                    ok = false;
                 }
-
-                return true;
             }
+
+            if (Math.Abs(m_FrameRate) <= float.Epsilon)
+            {
+                ok = false;
+                errors.Add("Invalid frame rate.");
+            }
+
+            if (m_CaptureEveryNthFrame <= 0)
+            {
+                ok = false;
+                errors.Add("Invalid frame skip value");
+            }
+
+            if (!isPlatformSupported)
+            {
+                errors.Add("Current platform is not supported");
+                ok  = false;
+            }
+
+            return ok;
         }
 
         public virtual bool isPlatformSupported

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace UnityEngine.Recorder.Input
 {
@@ -31,11 +32,9 @@ namespace UnityEngine.Recorder.Input
             get { return typeof(RenderTextureSampler); }
         }
 
-        public override bool isValid {
-            get
-            {
-                return source == EImageSource.ActiveCameras || source == EImageSource.MainCamera; 
-            }
+        public override bool ValidityCheck( List<string> errors )
+        {
+            return true;
         }
     }
 }
