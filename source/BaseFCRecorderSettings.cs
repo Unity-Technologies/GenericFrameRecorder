@@ -8,12 +8,22 @@ namespace UTJ.FrameCapturer.Recorders
 {
     public abstract class BaseFCRecorderSettings : RecorderSettings
     {
-        public override bool isValid
+        public override bool ValidityCheck( List<string> errors )
         {
-            get
+            var ok = base.ValidityCheck(errors);
+            
+            if( string.IsNullOrEmpty(m_DestinationPath.GetFullPath() ))
             {
-                return base.isValid && !string.IsNullOrEmpty(m_DestinationPath.GetFullPath()) && !string.IsNullOrEmpty(m_BaseFileName.pattern);
+                ok = false;
+                errors.Add("Missing destination path.");
+            } 
+            if(  string.IsNullOrEmpty(m_BaseFileName.pattern))
+            {
+                ok = false;
+                errors.Add("missing file name");
             }
+
+            return ok;
         }
 
         public override bool isPlatformSupported
