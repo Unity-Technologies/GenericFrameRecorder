@@ -1,16 +1,13 @@
 using System;
+using System.Runtime.Remoting.Messaging;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
-    public enum ESuperSamplingCount
-    {
-        x1 = 1,
-        x2 = 2,
-        x4 = 4,
-        x8 = 8,
-        x16 = 16,
-    }
 
+    /// <summary>
+    /// What is it: enum oof standard display resolutions
+    /// Motivation: just nice to have. simplifies and makes things more explicit.
+    /// </summary>
     public enum EImageDimension
     {
         //x8640p_16K = 8640,
@@ -26,6 +23,11 @@ namespace UnityEngine.FrameRecorder
         //Manual = -1, for user entering his own resolution
     }
 
+
+    /// <summary>
+    /// What is it: enum oof standard display aspect ratios
+    /// Motivation: just nice to have. simplifies and makes things more explicit.
+    /// </summary>
     public enum EImageAspect
     {
         x16_9,
@@ -35,6 +37,10 @@ namespace UnityEngine.FrameRecorder
         x4_3,
     }
 
+    /// <summary>
+    /// What is it: utility class to convert an aspect ratio enum value to it's corresponding float.
+    /// Motivation: just nice to have.
+    /// </summary>
     public class AspectRatioHelper
     {
         public static float GetRealAR(EImageAspect aspectRatio)

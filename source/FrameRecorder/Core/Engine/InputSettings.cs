@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
+using UnityEditor;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
     /// <summary>
     /// What is this: 
@@ -10,20 +12,21 @@ namespace UnityEngine.FrameRecorder
     public abstract class  RecorderInputSetting : ScriptableObject
     {
         public abstract Type inputType { get; }
-        public abstract bool isValid { get; }
+        public abstract bool ValidityCheck(List<string> errors);
         public string m_DisplayName;
-    }
+        public string m_Id;
 
-    /// <summary>
-    /// What is this: 
-    /// Motivation  : 
-    /// Notes: 
-    /// </summary>    
-    public abstract class InputSettings<TInput> : RecorderInputSetting
-    {
-        public override Type inputType
+        protected virtual void OnEnable()
         {
-            get { return typeof(TInput); }
+            if (string.IsNullOrEmpty(m_Id))
+                m_Id = Guid.NewGuid().ToString();
+        }
+
+
+        public bool storeInScene
+        {
+            get { return Attribute.GetCustomAttribute(GetType(), typeof(StoreInSceneAttribute)) != null; }
         }
     }
+
 }

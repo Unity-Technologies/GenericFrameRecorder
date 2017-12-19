@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
+using System.Linq;
 #endif
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
     public class RecorderInfo
     {
         public Type recorderType;
-        public Type settings;
-        public Type settingsEditor;
+        public Type settingsClass;
+        public Type settingsEditorClass;
         public string category;
         public string displayName;
     }
@@ -31,10 +31,21 @@ namespace UnityEngine.FrameRecorder
 
         static IEnumerable<KeyValuePair<Type, object[]>> FindRecorders()
         {
-            var attribType = typeof(FrameRecorderAttribute);
+            var attribType = typeof(RecorderAttribute);
             foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
             {
-                foreach (var t in a.GetTypes())
+                Type[] types = null;
+                try
+                {
+                    types = a.GetTypes();
+                }
+                catch (Exception)
+                {
+                    Debug.LogError( "Failed reflecting assembly: " + a.FullName );
+                    continue;
+                }
+
+                foreach (var t in types)
                 {
                     var attributes = t.GetCustomAttributes(attribType, false);
                     if (attributes.Length != 0)
@@ -87,10 +98,10 @@ namespace UnityEngine.FrameRecorder
 
         static bool AddRecorder(Type recorderType)
         {
-            var recorderAttribs = recorderType.GetCustomAttributes(typeof(FrameRecorderAttribute), false);
+            var recorderAttribs = recorderType.GetCustomAttributes(typeof(RecorderAttribute), false);
             if (recorderAttribs.Length == 1)
             {
-                var recorderAttrib = recorderAttribs[0] as FrameRecorderAttribute;
+                var recorderAttrib = recorderAttribs[0] as RecorderAttribute;
             
                 if (m_Recorders == null)
                     m_Recorders = new SortedDictionary<string, RecorderInfo>();
@@ -98,7 +109,7 @@ namespace UnityEngine.FrameRecorder
                 var info = new RecorderInfo()
                 {
                     recorderType = recorderType,
-                    settings = recorderAttrib.settings,
+                    settingsClass = recorderAttrib.settings,
                     category = recorderAttrib.category,
                     displayName = recorderAttrib.displayName
                 };
@@ -175,23 +186,24 @@ namespace UnityEngine.FrameRecorder
             else
                 throw new ArgumentException("No factory was registered for " + recorderType.Name);
         }
+
 #if UNITY_EDITOR
-        public static RecorderSettings GenerateNewSettingsAsset(UnityEngine.Object parentAsset, Type recorderType)
+        public static RecorderSettings GenerateRecorderInitialSettings(UnityEngine.Object parent, Type recorderType)
         {
             Init();
             var recorderinfo = GetRecorderInfo(recorderType);
             if (recorderinfo != null)
             {
                 RecorderSettings settings = null;
-                settings = ScriptableObject.CreateInstance(recorderinfo.settings) as RecorderSettings;
+                settings = ScriptableObject.CreateInstance(recorderinfo.settingsClass) as RecorderSettings;
                 settings.name = "Recorder Settings";
                 settings.recorderType = recorderType;
-                settings.m_InputsSettings = settings.GetDefaultSourcesSettings().ToArray();
-                AssetDatabase.AddObjectToAsset(settings, parentAsset);
-                foreach (var obj in settings.m_InputsSettings)
-                    AssetDatabase.AddObjectToAsset(obj, parentAsset);
 
+                AssetDatabase.AddObjectToAsset(settings, parent);
+                AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
+                settings.assetID = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(settings));
+                settings.inputsSettings.AddRange( settings.GetDefaultInputSettings() );
 
                 return settings;
             }
@@ -199,5 +211,6 @@ namespace UnityEngine.FrameRecorder
                 throw new ArgumentException("No factory was registered for " + recorderType.Name);            
         }
 #endif
+
     }
 }

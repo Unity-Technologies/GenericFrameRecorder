@@ -1,9 +1,10 @@
 using System;
 using System.IO;
+using UnityEngine.Recorder.Input;
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
-    [FrameRecorder(typeof(ImageRecorderSettings),"Video", "Unity/Image sequence" )]
+    [Recorder(typeof(ImageRecorderSettings),"Video", "Unity/Image sequence" )]
     public class ImageRecorder : GenericRecorder<ImageRecorderSettings>
     {
 
@@ -21,17 +22,37 @@ namespace UnityEngine.FrameRecorder
             if (m_Inputs.Count != 1)
                 throw new Exception("Unsupported number of sources");
 
-            var input = (BaseRenderTextureInput)m_Inputs[0];
-
-            var width = input.outputRT.width;
-            var height = input.outputRT.height;
-            
-            var tex = new Texture2D(width, height, m_Settings.m_OutputFormat !=  PNGRecordeOutputFormat.EXR ? TextureFormat.RGBA32 : TextureFormat.RGBAFloat, false);
-            var backupActive = RenderTexture.active;
-            RenderTexture.active = input.outputRT;
-            tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-            tex.Apply();
-            RenderTexture.active = backupActive;
+            Texture2D tex = null;
+#if UNITY_2017_3_OR_NEWER
+            if (m_Inputs[0] is ScreenCaptureInput)
+            {
+                tex = ((ScreenCaptureInput)m_Inputs[0]).image;
+                if (m_Settings.m_OutputFormat == PNGRecordeOutputFormat.EXR)
+                {
+                    var textx = new Texture2D(tex.width, tex.height, TextureFormat.RGBAFloat, false);
+                    textx.SetPixels(tex.GetPixels());
+                    tex = textx;
+                }
+                else if (m_Settings.m_OutputFormat == PNGRecordeOutputFormat.PNG)
+                {
+                    var textx = new Texture2D(tex.width, tex.height, TextureFormat.RGB24, false);
+                    textx.SetPixels(tex.GetPixels());
+                    tex = textx;
+                }
+            }
+            else
+#endif
+            {
+                var input = (BaseRenderTextureInput)m_Inputs[0];
+                var width = input.outputRT.width;
+                var height = input.outputRT.height;
+                tex = new Texture2D(width, height, m_Settings.m_OutputFormat != PNGRecordeOutputFormat.EXR ? TextureFormat.RGBA32 : TextureFormat.RGBAFloat, false);
+                var backupActive = RenderTexture.active;
+                RenderTexture.active = input.outputRT;
+                tex.ReadPixels(new Rect(0, 0, width, height), 0, 0, false);
+                tex.Apply();
+                RenderTexture.active = backupActive;
+            }
 
             byte[] bytes;
             string ext;
@@ -53,11 +74,11 @@ namespace UnityEngine.FrameRecorder
                     throw new ArgumentOutOfRangeException();
             }
 
-            UnityHelpers.Destroy(tex);
+            if(m_Inputs[0] is BaseRenderTextureInput || m_Settings.m_OutputFormat != PNGRecordeOutputFormat.JPEG)
+                UnityHelpers.Destroy(tex);
 
-            var fileName = m_Settings.m_BaseFileName.BuildFileName( session, recordedFramesCount, width, height, ext);
+            var fileName = m_Settings.m_BaseFileName.BuildFileName( session, recordedFramesCount, tex.width, tex.height, ext);
             var path = Path.Combine( m_Settings.m_DestinationPath.GetFullPath(), fileName);
-
 
             File.WriteAllBytes( path, bytes);
         }

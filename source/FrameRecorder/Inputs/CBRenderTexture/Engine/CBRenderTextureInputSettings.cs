@@ -1,17 +1,31 @@
-﻿namespace UnityEngine.FrameRecorder.Input
-{
-    public class CBRenderTextureInputSettings : InputSettings<CBRenderTextureInput>
-    {
-        public EImageSource source = EImageSource.MainCamera;
-        public EImageDimension m_RenderSize = EImageDimension.Window;
-        public EImageAspect m_RenderAspect = EImageAspect.x5_4;
-        public string m_CameraTag;
-        public bool m_FlipVertical = false;
-        public bool m_ForceEvenSize = false;
-        public bool m_AllowTransparency = false;
+﻿using System;
+using System.Collections.Generic;
 
-        public override bool isValid {
-            get { return source != EImageSource.TaggedCamera || !string.IsNullOrEmpty(m_CameraTag); }
+namespace UnityEngine.Recorder.Input
+{
+    public class CBRenderTextureInputSettings : ImageInputSettings
+    {
+        public EImageSource source = EImageSource.ActiveCameras;
+        public string m_CameraTag;
+        public bool m_FlipFinalOutput = false;
+        public bool m_AllowTransparency = false;
+        public bool m_CaptureUI = false;
+
+        public override Type inputType
+        {
+            get { return typeof(CBRenderTextureInput); }
+        }
+
+        public override bool ValidityCheck( List<string> errors )
+        {
+            var ok = base.ValidityCheck(errors);
+            if (source == EImageSource.TaggedCamera && string.IsNullOrEmpty(m_CameraTag))
+            {
+                ok = false;
+                errors.Add("Missing tag for camera selection");
+            }
+
+            return ok;
         }
     }
 }

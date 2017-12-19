@@ -2,7 +2,7 @@
 using System.IO;
 using UnityEngine;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     static class FRPackager
     {
@@ -13,60 +13,25 @@ namespace UnityEditor.FrameRecorder
             return Application.dataPath + "/Recorder/";
         }
 
-        [MenuItem("Assets/Recorder/Generate Framework Package")]
-        static void GeneratePackage()
+        [MenuItem("Tools/Recorder/Asset Store/Decrement Version", false, 100)]
+        static void DecrementVersion()
         {
-            var rootPath = FRPackagerPaths.GetFrameRecorderRootPath();
-            UpdateVersion();
-
-            string[] files = new string[]
-            {
-                Path.Combine(rootPath, "Framework.meta"),
-                Path.Combine(rootPath, "Framework/Core"),
-                Path.Combine(rootPath, "Framework/Inputs"),
-                Path.Combine(rootPath, "Framework/Recorders"),
-                Path.Combine(rootPath, "Framework/Packager/Editor"),
-            };
-            var destFile = k_PackageName + ".unitypackage";
-            AssetDatabase.ExportPackage(files, destFile, ExportPackageOptions.Recurse);
-            Debug.Log("Generated package: " + destFile);
+            UpdateVersion(-1);
         }
 
-        [MenuItem("Assets/Recorder/Generate Package (full)")]
-        static void GeneratePackageFull()
+        [MenuItem("Tools/Recorder/Asset Store/Generate Assetstore package", false, 100)]
+        static void GenerateAssetStorePackage()
         {
-            var rootPath = FRPackagerPaths.GetFrameRecorderRootPath();
-            var type = System.Type.GetType("UnityEditor.FrameRecorder.MovieRecorderPackager");
+            var rootPath = FRPackagerPaths.GetRecorderRootPath();
+            var type = Type.GetType("UnityEditor.Recorder.MovieRecorderPackager");
             if (type != null)
             {
                 var method = type.GetMethod("GeneratePackage");
                 method.Invoke(null, null);
                 AssetDatabase.Refresh();
             }
-            UpdateVersion();
 
-            var files = new []
-            {
-                Path.Combine(rootPath, "Framework.meta" ),
-                Path.Combine(rootPath, "Framework/Core" ),
-                Path.Combine(rootPath, "Framework/Inputs" ),
-                Path.Combine(rootPath, "Framework/Recorders" ),
-                Path.Combine(rootPath, "Framework/Packager/Editor" ),
-                Path.Combine(rootPath, "Extensions/UTJ" ),
-                Path.Combine(rootPath, "Extensions/FCIntegration" ),
-                Path.Combine(rootPath, "Extensions/MovieRecorder/Packaging" ),
-            };
-            var destFile = k_PackageName + "(full).unitypackage";
-            AssetDatabase.ExportPackage(files, destFile, ExportPackageOptions.Recurse);
-            Debug.Log("Generated package: " + destFile);
-        }
-
-        [MenuItem("Assets/Recorder/Generate Assetstore package")]
-        static void GenerateAssetStorePackage()
-        {
-            var rootPath = FRPackagerPaths.GetFrameRecorderRootPath();
-
-            UpdateVersion();
+            UpdateVersion(1);
 
             var files = new []
             {
@@ -78,26 +43,30 @@ namespace UnityEditor.FrameRecorder
                 Path.Combine(rootPath, "Framework/Packager/Editor" ),
                 Path.Combine(rootPath, "Extensions/UTJ" ),
                 Path.Combine(rootPath, "Extensions/FCIntegration" ),
+                Path.Combine(rootPath, "Extensions/MovieRecorder/Packaging" ),
             };
-            var destFile = k_PackageName + ".unitypackage";
+            var destFile = k_PackageName + " " + RecorderVersion.Stage + " v"+ RecorderVersion.Tag +  ".unitypackage";
             AssetDatabase.ExportPackage(files, destFile, ExportPackageOptions.Recurse);
             Debug.Log("Generated package: " + destFile);
         }
 
-        static void UpdateVersion()
+        static void UpdateVersion( int delta )
         {
-            var path = FRPackagerPaths.GetFrameRecorderVersionFilePath();
+            var path = FRPackagerPaths.GetRecorderVersionFilePath();
             var script = File.ReadAllText(path);
 
-            var tag = "public const string Version = ";
+            var tag = "public static int BuildNumber";
             var startOffset = script.IndexOf(tag);
-            var endOffset = script.IndexOf("\"", startOffset + tag.Length + 1);
 
+            var endOffset = script.IndexOf(";", startOffset);
             var pattern = script.Substring(startOffset, endOffset - startOffset);
-            startOffset = pattern.LastIndexOf(".");
-            var newValue = pattern.Substring(0, startOffset + 1) + DateTime.Now.ToString("yyMMdd-hh");
-            script = script.Replace(pattern, newValue);
+
+            RecorderVersion.BuildNumber+=delta;
+            script = script.Replace(pattern, string.Format("public static int BuildNumber = {0}", RecorderVersion.BuildNumber));
             File.WriteAllText(path, script);
+            AssetDatabase.Refresh();
+
+            Debug.Log( "Version Tag set to: "+RecorderVersion.Tag);
         }
 
     }

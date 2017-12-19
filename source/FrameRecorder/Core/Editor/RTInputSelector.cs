@@ -1,42 +1,66 @@
 ﻿using System;
-using UnityEngine;
-using UnityEngine.FrameRecorder;
-using UnityEngine.FrameRecorder.Input;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine.Recorder;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     public class RTInputSelector
     {
-        string title { get; set; }
-        string[] candidates = { "Camera output", "Offscreen rendering", "Render Texture" };
         RecorderSettings recSettings;
 
-        public RTInputSelector( RecorderSettings recSettings, string title )
+        struct InputGroup
         {
-            this.recSettings = recSettings;
-            this.title = title;
+            public string title;
+            public string[] captions;
+            public Type[] types;
         }
 
-        public bool OnInputGui( ref RecorderInputSetting input)
+        SortedDictionary<int, InputGroup> m_Groups;
+
+        public RTInputSelector( RecorderSettings recSettings  )
         {
-            var index = input.GetType() == typeof(CBRenderTextureInputSettings) ? 0 :
-                input.GetType() == typeof(AdamBeautyInputSettings) ? 1 : 2;
-            var newIndex = EditorGUILayout.Popup("Collection method", index, candidates);
+            m_Groups = new SortedDictionary<int, InputGroup>();
+            this.recSettings = recSettings;
+
+            AddGroups( recSettings.GetInputGroups() );
+        }
+
+        void AddGroups(List<InputGroupFilter> groups)
+        {
+            for(int i = 0; i < groups.Count; i++)
+            {
+                m_Groups.Add(m_Groups.Count,
+                    new InputGroup()
+                    {
+                        title = groups[i].title,
+                        captions = groups[i].typesFilter.Select(x => x.title).ToArray(),
+                        types = groups[i].typesFilter.Select(x => x.type).ToArray(),
+                    });
+            }
+        }
+
+        public bool OnInputGui( int groupIndex, ref RecorderInputSetting input)
+        {
+            if (!m_Groups.ContainsKey(groupIndex))
+                return false;
+            if (m_Groups[groupIndex].types.Length < 2)
+                return false;
+
+            int index = 0;
+            for (int i = 0; i < m_Groups[groupIndex].types.Length; i++)
+            {
+                if (m_Groups[groupIndex].types[i] == input.GetType())
+                {
+                    index = i;
+                    break;
+                }
+            }
+            var newIndex = EditorGUILayout.Popup("Collection method", index, m_Groups[groupIndex].captions);
 
             if (index != newIndex)
             {
-                switch (newIndex)
-                {
-                    case 0:
-                        input = recSettings.NewInputSettingsObj<CBRenderTextureInputSettings>( title );
-                        break;
-                    case 1:
-                        input = recSettings.NewInputSettingsObj<AdamBeautyInputSettings>( title );
-                        break;
-                    case 2:
-                        input = recSettings.NewInputSettingsObj<RenderTextureInputSettings>( title );
-                        break;
-                }
+                input = recSettings.NewInputSettingsObj( m_Groups[groupIndex].types[newIndex], m_Groups[groupIndex].title );
                 return true;
             }
 

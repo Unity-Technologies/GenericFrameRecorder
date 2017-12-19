@@ -3,7 +3,7 @@ using System.IO;
 using UnityEngine;
 
 
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
     [Serializable]
     public struct OutputPath

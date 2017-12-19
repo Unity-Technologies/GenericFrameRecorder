@@ -1,31 +1,40 @@
 ﻿using System;
 #if UNITY_EDITOR
-    using UnityEditor;
+using UnityEditor;
 #endif
 using UnityEngine.Rendering;
 
-namespace UnityEngine.FrameRecorder.Input
+namespace UnityEngine.Recorder.Input
 {
     public class CBRenderTextureInput : BaseRenderTextureInput
     {
-        static int m_ModifiedResolutionCount = 0;
-        bool m_ModifiedResulution = false;
-        Shader          m_shCopy;
-        Material        m_mat_copy;
-        Mesh            m_quad;
-        CommandBuffer   m_cbCopyFB;
-        CommandBuffer   m_cbCopyGB;
-        CommandBuffer   m_cbClearGB;
-        CommandBuffer   m_cbCopyVelocity;
-        Camera          m_Camera;
-        bool            m_cameraChanged;
+        struct CanvasBackup
+        {
+            public Camera camera;
+            public Canvas canvas;
+        }
+
+        bool m_ModifiedResolution;
+        Shader m_shCopy;
+        Material m_CopyMaterial;
+        TextureFlipper m_VFlipper = new TextureFlipper();
+        Mesh m_quad;
+        CommandBuffer m_cbCopyFB;
+        CommandBuffer m_cbCopyGB;
+        CommandBuffer m_cbClearGB;
+        CommandBuffer m_cbCopyVelocity;
+        Camera m_Camera;
+        bool m_cameraChanged;
+        Camera m_UICamera;
+
+        CanvasBackup[] m_CanvasBackups;
 
         public CBRenderTextureInputSettings cbSettings
         {
             get { return (CBRenderTextureInputSettings)settings; }
         }
 
-        public Camera TargetCamera
+        public Camera targetCamera
         {
             get { return m_Camera; }
 
@@ -40,13 +49,13 @@ namespace UnityEngine.FrameRecorder.Input
             }
         }
 
-        public Shader CopyShader
+        public Shader copyShader
         {
             get
             {
                 if (m_shCopy == null)
                 {
-                    m_shCopy = Shader.Find("Hidden/FrameRecorder/CopyFrameBuffer");
+                    m_shCopy = Shader.Find("Hidden/Recorder/Inputs/CBRenderTexture/CopyFB");
                 }
                 return m_shCopy;
             }
@@ -54,18 +63,37 @@ namespace UnityEngine.FrameRecorder.Input
             set { m_shCopy = value; }
         }
 
+        public Material copyMaterial
+        {
+            get
+            {
+                if (m_CopyMaterial == null)
+                {
+                    m_CopyMaterial = new Material(copyShader);
+                    copyMaterial.EnableKeyword("OFFSCREEN");
+                    if (cbSettings.m_AllowTransparency)
+                        m_CopyMaterial.EnableKeyword("TRANSPARENCY_ON");
+                }
+                return m_CopyMaterial;
+            }
+        }
+
         public override void BeginRecording(RecordingSession session)
         {
+            if (cbSettings.m_FlipFinalOutput)
+                m_VFlipper = new TextureFlipper();
+
             m_quad = CreateFullscreenQuad();
             switch (cbSettings.source)
             {
-                case EImageSource.GameDisplay:
+                case EImageSource.ActiveCameras:
                 case EImageSource.MainCamera:
+                case EImageSource.TaggedCamera:
                 {
-                    int screenWidth  = Screen.width;
+                    int screenWidth = Screen.width;
                     int screenHeight = Screen.height;
 #if UNITY_EDITOR
-                    switch (cbSettings.m_RenderSize)
+                    switch (cbSettings.m_OutputSize)
                     {
                         case EImageDimension.Window:
                         {
@@ -84,8 +112,8 @@ namespace UnityEngine.FrameRecorder.Input
 
                         default:
                         {
-                            outputHeight = (int)cbSettings.m_RenderSize;
-                            outputWidth = (int)(outputHeight * AspectRatioHelper.GetRealAR(cbSettings.m_RenderAspect));
+                            outputHeight = (int)cbSettings.m_OutputSize;
+                            outputWidth = (int)(outputHeight * AspectRatioHelper.GetRealAR(cbSettings.m_AspectRatio));
 
                             if (cbSettings.m_ForceEvenSize)
                             {
@@ -97,7 +125,7 @@ namespace UnityEngine.FrameRecorder.Input
                             if (size == null)
                                 size = GameViewSize.AddSize(outputWidth, outputHeight);
 
-                            if( m_ModifiedResolutionCount == 0 )
+                            if (GameViewSize.m_ModifiedResolutionCount == 0)
                                 GameViewSize.BackupCurrentSize();
                             else
                             {
@@ -106,18 +134,31 @@ namespace UnityEngine.FrameRecorder.Input
                                     Debug.LogError("Requestion a resultion change while a recorder's input has already requested one! Undefined behaviour.");
                                 }
                             }
-                            m_ModifiedResolutionCount++;
-                            m_ModifiedResulution = true;
+                            GameViewSize.m_ModifiedResolutionCount++;
+                            m_ModifiedResolution = true;
                             GameViewSize.SelectSize(size);
                             break;
                         }
                     }
 #endif
-                        break;
+                    break;
                 }
-                case EImageSource.TaggedCamera:
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+
+            if (cbSettings.m_CaptureUI)
+            {
+                var uiGO = new GameObject();
+                uiGO.name = "UICamera";
+                uiGO.transform.parent = session.m_RecorderGO.transform;
+
+                m_UICamera = uiGO.AddComponent<Camera>();
+                m_UICamera.cullingMask = 1 << 5;
+                m_UICamera.clearFlags = CameraClearFlags.Depth;
+                m_UICamera.renderingPath = RenderingPath.DeferredShading;
+                m_UICamera.targetTexture = outputRT;
+                m_UICamera.enabled = false;
             }
         }
 
@@ -125,9 +166,9 @@ namespace UnityEngine.FrameRecorder.Input
         {
             switch (cbSettings.source)
             {
-                case EImageSource.GameDisplay:
+                case EImageSource.ActiveCameras:
                 {
-                    if (TargetCamera == null)
+                    if (targetCamera == null)
                     {
                         var displayGO = new GameObject();
                         displayGO.name = "CameraHostGO-" + displayGO.GetInstanceID();
@@ -140,21 +181,42 @@ namespace UnityEngine.FrameRecorder.Input
                         camera.rect = new Rect(0, 0, 1, 1);
                         camera.depth = float.MaxValue;
 
-                        TargetCamera = camera;
+                        targetCamera = camera;
                     }
                     break;
                 }
 
                 case EImageSource.MainCamera:
                 {
-                    if (TargetCamera != Camera.main)
+                    if (targetCamera != Camera.main )
                     {
-                        TargetCamera = Camera.main;
+                        targetCamera = Camera.main;
                         m_cameraChanged = true;
                     }
                     break;
                 }
                 case EImageSource.TaggedCamera:
+                {
+                    var tag = (settings as CBRenderTextureInputSettings).m_CameraTag;
+
+                    if (targetCamera == null || targetCamera.gameObject.tag != tag )
+                    {
+                        try
+                        {
+                            var cams = GameObject.FindGameObjectsWithTag(tag);
+                            if (cams.Length > 0)
+                                Debug.LogWarning("More than one camera has the requested target tag:" + tag);
+                            targetCamera = cams[0].transform.GetComponent<Camera>();
+                            
+                        }
+                        catch (UnityException)
+                        {
+                            Debug.LogWarning("No camera has the requested target tag:" + tag);
+                            targetCamera = null;
+                        }
+                    }
+                    break;
+                }
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -170,25 +232,58 @@ namespace UnityEngine.FrameRecorder.Input
                     m_cbCopyFB.Release();
                 }
 
-                // TODO: This should not be here!!!
-                m_mat_copy = new Material(CopyShader);
-                if (m_Camera.targetTexture != null || cbSettings.m_FlipVertical )
-                    m_mat_copy.EnableKeyword("OFFSCREEN");
-
-                if( cbSettings.m_AllowTransparency )
-                    m_mat_copy.EnableKeyword("TRANSPARENCY_ON");
-
                 var tid = Shader.PropertyToID("_TmpFrameBuffer");
                 m_cbCopyFB = new CommandBuffer { name = "Recorder: copy frame buffer" };
                 m_cbCopyFB.GetTemporaryRT(tid, -1, -1, 0, FilterMode.Bilinear);
                 m_cbCopyFB.Blit(BuiltinRenderTextureType.CurrentActive, tid);
                 m_cbCopyFB.SetRenderTarget(outputRT);
-                m_cbCopyFB.DrawMesh(m_quad, Matrix4x4.identity, m_mat_copy, 0, 0);
+                m_cbCopyFB.DrawMesh(m_quad, Matrix4x4.identity, copyMaterial, 0, 0);
                 m_cbCopyFB.ReleaseTemporaryRT(tid);
                 m_Camera.AddCommandBuffer(CameraEvent.AfterEverything, m_cbCopyFB);
 
                 m_cameraChanged = false;
             }
+
+            if (Math.Abs(1-targetCamera.rect.width) > float.Epsilon || Math.Abs(1 - targetCamera.rect.height) > float.Epsilon)
+            {
+                Debug.LogWarning( string.Format("Recording output of camera '{0}' who's rectangle does not cover the viewport: resulting image will be up-sampled with associated quality degradation!", targetCamera.gameObject.name));
+            }
+        }
+
+        public override void NewFrameReady(RecordingSession session)
+        {
+            if (cbSettings.m_CaptureUI)
+            {
+                // Find canvases
+                var canvases = Object.FindObjectsOfType<Canvas>();
+                if (m_CanvasBackups == null || m_CanvasBackups.Length != canvases.Length)
+                    m_CanvasBackups = new CanvasBackup[canvases.Length];
+
+                // Hookup canvase to UI camera
+                for (var i = 0; i < canvases.Length; i++)
+                {
+                    var canvas = canvases[i];
+                    if (canvas.isRootCanvas && canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+                    {
+                        m_CanvasBackups[i].camera = canvas.worldCamera;
+                        m_CanvasBackups[i].canvas = canvas;
+                        canvas.renderMode = RenderMode.ScreenSpaceCamera;
+                        canvas.worldCamera = m_UICamera;
+                    }
+                }
+
+                m_UICamera.Render();
+
+                // Restore canvas settings
+                for (var i = 0; i < m_CanvasBackups.Length; i++)
+                {
+                    m_CanvasBackups[i].canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                    m_CanvasBackups[i].canvas.worldCamera = m_CanvasBackups[i].camera;
+                }
+            }
+
+            if( cbSettings.m_FlipFinalOutput )
+                m_VFlipper.Flip(outputRT);
         }
 
         protected override void Dispose(bool disposing)
@@ -196,16 +291,17 @@ namespace UnityEngine.FrameRecorder.Input
             if (disposing)
             {
                 ReleaseCamera();
-
+                UnityHelpers.Destroy(m_UICamera);
 #if UNITY_EDITOR
-                if (m_ModifiedResulution)
+                if (m_ModifiedResolution)
                 {
-                    m_ModifiedResolutionCount --;
-                    if( m_ModifiedResolutionCount == 0 )
+                    GameViewSize.m_ModifiedResolutionCount --;
+                    if(GameViewSize.m_ModifiedResolutionCount == 0 )
                         GameViewSize.RestoreSize();
                 }
 #endif
-
+                if( m_VFlipper!=null )
+                    m_VFlipper.Dispose();
             }
 
             base.Dispose(disposing);
@@ -222,8 +318,8 @@ namespace UnityEngine.FrameRecorder.Input
                 m_cbCopyFB = null;
             }
 
-            if (m_mat_copy != null)
-                UnityHelpers.Destroy(m_mat_copy);
+            if (m_CopyMaterial != null)
+                UnityHelpers.Destroy(m_CopyMaterial);
         }
 
         bool PrepFrameRenderTexture()
@@ -243,6 +339,10 @@ namespace UnityEngine.FrameRecorder.Input
                 wrapMode = TextureWrapMode.Repeat
             };
             outputRT.Create();
+            if (m_UICamera != null)
+            {
+                m_UICamera.targetTexture = outputRT;
+            }
 
             return true;
         }

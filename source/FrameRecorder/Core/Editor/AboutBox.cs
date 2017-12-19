@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     public class AboutBox : EditorWindow
     {
@@ -27,13 +27,13 @@ namespace UnityEditor.FrameRecorder
             GUILayout.Label(s_Header, GUIStyle.none);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Space(52f); 
+            GUILayout.Space(52f);
             GUILayout.Label("Recorder " + RecorderVersion.Stage, EditorStyles.boldLabel);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Space(52f); 
-            GUILayout.Label(string.Format("Version {0}", RecorderVersion.Version));
+            GUILayout.Space(52f);
+            GUILayout.Label(string.Format("Version {0}", RecorderVersion.Tag));
             GUILayout.EndHorizontal();
             GUILayout.Space(4);
             GUILayout.EndVertical();

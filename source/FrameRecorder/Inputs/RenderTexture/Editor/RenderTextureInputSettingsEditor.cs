@@ -1,11 +1,12 @@
-﻿using UnityEngine;
-using UnityEngine.FrameRecorder;
-using UnityEngine.FrameRecorder.Input;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Recorder;
+using UnityEngine.Recorder.Input;
 
-namespace UnityEditor.FrameRecorder.Input
+namespace UnityEditor.Recorder.Input
 {
     [CustomEditor(typeof(RenderTextureInputSettings))]
-    public class RenderTextureInputSettingsEditor : Editor
+    public class RenderTextureInputSettingsEditor : InputEditor
     {
         SerializedProperty m_SourceRTxtr;
 
@@ -33,11 +34,6 @@ namespace UnityEditor.FrameRecorder.Input
             }
 
             serializedObject.ApplyModifiedProperties();
-
-            if (!(target as RenderTextureInputSettings).isValid)
-            {
-                EditorGUILayout.HelpBox("Incomplete/Invalid settings", MessageType.Warning);
-            }
         }
     }
 }

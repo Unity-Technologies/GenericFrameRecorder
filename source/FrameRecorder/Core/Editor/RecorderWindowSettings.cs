@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.FrameRecorder;
+using UnityEngine.Recorder;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     /// <summary>
     /// This is just a helper class that should disappear once we have a proper way of saving the recorder window settings...

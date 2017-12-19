@@ -1,21 +1,23 @@
 using System.IO;
 using UnityEngine;
+using UnityEngine.Recorder;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     class FRPackagerPaths : ScriptableObject
     {
-        public static string GetFrameRecorderRootPath()
+        public static string GetRecorderRootPath()
         {
             var path = GetFrameRecorderPath();
             path = path.Substring(path.IndexOf("Assets"));
             return path;
         }
 
-        public static string GetFrameRecorderVersionFilePath()
+        public static string GetRecorderVersionFilePath()
         {
             var dummy = ScriptableObject.CreateInstance<RecorderVersion>();
             var path = Application.dataPath + AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(dummy)).Substring("Assets".Length);
+            UnityHelpers.Destroy(dummy);
             return path;
         }
 
@@ -23,8 +25,10 @@ namespace UnityEditor.FrameRecorder
         {
             var dummy = ScriptableObject.CreateInstance<FRPackagerPaths>();
             var path = Application.dataPath + AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(dummy)).Substring("Assets".Length);
-            
-            return path.Replace("/Framework/Packager/Editor/FRPackagerPaths.cs", "");
+            UnityHelpers.Destroy(dummy);
+
+            path= path.Replace("/Packager/Editor/FRPackagerPaths.cs", "");
+            return path.Substring(0, path.LastIndexOf("/"));
         }
 
     }

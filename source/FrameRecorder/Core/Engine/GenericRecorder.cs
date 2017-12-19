@@ -1,16 +1,10 @@
-using System.Collections.Generic;
-using UnityEngine.FrameRecorder.Input;
-#if UNITY_EDITOR
-    using UnityEditor;
-#endif
-
-namespace UnityEngine.FrameRecorder
+namespace UnityEngine.Recorder
 {
     /// <summary>
-    /// What is it: 
-    /// Motivation: 
-    /// Notes: 
-    /// </summary>    
+    /// What is it: helper templated class of Recorder that provides a getter for the settings fields that returns the exected type os settings.
+    /// Motivation: Root class Recorder has a field for the settings but it's a nuisance to always have to cast it to the 
+    ///             specialized type, when accessed from the specialized recorder class. 
+    /// </summary>
     public abstract class GenericRecorder<TSettings> : Recorder where TSettings : RecorderSettings
     {
         [SerializeField]

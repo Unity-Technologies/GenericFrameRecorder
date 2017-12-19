@@ -1,15 +1,28 @@
-﻿namespace UnityEngine.FrameRecorder.Input
+﻿using System;
+using System.Collections.Generic;
+
+namespace UnityEngine.Recorder.Input
 {
-    public class RenderTextureInputSettings : InputSettings<RenderTextureInput>
+    public class RenderTextureInputSettings : ImageInputSettings
     {
         public RenderTexture m_SourceRTxtr;
 
-        public override bool isValid
+        public override Type inputType
         {
-            get
+            get { return typeof(RenderTextureInput); }
+        }
+
+        public override bool ValidityCheck(List<string> errors)
+        {
+            var ok = true;
+
+            if (m_SourceRTxtr == null)
             {
-                return m_SourceRTxtr != null; 
+                ok = false;
+                errors.Add("Missing source render texture object/asset.");
             }
+
+            return ok;
         }
 
     }

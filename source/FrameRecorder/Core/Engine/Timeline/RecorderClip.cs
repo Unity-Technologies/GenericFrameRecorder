@@ -2,7 +2,7 @@ using System;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-namespace UnityEngine.FrameRecorder.Timeline
+namespace UnityEngine.Recorder.Timeline
 {
     /// <summary>
     /// What is it: Implements a Timeline Clip asset that can be inserted onto a timeline track to trigger a recording of something.
@@ -10,6 +10,7 @@ namespace UnityEngine.FrameRecorder.Timeline
     /// 
     /// Note: Instances of this call Own their associated Settings asset's lifetime.
     /// </summary>
+    [System.ComponentModel.DisplayName("Recorder Clip")]
     public class RecorderClip : PlayableAsset, ITimelineClipAsset
     {
         [SerializeField]
@@ -34,7 +35,7 @@ namespace UnityEngine.FrameRecorder.Timeline
                 behaviour.session = new RecordingSession()
                 {
                     m_Recorder = RecordersInventory.GenerateNewRecorder(recorderType, m_Settings),
-                    m_RecorderGO = FrameRecorderGOControler.HookupRecorder(!m_Settings.m_Verbose),
+                    m_RecorderGO = SceneHook.HookupRecorder(),
                 };
             }
             return playable;

@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.FrameRecorder;
+using UnityEngine;
+using UnityEngine.Recorder;
 
-namespace UnityEditor.FrameRecorder
+namespace UnityEditor.Recorder
 {
     class RecorderSelector
     {
@@ -17,6 +18,10 @@ namespace UnityEditor.FrameRecorder
         public Type selectedRecorder { get; private set; }
 
         Action m_SetRecorderCallback;
+
+        public string category {
+            get { return m_Category;}
+        }
 
         public RecorderSelector(Action setRecorderCallback, bool categoryIsReadonly)
         {
@@ -71,7 +76,7 @@ namespace UnityEditor.FrameRecorder
         {
             m_Category = category;
             if (string.IsNullOrEmpty(m_Category) && m_Categories.Length > 0)
-                m_Category = m_Categories[0];
+                m_Category = "Video"; // default
 
             if (string.IsNullOrEmpty(m_Category))
             {
@@ -148,6 +153,10 @@ namespace UnityEditor.FrameRecorder
         {
             if (selectedRecorder == newSelection)
                 return;
+
+            var recorderAttribs = newSelection.GetCustomAttributes(typeof(ObsoleteAttribute), false);
+            if (recorderAttribs.Length > 0 )
+                Debug.LogWarning( "Recorder " + ((ObsoleteAttribute)recorderAttribs[0]).Message);
 
             selectedRecorder = newSelection;
             m_SetRecorderCallback();

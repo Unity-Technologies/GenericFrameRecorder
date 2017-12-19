@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace UnityEngine.FrameRecorder.Timeline
+namespace UnityEngine.Recorder.Timeline
 {
 
     /// <summary>

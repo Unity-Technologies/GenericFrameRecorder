@@ -1,20 +1,22 @@
 ﻿#if UNITY_EDITOR
 
 using System;
+using System.Collections;
 using System.Reflection;
 using UnityEditor;
 
-namespace UnityEngine.FrameRecorder.Input
+namespace UnityEngine.Recorder.Input
 {
 
     public class GameViewSize
     {
         static object m_InitialSizeObj;
+        public static int m_ModifiedResolutionCount;
 
         public static EditorWindow GetMainGameView()
         {
-            System.Type T = System.Type.GetType("UnityEditor.GameView,UnityEditor");
-            System.Reflection.MethodInfo GetMainGameView = T.GetMethod("GetMainGameView", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+            Type T = Type.GetType("UnityEditor.GameView,UnityEditor");
+            MethodInfo GetMainGameView = T.GetMethod("GetMainGameView", BindingFlags.NonPublic | BindingFlags.Static);
             System.Object Res = GetMainGameView.Invoke(null, null);
             return (EditorWindow)Res;
         }
@@ -23,7 +25,7 @@ namespace UnityEngine.FrameRecorder.Input
         public static void GetGameRenderSize(out int width, out int height)
         {
             var gameView = GetMainGameView();
-            var prop = gameView.GetType().GetProperty("targetSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var prop = gameView.GetType().GetProperty("targetSize", BindingFlags.NonPublic | BindingFlags.Instance);
             var size = (Vector2)prop.GetValue(gameView, new object[0] { });
             width = (int)size.x;
             height = (int)size.y;
@@ -31,13 +33,12 @@ namespace UnityEngine.FrameRecorder.Input
 
         static object Group()
         {
-            var T = System.Type.GetType("UnityEditor.GameViewSizes,UnityEditor");
-            var sizes = T.BaseType.GetProperty("instance", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+            var T = Type.GetType("UnityEditor.GameViewSizes,UnityEditor");
+            var sizes = T.BaseType.GetProperty("instance", BindingFlags.Public | BindingFlags.Static);
             var instance = sizes.GetValue(null, new object[0] { });
 
-            var currentGroup = instance.GetType().GetProperty("currentGroup", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            var currentGroup = instance.GetType().GetProperty("currentGroup", BindingFlags.Public | BindingFlags.Instance);
             var group = currentGroup.GetValue(instance, new object[0] { });
-
             return group;
         }
 
@@ -46,8 +47,8 @@ namespace UnityEngine.FrameRecorder.Input
             var sizeObj = FindRecorderSizeObj();
             if (sizeObj != null)
             {
-                sizeObj.GetType().GetField("m_Width",System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(sizeObj,width);
-                sizeObj.GetType().GetField("m_Height", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(sizeObj,height);
+                sizeObj.GetType().GetField("m_Width",BindingFlags.NonPublic | BindingFlags.Instance).SetValue(sizeObj,width);
+                sizeObj.GetType().GetField("m_Height", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(sizeObj,height);
             }
             else
             {
@@ -62,9 +63,9 @@ namespace UnityEngine.FrameRecorder.Input
         {
             var group = Group();
 
-            var customs = group.GetType().GetField("m_Custom", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(group);
+            var customs = @group.GetType().GetField("m_Custom", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(@group);
 
-            var itr = (System.Collections.IEnumerator)customs.GetType().GetMethod("GetEnumerator").Invoke(customs, new object[] {});
+            var itr = (IEnumerator)customs.GetType().GetMethod("GetEnumerator").Invoke(customs, new object[] {});
             while (itr.MoveNext())
             {
                 var txt = (string)itr.Current.GetType().GetField("m_BaseText", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(itr.Current);
@@ -79,17 +80,17 @@ namespace UnityEngine.FrameRecorder.Input
         public static int IndexOf(object sizeObj)
         {
             var group = Group();
-            var method = group.GetType().GetMethod("IndexOf", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-            int index = (int)method.Invoke(group, new object[] {sizeObj}) ;
+            var method = @group.GetType().GetMethod("IndexOf", BindingFlags.Public | BindingFlags.Instance);
+            int index = (int)method.Invoke(@group, new object[] {sizeObj}) ;
 
-            var builtinList = group.GetType().GetField("m_Builtin", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(group);
+            var builtinList = @group.GetType().GetField("m_Builtin", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(@group);
 
             method = builtinList.GetType().GetMethod("Contains");
             if ((bool)method.Invoke(builtinList, new object[] { sizeObj }))
                 return index;
 
-            method = group.GetType().GetMethod("GetBuiltinCount");
-            index += (int)method.Invoke(group, new object[] { });
+            method = @group.GetType().GetMethod("GetBuiltinCount");
+            index += (int)method.Invoke(@group, new object[] { });
 
             return index;
         }
@@ -100,7 +101,7 @@ namespace UnityEngine.FrameRecorder.Input
             var TT = Type.GetType("UnityEditor.GameViewSizeType,UnityEditor");
 
             var c = T.GetConstructor( new Type[] {TT, typeof(int), typeof(int), typeof(string)} );
-            var sizeObj = c.Invoke(new object[] {1,width, height,  string.Format("FrameRecorder", width, height) });
+            var sizeObj = c.Invoke(new object[] {1,width, height,  "(Recording resolution)"});
             return sizeObj;
         }
 
@@ -109,8 +110,8 @@ namespace UnityEngine.FrameRecorder.Input
             var sizeObj = NewSizeObj(width, height);
 
             var group = Group();
-            var obj = group.GetType().GetMethod("AddCustomSize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-            obj.Invoke(group, new object[] {sizeObj}) ;
+            var obj = @group.GetType().GetMethod("AddCustomSize", BindingFlags.Public | BindingFlags.Instance);
+            obj.Invoke(@group, new object[] {sizeObj}) ;
 
             return sizeObj;
         }
@@ -120,7 +121,7 @@ namespace UnityEngine.FrameRecorder.Input
             var index = IndexOf(size);
 
             var gameView = GetMainGameView();
-            var obj = gameView.GetType().GetMethod("SizeSelectionCallback", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            var obj = gameView.GetType().GetMethod("SizeSelectionCallback", BindingFlags.Public | BindingFlags.Instance);
             obj.Invoke(gameView, new object[] { index, size });
         }
 
