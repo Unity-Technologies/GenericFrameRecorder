@@ -40,12 +40,6 @@ namespace UnityEngine.Recorder
             }
         }
 
-        public override RecorderInputSetting NewInputSettingsObj(Type type, string title )
-        {
-            var obj = base.NewInputSettingsObj(type, title);
-            return obj ;
-        }
-
         public override bool SelfAdjustSettings()
         {
             if (inputsSettings.Count == 0 )
@@ -89,6 +83,9 @@ namespace UnityEngine.Recorder
                         new TInputFilter<ScreenCaptureInputSettings>("Screen"),
 #endif
                         new TInputFilter<CBRenderTextureInputSettings>("Camera(s)"),
+#if UNITY_2018_1_OR_NEWER
+                        new TInputFilter<Camera360InputSettings>("360 view"),
+#endif
                         new TInputFilter<RenderTextureSamplerSettings>("Sampling"),
                         new TInputFilter<RenderTextureInputSettings>("Render Texture"),
                     }

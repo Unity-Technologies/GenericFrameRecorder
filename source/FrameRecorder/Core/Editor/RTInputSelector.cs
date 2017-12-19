@@ -42,6 +42,8 @@ namespace UnityEditor.Recorder
 
         public bool OnInputGui( int groupIndex, ref RecorderInputSetting input)
         {
+            if (!m_Groups.ContainsKey(groupIndex))
+                return false;
             if (m_Groups[groupIndex].types.Length < 2)
                 return false;
 

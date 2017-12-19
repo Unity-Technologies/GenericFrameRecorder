@@ -188,7 +188,7 @@ namespace UnityEngine.Recorder.Input
 
                 case EImageSource.MainCamera:
                 {
-                    if (targetCamera != Camera.main)
+                    if (targetCamera != Camera.main )
                     {
                         targetCamera = Camera.main;
                         m_cameraChanged = true;
@@ -199,7 +199,7 @@ namespace UnityEngine.Recorder.Input
                 {
                     var tag = (settings as CBRenderTextureInputSettings).m_CameraTag;
 
-                    if (targetCamera == null || targetCamera.gameObject.tag != tag)
+                    if (targetCamera == null || targetCamera.gameObject.tag != tag )
                     {
                         try
                         {
@@ -242,6 +242,11 @@ namespace UnityEngine.Recorder.Input
                 m_Camera.AddCommandBuffer(CameraEvent.AfterEverything, m_cbCopyFB);
 
                 m_cameraChanged = false;
+            }
+
+            if (Math.Abs(1-targetCamera.rect.width) > float.Epsilon || Math.Abs(1 - targetCamera.rect.height) > float.Epsilon)
+            {
+                Debug.LogWarning( string.Format("Recording output of camera '{0}' who's rectangle does not cover the viewport: resulting image will be up-sampled with associated quality degradation!", targetCamera.gameObject.name));
             }
         }
 

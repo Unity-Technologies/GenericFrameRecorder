@@ -10,6 +10,7 @@ namespace UnityEngine.Recorder.Timeline
     /// 
     /// Note: Instances of this call Own their associated Settings asset's lifetime.
     /// </summary>
+    [System.ComponentModel.DisplayName("Recorder Clip")]
     public class RecorderClip : PlayableAsset, ITimelineClipAsset
     {
         [SerializeField]

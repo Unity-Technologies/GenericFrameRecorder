@@ -8,7 +8,7 @@ namespace UnityEditor.Recorder
     public class RecorderVersion : ScriptableObject
     {
         public const string Version = "0.2";  // major.minor.build
-        public static int BuildNumber = 21;
+        public static int BuildNumber = 23;
         public static string Tag
         {
             get { return string.Format("{0}.{1:0000}", Version, BuildNumber); }

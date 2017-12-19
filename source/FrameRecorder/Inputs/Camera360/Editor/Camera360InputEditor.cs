@@ -1,41 +1,39 @@
-﻿using UnityEngine;
+﻿#if UNITY_2018_1_OR_NEWER
+
+using UnityEngine;
 using UnityEngine.Recorder;
 using UnityEngine.Recorder.Input;
 
 namespace UnityEditor.Recorder.Input
 {
-    [CustomEditor(typeof(CBRenderTextureInputSettings))]
-    public class CBRenderTextureInputSettingsEditor : InputEditor
+    [CustomEditor(typeof(Camera360InputSettings))]
+    public class Camera360InputEditor : InputEditor
     {
-        static EImageSource m_SupportedSources = EImageSource.MainCamera | EImageSource.ActiveCameras | EImageSource.TaggedCamera;
+        static EImageSource m_SupportedSources = EImageSource.MainCamera | EImageSource.TaggedCamera;
         string[] m_MaskedSourceNames;
-        ResolutionSelector m_ResSelector;
 
         SerializedProperty m_Source;
         SerializedProperty m_CameraTag;
-        SerializedProperty m_RenderSize;
-        SerializedProperty m_RenderAspect;
         SerializedProperty m_FlipFinalOutput;
-        SerializedProperty m_Transparency;
-        SerializedProperty m_CaptureUI;
+        SerializedProperty m_StereoSeparation;
+        SerializedProperty m_CubeMapSz;
+        SerializedProperty m_OutputSizePower;
+        SerializedProperty m_RenderStereo;
 
         protected void OnEnable()
         {
             if (target == null)
                 return;
 
-
-            var pf = new PropertyFinder<CBRenderTextureInputSettings>(serializedObject);
+            var pf = new PropertyFinder<Camera360InputSettings>(serializedObject);
             m_Source = pf.Find(w => w.source);
             m_CameraTag = pf.Find(w => w.m_CameraTag);
 
-            m_RenderSize = pf.Find(w => w.m_OutputSize);
-            m_RenderAspect = pf.Find(w => w.m_AspectRatio);
+            m_StereoSeparation = pf.Find(w => w.m_StereoSeparation);
             m_FlipFinalOutput = pf.Find( w => w.m_FlipFinalOutput );
-            m_Transparency = pf.Find(w => w.m_AllowTransparency);
-            m_CaptureUI = pf.Find(w => w.m_CaptureUI);
-
-            m_ResSelector = new ResolutionSelector();
+            m_CubeMapSz = pf.Find( w => w.m_MapSize );
+            m_OutputSizePower = pf.Find(w => w.m_OutputSizePower);
+            m_RenderStereo = pf.Find(w => w.m_RenderStereo);
         }
 
         public override void OnInspectorGUI()
@@ -62,26 +60,30 @@ namespace UnityEditor.Recorder.Input
                 --EditorGUI.indentLevel;
             }
 
-
-            if (inputType != EImageSource.RenderTexture)
+            AddProperty(m_OutputSizePower, () =>
             {
-                AddProperty(m_RenderSize, () =>
-                {
-                    m_ResSelector.OnInspectorGUI((target as ImageInputSettings).maxSupportedSize, m_RenderSize);
-                });
+                AddProperty(m_OutputSizePower, () => EditorGUILayout.PropertyField(m_OutputSizePower, new GUIContent("Output size (power of 2)")));
+            });
 
-                if (m_RenderSize.intValue > (int)EImageDimension.Window)
+            AddProperty(m_CubeMapSz, () =>
+            {
+                AddProperty(m_CubeMapSz, () => EditorGUILayout.PropertyField(m_CubeMapSz, new GUIContent("Cube map size (power of 2)")));
+            });
+
+            AddProperty(m_RenderStereo, () =>
+            {
+                AddProperty(m_RenderStereo, () => EditorGUILayout.PropertyField(m_RenderStereo, new GUIContent("Render in Stereo")));
+            });
+
+            AddProperty(m_StereoSeparation, () =>
+            {
+                ++EditorGUI.indentLevel;
+                using (new EditorGUI.DisabledScope(!m_RenderStereo.boolValue))
                 {
-                    AddProperty(m_RenderAspect, () => EditorGUILayout.PropertyField(m_RenderAspect, new GUIContent("Aspect Ratio")));
+                    AddProperty(m_StereoSeparation, () => EditorGUILayout.PropertyField(m_StereoSeparation, new GUIContent("Stereo Separation")));
                 }
-
-                using (new EditorGUI.DisabledScope(inputType != EImageSource.ActiveCameras))
-                {
-                    AddProperty(m_CaptureUI, () => EditorGUILayout.PropertyField(m_CaptureUI, new GUIContent("Capture UI")));
-                }
-            }
-
-            AddProperty(m_Transparency, () => EditorGUILayout.PropertyField(m_Transparency, new GUIContent("Capture alpha")));
+                --EditorGUI.indentLevel;
+            });
 
             if (Verbose.enabled)
             {
@@ -93,7 +95,7 @@ namespace UnityEditor.Recorder.Input
 
             serializedObject.ApplyModifiedProperties();
 
-            if (!(target as CBRenderTextureInputSettings).isValid)
+            if (!(target as Camera360InputSettings).isValid)
             {
                 EditorGUILayout.HelpBox("Incomplete/Invalid settings", MessageType.Warning);
             }
@@ -101,3 +103,5 @@ namespace UnityEditor.Recorder.Input
         }
     }
 }
+
+#endif
