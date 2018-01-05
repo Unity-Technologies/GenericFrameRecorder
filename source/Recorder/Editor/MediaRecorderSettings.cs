@@ -68,6 +68,10 @@ namespace UnityEditor.Recorder
             {
                 (obj as RenderTextureSamplerSettings).m_ForceEvenSize = true;
             }
+            if (type == typeof(ScreenCaptureInputSettings))
+            {
+                (obj as ScreenCaptureInputSettings).m_ForceEvenSize = true;
+            }
 
             return obj ;
         }
