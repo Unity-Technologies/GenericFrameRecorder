@@ -85,13 +85,13 @@ namespace UnityEditor.Recorder
                     title = "Pixels",
                     typesFilter = new List<InputFilter>()
                     {
-                        new TInputFilter<ScreenCaptureInputSettings>("Screen"),
-                        new TInputFilter<CBRenderTextureInputSettings>("Camera(s)"),
+                        new TInputFilter<ScreenCaptureInputSettings>("Game View"),
+                        new TInputFilter<CBRenderTextureInputSettings>("Specific Camera(s)"),
 #if UNITY_2018_1_OR_NEWER
                         new TInputFilter<Camera360InputSettings>("360 View (feature preview)"),
 #endif
-                        new TInputFilter<RenderTextureSamplerSettings>("Sampling"),
-                        new TInputFilter<RenderTextureInputSettings>("Render Texture"),
+                        new TInputFilter<RenderTextureSamplerSettings>("Sampling (off screen)"),
+                        new TInputFilter<RenderTextureInputSettings>("Render Texture Asset"),
                     }
                 },
                 new InputGroupFilter()
