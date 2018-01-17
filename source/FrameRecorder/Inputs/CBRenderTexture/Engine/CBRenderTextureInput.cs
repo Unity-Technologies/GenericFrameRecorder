@@ -270,6 +270,12 @@ namespace UnityEngine.Recorder.Input
                         canvas.renderMode = RenderMode.ScreenSpaceCamera;
                         canvas.worldCamera = m_UICamera;
                     }
+                    else
+                    {
+                        // Mark this canvas as null so we can skip it when restoring.
+                        // The array might contain invalid data from a previous frame.
+                        m_CanvasBackups[i].canvas = null;
+                    }
                 }
 
                 m_UICamera.Render();
@@ -277,6 +283,11 @@ namespace UnityEngine.Recorder.Input
                 // Restore canvas settings
                 for (var i = 0; i < m_CanvasBackups.Length; i++)
                 {
+                    // Skip those canvases that are not roots canvases or are 
+                    // not using ScreenSpaceOverlay as a render mode.
+                    if (m_CanvasBackups[i].canvas == null)
+                        continue;
+                        
                     m_CanvasBackups[i].canvas.renderMode = RenderMode.ScreenSpaceOverlay;
                     m_CanvasBackups[i].canvas.worldCamera = m_CanvasBackups[i].camera;
                 }
