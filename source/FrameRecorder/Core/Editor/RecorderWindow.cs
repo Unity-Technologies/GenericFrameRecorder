@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.Recorder;
 using UnityEngine;
+using UnityEngine.Recorder.Input;
 
 namespace UnityEditor.Recorder
 {
@@ -257,6 +258,7 @@ namespace UnityEditor.Recorder
         void StartRecording()
         {
             m_State = EState.WaitingForPlayModeToStartRecording;
+            GameViewSize.DisableMaxOnPlay();
             EditorApplication.isPlaying = true;
             m_FrameCount = Time.frameCount;
             return;

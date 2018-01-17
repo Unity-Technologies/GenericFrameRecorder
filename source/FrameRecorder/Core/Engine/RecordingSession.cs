@@ -1,4 +1,5 @@
 using System;
+using UnityEngine.Recorder.Input;
 
 namespace UnityEngine.Recorder
 {
