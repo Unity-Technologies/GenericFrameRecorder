@@ -1,3 +1,4 @@
+#if UNITY_2017_3_OR_NEWER
 using System;
 using UnityEngine;
 #if UNITY_EDITOR
@@ -173,3 +174,4 @@ namespace UnityEditor.Recorder.Input
         }
     }
 }
+#endif

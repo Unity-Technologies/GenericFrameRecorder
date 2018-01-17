@@ -1,3 +1,4 @@
+#if UNITY_2017_3_OR_NEWER
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Recorder;
@@ -65,3 +66,5 @@ namespace UnityEditor.Recorder.Input
         }
     }
 }
+
+#endif
