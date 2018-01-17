@@ -79,6 +79,8 @@ namespace UnityEditor.Recorder.Input
             AddProperty(m_FinalSize, () =>
             {
                 m_ResSelector.OnInspectorGUI( (target as ImageInputSettings).maxSupportedSize, m_FinalSize );
+                if (m_FinalSize.intValue == (int)EImageDimension.Window)
+                    m_FinalSize.intValue = (int)EImageDimension.x720p_HD;
                 if (m_FinalSize.intValue > renderSize.intValue)
                     renderSize.intValue = m_FinalSize.intValue;
             });

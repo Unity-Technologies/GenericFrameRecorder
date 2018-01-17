@@ -59,21 +59,27 @@ namespace UnityEngine.Recorder.Input
                         outputHeight = (outputHeight + 1) & ~1;
                     }
 
-                    var size = GameViewSize.SetCustomSize(outputWidth, outputHeight) ?? GameViewSize.AddSize(outputWidth, outputHeight);
-                    if (GameViewSize.m_ModifiedResolutionCount == 0)
-                        GameViewSize.BackupCurrentSize();
-                    else
-                    {
-                        if (size != GameViewSize.currentSize)
-                        {
-                            Debug.LogError("Requestion a resultion change while a recorder's input has already requested one! Undefined behaviour.");
-                        }
-                    }
-                    GameViewSize.m_ModifiedResolutionCount++;
-                    m_ModifiedResolution = true;
-                    GameViewSize.SelectSize(size);
                     break;
                 }
+            }
+
+            int w, h;
+            GameViewSize.GetGameRenderSize(out w, out h);
+            if (w != outputWidth || h != outputHeight)
+            {
+                var size = GameViewSize.SetCustomSize(outputWidth, outputHeight) ?? GameViewSize.AddSize(outputWidth, outputHeight);
+                if (GameViewSize.m_ModifiedResolutionCount == 0)
+                    GameViewSize.BackupCurrentSize();
+                else
+                {
+                    if (size != GameViewSize.currentSize)
+                    {
+                        Debug.LogError("Requestion a resultion change while a recorder's input has already requested one! Undefined behaviour.");
+                    }
+                }
+                GameViewSize.m_ModifiedResolutionCount++;
+                m_ModifiedResolution = true;
+                GameViewSize.SelectSize(size);
             }
 #endif
 

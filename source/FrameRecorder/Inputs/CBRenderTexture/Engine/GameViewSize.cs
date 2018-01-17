@@ -22,6 +22,17 @@ namespace UnityEngine.Recorder.Input
         }
 
 
+        public static void DisableMaxOnPlay()
+        {
+            var gameView = GetMainGameView();
+
+            if ((gameView.GetType().GetField("m_MaximizeOnPlay", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(gameView)  as bool? )== true)
+            {
+                Debug.LogWarning("'Maximize on Play' not compatible wit recorder: disabling it!");
+                gameView.GetType().GetField("m_MaximizeOnPlay", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(gameView, false);
+            }
+        }
+
         public static void GetGameRenderSize(out int width, out int height)
         {
             var gameView = GetMainGameView();

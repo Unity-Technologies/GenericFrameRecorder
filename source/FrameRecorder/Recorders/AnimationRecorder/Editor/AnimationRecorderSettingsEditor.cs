@@ -14,12 +14,11 @@ namespace UnityEditor.Experimental.FrameRecorder
     {
         private bool recorderSettings = false;
         
-        [MenuItem("Tools/Recorder/Animation")]
+        [MenuItem("Tools/Recorder/Animation Clips")]
         private static void ShowRecorderWindow()
         {
-            RecorderWindow.ShowAndPreselectCategory("Animation");
+            RecorderWindow.ShowAndPreselectCategory("Animation Clips");
         }
-        
 
         protected override void OnInputGui()
         {

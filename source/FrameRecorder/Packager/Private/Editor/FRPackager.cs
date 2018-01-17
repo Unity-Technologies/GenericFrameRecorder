@@ -23,13 +23,6 @@ namespace UnityEditor.Recorder
         static void GenerateAssetStorePackage()
         {
             var rootPath = FRPackagerPaths.GetRecorderRootPath();
-            var type = Type.GetType("UnityEditor.Recorder.MovieRecorderPackager");
-            if (type != null)
-            {
-                var method = type.GetMethod("GeneratePackage");
-                method.Invoke(null, null);
-                AssetDatabase.Refresh();
-            }
 
             UpdateVersion(1);
 
@@ -43,7 +36,7 @@ namespace UnityEditor.Recorder
                 Path.Combine(rootPath, "Framework/Packager/Editor" ),
                 Path.Combine(rootPath, "Extensions/UTJ" ),
                 Path.Combine(rootPath, "Extensions/FCIntegration" ),
-                Path.Combine(rootPath, "Extensions/MovieRecorder/Packaging" ),
+                Path.Combine(rootPath, "Extensions/MovieRecorder" ),
             };
             var destFile = k_PackageName + " " + RecorderVersion.Stage + " v"+ RecorderVersion.Tag +  ".unitypackage";
             AssetDatabase.ExportPackage(files, destFile, ExportPackageOptions.Recurse);
