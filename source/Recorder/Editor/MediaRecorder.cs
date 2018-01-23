@@ -146,7 +146,7 @@ namespace UnityEditor.Recorder
                 height = (uint)height,
 #if UNITY_2018_1_OR_NEWER
                 includeAlpha = includeAlphaFromTexture,
-                //bitRateMode = (VideoBitrateMode)m_Settings.m_VideoBitRateMode
+                bitRateMode = (VideoBitrateMode)m_Settings.m_VideoBitRateMode
 #else
                 includeAlpha = includeAlphaFromTexture
 #endif
