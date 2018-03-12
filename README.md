@@ -1,8 +1,8 @@
 # Unity Recorder
 ### Brief
-The *Recorder* is a project that facilitates recording of Unity artifacts from Unity. The framework does not define what can be recorded, but defines a standard way of how to implement and setup a recorder and takes care of aspects common to all recorders (time managenent, Timeline integration, record windows, etc). 
+The *Recorder* is a project that facilitates recording of Unity artifacts from Unity. The framework does not define what can be recorded, but defines a standard way of how to implement and setup a recorder and takes care of aspects common to all recorders (time management, Timeline integration, record windows, etc). 
 
-Extensibility is a prim concideration and since not all use cases can be thought of in advance, whenever relevant, the framework's base classes strive to offer an easy way to override the default beahviour of the system. 
+Extensibility is a prime consideration and since not all use cases can be thought of in advance, whenever relevant, the framework's base classes strive to offer an easy way to override the default behaviour of the system. 
 
 Recorder types are detected at run time and made available to the recording framework dynamically.
 
@@ -29,7 +29,7 @@ Found a bug? Let us know and [post an issue](https://github.com/Unity-Technologi
 
 ![](docs/images/RecorderWindow.png)
 
-3. Click "Start Recording" to lauch recording.
+3. Click "Start Recording" to launch recording.
 
 Note that this can be done  from edit mode and from game mode...
 
@@ -52,7 +52,7 @@ The Recording framework is composed of three conceptual groups:
 
 ![](docs/images/ConceptualBlocks.PNG)
 * **Recorders**: the part that takes data feeds (Inputs) and transform them into whatever format they want (Image input -> mp4 file). They do NOT deal with gathering the data from Unity: that is the Inputs task. Every recorder is broken down into three pieces: Recorder, Settings and Settings Editor.
-* **Inputs**: specialized classes that know how to gather a given type of data from unity and how to pre-package that data in a way that is ready for consumption by the Recorders. Like recorders, Inputs are borken down into three parts: Input, Setttings and Settings Editor.
+* **Inputs**: specialized classes that know how to gather a given type of data from unity and how to pre-package that data in a way that is ready for consumption by the Recorders. Like recorders, Inputs are broken down into three parts: Input, Settings and Settings Editor.
 * **Support**: holds the FrameRecorder's logic, UI, timeline integration and services.
 
 ### Recorders and their Inputs
@@ -71,15 +71,15 @@ Here are the classes that make up recorders and their inputs.
 * Recorder classes register themselves with the recorder framework by decorating themselves with the class attribute [FrameRecorder]. Notice that there are no dependencies from the inputs to the recorders and from the recorder's settings to the recorder.
 #### RecorderSettings
 * Each non-abstract recorder must provide a specialization of this class. This is where the recorders settings (output path, encoding settings, etc) are stored.
-* Recorder settings are persited assets (ScritableObject).
-* RecorderSettings do not hold the Input settings directly but refer to assets that are the Input settings. The InputSettings intances belong to a single RecorderSettings instance and their life time is tied to the owner RecorderSettings instance.
+* Recorder settings are persisted assets (ScriptableObject).
+* RecorderSettings do not hold the Input settings directly but refer to assets that are the Input settings. The InputSettings instances belong to a single RecorderSettings instance and their life time is tied to the owner RecorderSettings instance.
 * This base class comes with universal setting fields that apply to all recorders.
 * Instances of this class are stored as sub-assets of other assets. The parent asset varies depending on the situation (recorder window vs timeline for example).
-* The system does NOT enforce a recorder to use a RecorderInputs. It’s just the prefered way of doing things.
+* The system does NOT enforce a recorder to use a RecorderInputs. It’s just the preferred way of doing things.
 #### RecorderInput
 * Base class for all data sources that recorders interact with directly to gather/access the Unity game time artifacts to record.
 * The input classes have NO dependency on the recorders or their settings classes. This is important so that they can be reused between recorders. 
-* Input classes have there own Settings class that is stored as persiste assets.
+* Input classes have their own Settings class that is stored as persisted assets.
 * A family of Inputs is defined by their input type and output type and that is what determines if a recorder can use a source or not. (If a recorder can only record a RenderTexture but a given source outputs a packed pixel buffer/array, the recorder can’t use it).
 * Examples: RenderTextureInput, CameraInput, DisplayInput, GeometryInput, AudioInput.
 * Inputs are responsible for gathering the data that the recorders end up recording. For example, say we have a recorder that wants to record  the Display:
@@ -88,11 +88,11 @@ Here are the classes that make up recorders and their inputs.
 * Inputs, just like the recorders, get notified of events like BeginRecording, new frame, etc.
 #### InputSettings
 * This is the base class for RecorderInput settings.
-* Input settings live as persited sub-assets to a parent asset. The parent asset is situation dependent.
+* Input settings live as persisted sub-assets to a parent asset. The parent asset is situation dependent.
 #### RecorderSettingsEditor
 * Base class for implementing the editor window for the Recorder settings.
 * The base class's OnGUI's implementation structures the layout of the editor in groups (Inputs, Outputs, Encoding, Time, Bounds).
-* Specialized implementations are encouraged to minimize deviating from the default grouping, but if needed they can tweek a little or or du away with with the default behaviour alltogether.
+* Specialized implementations are encouraged to minimize deviating from the default grouping, but if needed they can tweak a little or or du away with with the default behaviour altogether.
 * The default Input section will identify which inputs are to be configured for the recorder and invoke those InputSettings editors inplace.
 #### InputSettingsEditor
 * Base class for InputSettings editor.
@@ -107,7 +107,7 @@ Here are the classes that make up recorders and their inputs.
 * Is responsible for informing the recorder of events (begin recording, new frame, etc.)
 * Contains:
   * Owns the recorder instance
-  * Reference to the GameoObject that hosts the recorder
+  * Reference to the GameObject that hosts the recorder
   * Current frame count (rendered, not recorded)
   * Current frame’s start time stamp relative to the start of the recording session.
   * Timestamp of when the recording session started.
