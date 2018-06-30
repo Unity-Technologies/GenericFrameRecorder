@@ -25,7 +25,11 @@ namespace UnityEditor.Experimental.Recorder.Input
 #endif
             foreach (var binding in aniSettings.bindingType)
             {
-                m_gameObjectRecorder.BindComponent(srcGO, binding, aniSettings.recursive); 
+#if UNITY_2018_2_OR_NEWER
+                m_gameObjectRecorder.BindComponentsOfType(srcGO, binding, aniSettings.recursive);
+#else
+                m_gameObjectRecorder.BindComponent(srcGO, binding, aniSettings.recursive);
+#endif
             }
             m_time = session.recorderTime;
         }
