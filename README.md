@@ -1,3 +1,10 @@
+# DEPRECATED 
+This GitHub package is deprecated.
+Please get the new Unity Recorder from the Asset Store (https://assetstore.unity.com/packages/essentials/unity-recorder-94079)
+Use the editor builtin Bug Reporter to report issues.
+You can track and vote for issues on the Issue Tracker (https://issuetracker.unity3d.com)
+
+--------------------------------
 # Unity Recorder
 ### Brief
 The *Recorder* is a project that facilitates recording of Unity artifacts from Unity. The framework does not define what can be recorded, but defines a standard way of how to implement and setup a recorder and takes care of aspects common to all recorders (time managenent, Timeline integration, record windows, etc). 
