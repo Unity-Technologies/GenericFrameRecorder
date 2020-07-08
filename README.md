@@ -1,7 +1,7 @@
 # DEPRECATED 
-This GitHub package is deprecated.
-Please get the new Unity Recorder from the Asset Store (https://assetstore.unity.com/packages/essentials/unity-recorder-94079)
-Use the editor builtin Bug Reporter to report issues.
+This GitHub package is obsolete.
+Please install the new Unity Recorder from the Unity Package Manager inside the Unity Editor.
+Use the Editor's built-in Bug Reporter to report issues.
 You can track and vote for issues on the Issue Tracker (https://issuetracker.unity3d.com)
 
 --------------------------------
